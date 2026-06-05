@@ -64,9 +64,9 @@ function buildSandboxedCode(userCode: string): string {
   const undefinedArgs = BLOCKED_GLOBALS.map(() => 'void 0').join(',');
 
   return `"use strict";
-(function(${blockedParams}, eval, Function, globalThis) {
+(function(${blockedParams}) {
 ${userCode}
-}).call(Object.create(null), ${undefinedArgs}, void 0, void 0, void 0);`;
+}).call(Object.create(null), ${undefinedArgs});`;
 }
 
 self.onmessage = (event: MessageEvent<WorkerInput>) => {
@@ -93,7 +93,17 @@ self.onmessage = (event: MessageEvent<WorkerInput>) => {
 
     const sandboxed = buildSandboxedCode(code);
 
-    const fn = new Function('console', sandboxed);
+    const SafeFunction = Function;
+    const dangerousGlobals = ['eval', 'Function', 'globalThis'];
+    for (const name of dangerousGlobals) {
+      try {
+        Object.defineProperty(globalThis, name, {
+          value: undefined, configurable: true, writable: false,
+        });
+      } catch { /* may fail if already frozen */ }
+    }
+
+    const fn = SafeFunction('console', sandboxed);
     fn(mockConsole);
 
     if (lines.length >= MAX_OUTPUT_LINES) {
