@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { triggerConfetti } from '@/utils/confetti';
 import { playSound } from '@/utils/sounds';
+import { lessonPath } from '@/utils/lesson-path';
 import type { ExerciseLesson } from '@/content/curriculum.types';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then((m) => ({ default: m.Editor })));
@@ -129,8 +130,8 @@ function OutputPanel({ output, errorMessage, mistakeMessage, status }: OutputPan
         {errorMessage && !mistakeMessage && (
           <pre className="text-accent font-mono text-xs leading-relaxed whitespace-pre-wrap">❌ {errorMessage}</pre>
         )}
-        {output && status === 'passed' && (
-          <pre className="text-primary font-mono text-xs leading-relaxed whitespace-pre-wrap">✅ {output}</pre>
+        {output && (
+          <pre className={`font-mono text-xs leading-relaxed whitespace-pre-wrap ${status === 'passed' ? 'text-primary' : 'text-[#E8E8F0]'}`}>{status === 'passed' ? '✅ ' : '📋 '}{output}</pre>
         )}
       </div>
     </div>
@@ -216,7 +217,7 @@ export function ExercisePage() {
 
   const { module: mod, exercise, loading, error } = useExercise(moduleId, lessonId);
   const runner = useCodeRunner();
-  const { addXP, completeExercise, updateStreak, useLive, lives } = useProgressStore();
+  const { addXP, completeExercise, updateStreak, consumeLife, completedExercises } = useProgressStore();
   const { livesEnabled, soundEnabled } = useSettingsStore();
   const { hintsUsed, useHint, setCurrentLesson } = useSessionStore();
   const { checkAndUnlock } = useAchievements();
@@ -228,12 +229,17 @@ export function ExercisePage() {
   const [noLivesModal, setNoLivesModal] = useState(false);
   const [mobileTab, setMobileTab] = useState<'instructions' | 'code'>('instructions');
 
+  const resetRunner = runner.reset;
+
   useEffect(() => {
     if (exercise) {
       setCode(exercise.starterCode);
+      setSuccessStars(null);
+      setEditorBorderStatus('idle');
+      resetRunner();
       if (moduleId && lessonId) setCurrentLesson(moduleId, lessonId);
     }
-  }, [exercise, moduleId, lessonId, setCurrentLesson]);
+  }, [exercise, moduleId, lessonId, setCurrentLesson, resetRunner]);
 
   const handleRun = useCallback(async () => {
     if (!exercise || runner.status === 'running') return;
@@ -248,7 +254,8 @@ export function ExercisePage() {
     if (outcome.type === 'passed') {
       setSuccessStars(outcome.stars);
       setEditorBorderStatus('ok');
-      addXP(exercise.xpReward);
+      const isFirstCompletion = !completedExercises[exercise.id];
+      if (isFirstCompletion) addXP(exercise.xpReward);
       completeExercise(exercise.id, outcome.stars, hintsUsed);
       updateStreak();
       triggerConfetti();
@@ -259,13 +266,13 @@ export function ExercisePage() {
       setShakeKey((k) => k + 1);
       if (soundEnabled) playSound('error');
       if (livesEnabled) {
-        const lostLive = useLive();
-        if (!lostLive || lives.current - 1 <= 0) {
+        const remaining = consumeLife();
+        if (remaining <= 0) {
           setNoLivesModal(true);
         }
       }
     }
-  }, [exercise, runner, code, hintsUsed, addXP, completeExercise, updateStreak, livesEnabled, useLive, lives, soundEnabled, checkAndUnlock]);
+  }, [exercise, runner, code, hintsUsed, addXP, completeExercise, completedExercises, updateStreak, livesEnabled, consumeLife, soundEnabled, checkAndUnlock]);
 
   const handleNext = useCallback(() => {
     if (!mod || !moduleId) return navigate('/');
@@ -273,11 +280,7 @@ export function ExercisePage() {
     const idx = lessons.findIndex((l) => l.id === lessonId);
     const next = lessons[idx + 1];
     if (!next) return navigate('/');
-    const path =
-      next.type === 'exercise' || next.type === 'challenge'
-        ? `/exercise/${moduleId}/${next.id}`
-        : `/lesson/${moduleId}/${next.id}`;
-    navigate(path);
+    navigate(lessonPath(moduleId, next));
   }, [mod, moduleId, lessonId, navigate]);
 
   if (loading) {

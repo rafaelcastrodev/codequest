@@ -63,7 +63,7 @@ interface ProgressState {
   addXP: (amount: number) => void;
   completeExercise: (id: string, stars: number, hintsUsed: number) => void;
   updateStreak: () => void;
-  useLive: () => boolean;
+  consumeLife: () => number;
   regenLives: () => void;
   unlockModule: (moduleId: string) => void;
   unlockAchievement: (achievementId: string) => void;
@@ -106,6 +106,7 @@ export const useProgressStore = create<ProgressState>()(
           const existing = s.completedExercises[id];
           const attempts = (existing?.attempts ?? 0) + 1;
           const bestStars = Math.max(existing?.stars ?? 0, stars);
+          const bestHints = Math.min(existing?.hintsUsed ?? hintsUsed, hintsUsed);
           return {
             completedExercises: {
               ...s.completedExercises,
@@ -113,7 +114,7 @@ export const useProgressStore = create<ProgressState>()(
                 stars: bestStars,
                 attempts,
                 completedAt: new Date().toISOString(),
-                hintsUsed,
+                hintsUsed: bestHints,
               },
             },
           };
@@ -121,8 +122,10 @@ export const useProgressStore = create<ProgressState>()(
 
       updateStreak: () =>
         set((s) => {
-          const today = new Date().toISOString().split('T')[0]!;
-          const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]!;
+          const now = new Date();
+          const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          const yd = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+          const yesterday = `${yd.getFullYear()}-${String(yd.getMonth() + 1).padStart(2, '0')}-${String(yd.getDate()).padStart(2, '0')}`;
           const { lastDate, current, best } = s.streak;
 
           if (lastDate === today) return {};
@@ -136,13 +139,14 @@ export const useProgressStore = create<ProgressState>()(
           };
         }),
 
-      useLive: () => {
+      consumeLife: () => {
         const { lives } = get();
-        if (lives.current <= 0) return false;
+        if (lives.current <= 0) return 0;
+        const remaining = lives.current - 1;
         set((s) => ({
-          lives: { ...s.lives, current: s.lives.current - 1 },
+          lives: { ...s.lives, current: remaining },
         }));
-        return true;
+        return remaining;
       },
 
       regenLives: () =>

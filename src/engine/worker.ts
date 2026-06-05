@@ -46,8 +46,6 @@ self.onmessage = (event: MessageEvent<WorkerInput>) => {
   };
 
   try {
-    // Shadow dangerous globals by passing them as undefined parameters
-    // eslint-disable-next-line no-new-func
     const fn = new Function(
       'console',
       'fetch',
@@ -57,10 +55,25 @@ self.onmessage = (event: MessageEvent<WorkerInput>) => {
       'indexedDB',
       'importScripts',
       'eval',
+      'Function',
+      'self',
+      'postMessage',
+      'close',
+      'WebSocket',
+      'Worker',
+      'SharedWorker',
+      'BroadcastChannel',
       code,
     );
-    fn(mockConsole, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+    fn(
+      mockConsole,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+    );
 
+    if (lines.length >= 1000) {
+      lines.push('[... output truncado — limite de 1000 linhas atingido]');
+    }
     const result: WorkerOutput = { success: true, output: lines.join('\n') };
     self.postMessage(result);
   } catch (err) {

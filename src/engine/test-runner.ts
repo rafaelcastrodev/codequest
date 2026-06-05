@@ -12,6 +12,7 @@ export interface TestCaseResult {
 export interface TestRunResult {
   passed: boolean;
   feedback: string;
+  output: string;
   results: TestCaseResult[];
 }
 
@@ -29,17 +30,21 @@ async function runOutputMatch(
   testCases: TestCase[],
 ): Promise<TestRunResult> {
   const results: TestCaseResult[] = [];
+  const outputs: string[] = [];
 
   for (const tc of testCases) {
     const testCode = [tc.setupCode, tc.testCode].filter(Boolean).join('\n');
     const result = await executeCode(studentCode, testCode);
 
+    if (result.output) outputs.push(result.output);
+
     if (!result.success && result.error) {
-      return {
+      results.push({
         passed: false,
-        feedback: translateError(result.error),
-        results: [{ passed: false, expected: expectedToString(tc.expectedOutput), received: translateError(result.error) }],
-      };
+        expected: expectedToString(tc.expectedOutput),
+        received: translateError(result.error),
+      });
+      continue;
     }
 
     const received = normalizeOutput(result.output);
@@ -55,6 +60,60 @@ async function runOutputMatch(
     feedback: allPassed
       ? 'Todos os testes passaram!'
       : `Saída incorreta.\nEsperado: "${failed?.expected}"\nRecebido: "${failed?.received}"`,
+    output: outputs.join('\n'),
+    results,
+  };
+}
+
+async function runVariableCheck(
+  studentCode: string,
+  testCases: TestCase[],
+): Promise<TestRunResult> {
+  const results: TestCaseResult[] = [];
+  const outputs: string[] = [];
+
+  for (const tc of testCases) {
+    const checkCode = tc.testCode ?? '';
+    const testCode = `
+${checkCode}
+try {
+  var __vars = {};
+  ${(tc.input ?? []).map((v) => {
+    const varName = String(v);
+    return `try { __vars["${varName}"] = typeof ${varName} !== 'undefined' ? ${varName} : undefined; } catch(e) { __vars["${varName}"] = undefined; }`;
+  }).join('\n  ')}
+  console.log(JSON.stringify(__vars));
+} catch(__e) {
+  console.log('ERRO: ' + __e.message);
+}`.trim();
+
+    const result = await executeCode(studentCode, testCode);
+
+    if (result.output) outputs.push(result.output);
+
+    if (!result.success && result.error) {
+      results.push({
+        passed: false,
+        expected: expectedToString(tc.expectedOutput),
+        received: translateError(result.error),
+      });
+      continue;
+    }
+
+    const received = normalizeOutput(result.output);
+    const expected = normalizeOutput(expectedToString(tc.expectedOutput));
+    results.push({ passed: received === expected, expected, received });
+  }
+
+  const allPassed = results.every((r) => r.passed);
+  const failed = results.find((r) => !r.passed);
+
+  return {
+    passed: allPassed,
+    feedback: allPassed
+      ? 'Todos os testes passaram!'
+      : `Variável incorreta.\nEsperado: "${failed?.expected}"\nRecebido: "${failed?.received}"`,
+    output: outputs.join('\n'),
     results,
   };
 }
@@ -67,6 +126,7 @@ async function runFunctionTest(
 ): Promise<TestRunResult> {
   const allCases = [...testCases, ...(additionalTests ?? [])];
   const results: TestCaseResult[] = [];
+  const outputs: string[] = [];
 
   for (const tc of allCases) {
     const inputJson = JSON.stringify(tc.input ?? []);
@@ -81,18 +141,21 @@ try {
 
     const result = await executeCode(studentCode, testCode);
 
+    if (result.output) outputs.push(result.output);
+    const label = `${functionName}(${(tc.input ?? []).join(', ')})`;
+
     if (!result.success && result.error) {
-      return {
+      results.push({
         passed: false,
-        feedback: translateError(result.error),
-        results: [{ passed: false, expected: expectedToString(tc.expectedOutput), received: translateError(result.error) }],
-      };
+        expected: expectedToString(tc.expectedOutput),
+        received: translateError(result.error),
+        label,
+      });
+      continue;
     }
 
     const received = normalizeOutput(result.output);
     const expected = normalizeOutput(expectedToString(tc.expectedOutput));
-    const label = `${functionName}(${(tc.input ?? []).join(', ')})`;
-
     results.push({ passed: received === expected, expected, received, label });
   }
 
@@ -104,6 +167,7 @@ try {
     feedback: allPassed
       ? 'Todos os testes passaram!'
       : `Teste falhou: ${failed?.label ?? ''}\nEsperado: "${failed?.expected}"\nRecebido: "${failed?.received}"`,
+    output: outputs.join('\n'),
     results,
   };
 }
@@ -120,6 +184,7 @@ async function runASTMatch(
     return {
       passed: false,
       feedback: astResult.message,
+      output: '',
       results: [{ passed: false, expected: 'estrutura correta', received: astResult.message }],
     };
   }
@@ -141,7 +206,7 @@ async function runCustom(
       jsStudentCode = await transpileCode(studentCode);
     } catch (err) {
       const msg = translateError(err instanceof Error ? err.message : String(err));
-      return { passed: false, feedback: msg, results: [{ passed: false, expected: '', received: msg }] };
+      return { passed: false, feedback: msg, output: '', results: [{ passed: false, expected: '', received: msg }] };
     }
 
     const testCode = `
@@ -173,6 +238,7 @@ try {
   return {
     passed: allPassed,
     feedback: allPassed ? 'Todos os testes passaram!' : results.find((r) => !r.passed)?.label ?? 'Teste falhou',
+    output: '',
     results,
   };
 }
@@ -194,10 +260,10 @@ export async function runTests(
     case 'output-match':
       return runOutputMatch(studentCode, testCases);
     case 'variable-check':
-      return runOutputMatch(studentCode, testCases);
+      return runVariableCheck(studentCode, testCases);
     case 'function-test':
       if (!functionName) {
-        return { passed: false, feedback: 'Configuração inválida: functionName ausente.', results: [] };
+        return { passed: false, feedback: 'Configuração inválida: functionName ausente.', output: '', results: [] };
       }
       return runFunctionTest(studentCode, functionName, testCases, additionalTests);
     case 'ast-match':
@@ -205,6 +271,6 @@ export async function runTests(
     case 'custom':
       return runCustom(studentCode, testCases);
     default:
-      return { passed: false, feedback: `Estratégia desconhecida: ${strategy as string}`, results: [] };
+      return { passed: false, feedback: `Estratégia desconhecida: ${strategy as string}`, output: '', results: [] };
   }
 }

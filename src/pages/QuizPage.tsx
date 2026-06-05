@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { triggerConfetti } from '@/utils/confetti';
 import { playSound } from '@/utils/sounds';
+import { lessonPath } from '@/utils/lesson-path';
 import type { QuizLesson, QuizQuestion } from '@/content/curriculum.types';
 
 function starsFromScore(correct: number, total: number): number {
@@ -200,7 +201,7 @@ export function QuizPage() {
   const navigate = useNavigate();
 
   const { module: mod, lesson, loading, error } = useLesson(moduleId, lessonId);
-  const { addXP, completeExercise, updateStreak } = useProgressStore();
+  const { addXP, completeExercise, updateStreak, completedExercises } = useProgressStore();
   const { setCurrentLesson } = useSessionStore();
   const { checkAndUnlock } = useAchievements();
   const { soundEnabled } = useSettingsStore();
@@ -232,7 +233,8 @@ export function QuizPage() {
       if (!xpAwarded.current) {
         const correct = answeredCorrect.filter(Boolean).length;
         const stars = starsFromScore(correct, quiz.questions.length);
-        addXP(quiz.xpReward);
+        const isFirstCompletion = !completedExercises[quiz.id];
+        if (isFirstCompletion) addXP(quiz.xpReward);
         completeExercise(quiz.id, stars, 0);
         updateStreak();
         xpAwarded.current = true;
@@ -253,13 +255,7 @@ export function QuizPage() {
     const idx = lessons.findIndex((l) => l.id === lessonId);
     const next = lessons[idx + 1];
     if (!next) return navigate('/');
-    const path =
-      next.type === 'exercise' || next.type === 'challenge'
-        ? `/exercise/${moduleId}/${next.id}`
-        : next.type === 'quiz'
-        ? `/quiz/${moduleId}/${next.id}`
-        : `/lesson/${moduleId}/${next.id}`;
-    navigate(path);
+    navigate(lessonPath(moduleId, next));
   }
 
   if (loading) {

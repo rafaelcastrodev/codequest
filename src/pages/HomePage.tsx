@@ -4,17 +4,8 @@ import { motion } from 'framer-motion';
 import { loadCurriculum, loadModule } from '@/content/loader';
 import { useProgressStore } from '@/store/progress.store';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { lessonPath } from '@/utils/lesson-path';
 import type { Curriculum, Module } from '@/content/curriculum.types';
-
-function lessonPath(moduleId: string, lesson: { id: string; type: string }): string {
-  if (lesson.type === 'exercise' || lesson.type === 'challenge') {
-    return `/exercise/${moduleId}/${lesson.id}`;
-  }
-  if (lesson.type === 'quiz') {
-    return `/quiz/${moduleId}/${lesson.id}`;
-  }
-  return `/lesson/${moduleId}/${lesson.id}`;
-}
 
 interface ModuleNodeProps {
   moduleData: {

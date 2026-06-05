@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { RichText } from '@/components/ui/RichText';
+import { lessonPath } from '@/utils/lesson-path';
 import type { Module, TheoryLesson, LessonStep } from '@/content/curriculum.types';
 
 interface StepViewProps {
@@ -63,7 +64,7 @@ function LessonComplete({ lesson, onNext, onMap }: LessonCompleteProps) {
 export function LessonPage() {
   const { moduleId, lessonId } = useParams<{ moduleId: string; lessonId: string }>();
   const navigate = useNavigate();
-  const { addXP, completeExercise, updateStreak } = useProgressStore();
+  const { addXP, completeExercise, updateStreak, completedExercises } = useProgressStore();
 
   const [mod, setMod] = useState<Module | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
@@ -111,7 +112,8 @@ export function LessonPage() {
 
   function handleComplete() {
     if (!xpAwarded.current && theoryLesson) {
-      addXP(theoryLesson.xpReward);
+      const isFirstCompletion = !completedExercises[theoryLesson.id];
+      if (isFirstCompletion) addXP(theoryLesson.xpReward);
       completeExercise(theoryLesson.id, 3, 0);
       updateStreak();
       xpAwarded.current = true;
@@ -121,19 +123,13 @@ export function LessonPage() {
 
   function handleNext() {
     if (nextLesson && moduleId) {
-      const path =
-        nextLesson.type === 'exercise' || nextLesson.type === 'challenge'
-          ? `/exercise/${moduleId}/${nextLesson.id}`
-          : nextLesson.type === 'quiz'
-          ? `/quiz/${moduleId}/${nextLesson.id}`
-          : `/lesson/${moduleId}/${nextLesson.id}`;
-      navigate(path);
+      navigate(lessonPath(moduleId, nextLesson));
     } else {
       navigate('/');
     }
   }
 
-  function handleNext_step() {
+  function handleNextStep() {
     if (stepIndex < totalSteps - 1) {
       setStepIndex(stepIndex + 1);
     } else {
@@ -182,7 +178,7 @@ export function LessonPage() {
           >
             ← Anterior
           </Button>
-          <Button variant="primary" size="md" onClick={handleNext_step}>
+          <Button variant="primary" size="md" onClick={handleNextStep}>
             {stepIndex < totalSteps - 1 ? 'Próximo →' : 'Concluir ✓'}
           </Button>
         </div>

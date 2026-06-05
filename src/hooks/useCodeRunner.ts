@@ -64,7 +64,7 @@ export function useCodeRunner(): CodeRunnerAPI {
 
       setState({
         status: 'failed',
-        output: '',
+        output: testResult.output,
         errorMessage: testResult.feedback,
         mistakeMessage: null,
       });
