@@ -308,6 +308,11 @@ Animações Framer Motion. Perfil. Settings. Responsividade mobile. Lazy loading
 
 Rodar `npm run build` e garantir zero erros. Rodar `npm run dev` e verificar que a feature funciona end-to-end. Só então passar para a próxima fase.
 
+### Versionamento
+
+- **HARD RULE:** Todo commit/push DEVE incrementar a versão em `package.json`
+- Usar SemVer: `fix:` → patch (x.y.Z), `feat:` → minor (x.Y.0), breaking change → major (X.0.0)
+
 ### Qualidade de código
 
 - Sem `any` — tipar tudo explicitamente
