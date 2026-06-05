@@ -1,0 +1,268 @@
+{
+  "id": "05-funcoes",
+  "title": "Funções",
+  "description": "Crie blocos de código reutilizáveis",
+  "lessons": [
+    {
+      "id": "05-01",
+      "title": "O que é uma função?",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Imagine que toda vez que seu personagem ataca, você precisa escrever 5 linhas de código: calcular dano, subtrair HP, checar se morreu, mostrar animação, tocar som...\n\nE se o personagem ataca 50 vezes no jogo? Copiar e colar 5 linhas × 50 vezes = 250 linhas repetidas? Que horror!\n\nA solução: **funções**. Você escreve as instruções **uma vez**, dá um **nome** pra esse bloco, e depois é só **chamar pelo nome** quando precisar. É como criar um botão — define uma vez, aperta quantas vezes quiser."
+        },
+        {
+          "type": "interactive-example",
+          "code": "function saudacao(): void {\n  console.log(\"Bem-vindo ao CodeQuest!\");\n  console.log(\"Prepare-se para a aventura!\");\n}\n\n// Chamando a função (apertando o botão):\nsaudacao();\nsaudacao();",
+          "highlightLines": [1, 7, 8],
+          "explanation": "Vamos por partes:\n\n- `function` → palavra mágica que diz \"estou criando uma função\"\n- `saudacao` → o nome que demos\n- `()` → parênteses (depois vamos colocar coisas aqui)\n- `: void` → significa que a função não devolve nenhum resultado (ela só faz coisas)\n- `{ ... }` → o bloco de código que roda quando a função é chamada\n\nNas linhas 7 e 8, **chamamos** a função escrevendo o nome com `()`. Cada chamada executa as duas linhas internas de novo!"
+        },
+        {
+          "type": "explanation",
+          "content": "Uma coisa importante: **criar** uma função e **chamar** uma função são coisas diferentes!\n\nQuando você escreve `function saudacao() { ... }`, o código de dentro **NÃO roda** — está só sendo guardado, como escrever uma receita.\n\nSó quando você escreve `saudacao()` é que o código realmente executa — é como seguir a receita e fazer o bolo.\n\nVocê pode chamar a função quantas vezes quiser, de qualquer lugar do código!"
+        }
+      ]
+    },
+    {
+      "id": "05-02",
+      "title": "Parâmetros e argumentos",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "A função `saudacao()` sempre faz a mesma coisa. Mas e se a gente quiser que ela se adapte? Tipo: cumprimentar pessoas **diferentes** com a mesma função?\n\nPra isso existem **parâmetros** — são variáveis que a função recebe de quem a chamou.\n\nPense numa máquina de suco: a máquina é a função, e a **fruta** que você coloca é o parâmetro. Mesma máquina, frutas diferentes → sucos diferentes!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "function saudacao(nome: string): void {\n  console.log(`Olá, ${nome}! Bem-vindo!`);\n}\n\nsaudacao(\"Aria\");\nsaudacao(\"Kael\");\nsaudacao(\"Luna\");",
+          "highlightLines": [1, 5, 6, 7],
+          "explanation": "Agora `saudacao` recebe um **parâmetro** chamado `nome` (do tipo `string`).\n\n- `saudacao(\"Aria\")` → `nome` vale `\"Aria\"` → imprime \"Olá, Aria! Bem-vindo!\"\n- `saudacao(\"Kael\")` → `nome` vale `\"Kael\"` → imprime \"Olá, Kael! Bem-vindo!\"\n\nO valor que passamos na chamada (`\"Aria\"`, `\"Kael\"`) se chama **argumento**. A variável na definição (`nome`) se chama **parâmetro**. Mesma ideia, nomes diferentes!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "function atacar(nomeInimigo: string, dano: number): void {\n  console.log(`Você atacou ${nomeInimigo} causando ${dano} de dano!`);\n}\n\natacar(\"Goblin\", 25);\natacar(\"Dragão\", 50);\natacar(\"Slime\", 10);",
+          "highlightLines": [1, 5, 6, 7],
+          "explanation": "Funções podem receber **múltiplos parâmetros** — separe com vírgula!\n\n`atacar` recebe 2 parâmetros: o nome do inimigo (string) e o dano (number).\n\nCada chamada passa valores diferentes:\n- `atacar(\"Goblin\", 25)` → \"Você atacou Goblin causando 25 de dano!\"\n- `atacar(\"Dragão\", 50)` → \"Você atacou Dragão causando 50 de dano!\"\n\nA mesma função, 3 situações diferentes. Isso é o poder da reutilização!"
+        }
+      ]
+    },
+    {
+      "id": "05-03",
+      "title": "Retornando valores",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Até agora, nossas funções só **faziam coisas** (imprimiam no console). Mas funções também podem **produzir resultados** e devolvê-los.\n\nPense na calculadora do celular: você digita `15 + 7` e ela **retorna** `22`. A calculadora não imprime na tela sozinha — ela te dá o resultado e você decide o que fazer com ele.\n\nPra devolver um resultado, usamos a palavra **`return`**."
+        },
+        {
+          "type": "interactive-example",
+          "code": "function calcularDano(forca: number, arma: number): number {\n  return forca * arma;\n}\n\nconst dano: number = calcularDano(18, 3);\nconsole.log(`Dano total: ${dano}`);\n\n// Pode usar direto numa expressão:\nconsole.log(`Dano crítico: ${calcularDano(18, 3) * 2}`);",
+          "highlightLines": [1, 2, 5, 9],
+          "explanation": "Repare que o tipo do retorno agora é `: number` (não `: void`). Isso diz: \"essa função vai me devolver um número\".\n\n`return forca * arma` → calcula `18 * 3 = 54` e **envia esse valor de volta** para quem chamou.\n\nNa linha 5, `calcularDano(18, 3)` \"vira\" o número `54`, que é guardado em `dano`.\n\nNa linha 9, usamos o resultado direto dentro de uma expressão: `54 * 2 = 108`.\n\nImportante: `return` **encerra** a função na hora. Nenhum código depois do `return` roda!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "function maiorDeDois(a: number, b: number): number {\n  if (a > b) {\n    return a;\n  } else {\n    return b;\n  }\n}\n\nconsole.log(maiorDeDois(42, 17));\nconsole.log(maiorDeDois(5, 99));\nconsole.log(maiorDeDois(10, 10));",
+          "highlightLines": [3, 5],
+          "explanation": "Uma função pode ter **vários `return`** em caminhos diferentes!\n\nSe `a > b`, retorna `a` (e a função para aqui).\nSe não, retorna `b`.\n\nMas no final, a função **sempre retorna exatamente UM valor** — nunca dois, nunca zero (quando o tipo não é `void`).\n\n`maiorDeDois(42, 17)` → 42 > 17? Sim → retorna 42\n`maiorDeDois(5, 99)` → 5 > 99? Não → retorna 99"
+        }
+      ]
+    },
+    {
+      "id": "05-04",
+      "title": "Tipando parâmetros e retorno",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Em TypeScript, sempre tipamos **cada parâmetro** e o **retorno** da função. É como um contrato:\n\n\"Eu prometo que vou receber um `string` e um `number`, e vou devolver um `boolean`.\"\n\nSe alguém chamar a função com os tipos errados, TypeScript avisa **antes** de rodar. Isso evita bugs antes deles acontecerem!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "function ehMaiorDeIdade(idade: number): boolean {\n  return idade >= 18;\n}\n\nconsole.log(ehMaiorDeIdade(12));\nconsole.log(ehMaiorDeIdade(21));\n\nfunction descrever(nome: string, nivel: number): string {\n  return `${nome} está no nível ${nivel}`;\n}\n\nconsole.log(descrever(\"Aria\", 5));",
+          "highlightLines": [1, 8],
+          "explanation": "`ehMaiorDeIdade` → recebe `number`, retorna `boolean`\n`descrever` → recebe `string` e `number`, retorna `string`\n\nOs tipos mais comuns de retorno:\n- `: number` → retorna um número\n- `: string` → retorna um texto\n- `: boolean` → retorna true/false\n- `: void` → não retorna nada (só faz coisas, como imprimir)\n\nSe tentasse chamar `ehMaiorDeIdade(\"doze\")`, TypeScript mostraria um erro: esperava `number`, recebeu `string`!"
+        }
+      ]
+    },
+    {
+      "id": "05-05",
+      "title": "Arrow functions",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "**Arrow functions** (funções-seta) são um jeito mais curto de escrever funções. Em vez de `function`, usamos `=>` (a seta).\n\nSão iguais às funções normais — fazem a mesma coisa! Só que com menos digitação. Programadores adoram economizar teclas. 😄\n\nSão especialmente práticas pra funções pequenas de uma linha."
+        },
+        {
+          "type": "interactive-example",
+          "code": "// Função tradicional:\nfunction dobrar(n: number): number {\n  return n * 2;\n}\n\n// Mesma coisa como arrow function:\nconst dobrarArrow = (n: number): number => {\n  return n * 2;\n};\n\n// Versão ultra-curta (só uma expressão):\nconst dobrarCurta = (n: number): number => n * 2;\n\nconsole.log(dobrar(5));\nconsole.log(dobrarArrow(5));\nconsole.log(dobrarCurta(5));",
+          "highlightLines": [2, 7, 12],
+          "explanation": "As 3 fazem **exatamente a mesma coisa**! A diferença é só na escrita:\n\n1. **Tradicional** (linha 2): `function nome(params): tipo { return ... }`\n2. **Arrow** (linha 7): `const nome = (params): tipo => { return ... }`\n3. **Arrow curta** (linha 12): `const nome = (params): tipo => expressão`\n\nNa versão curta, quando tem só UMA expressão, pode tirar as `{ }` e o `return` — o resultado é retornado automaticamente.\n\nVamos usar arrow functions bastante quando chegarmos em arrays!"
+        }
+      ]
+    },
+    {
+      "id": "05-06",
+      "title": "Funções de matemática",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 20,
+      "instructions": "Crie 3 funções:\n\n1. `dobrar(n: number): number` → retorna o dobro de `n`\n2. `somar(a: number, b: number): number` → retorna a soma de `a` + `b`\n3. `media(a: number, b: number, c: number): number` → retorna a média dos 3 números\n\nLembre: média = soma dos valores dividida pela quantidade!\n\nAs chamadas de teste já estão prontas no código. Sua missão é criar as funções acima delas.",
+      "starterCode": "// Crie as funções\n\n\n\n\n\n\n// Teste\nconsole.log(dobrar(7));\nconsole.log(somar(10, 20));\nconsole.log(media(8, 9, 10));",
+      "solution": "function dobrar(n: number): number {\n  return n * 2;\n}\n\nfunction somar(a: number, b: number): number {\n  return a + b;\n}\n\nfunction media(a: number, b: number, c: number): number {\n  return (a + b + c) / 3;\n}\n\nconsole.log(dobrar(7));\nconsole.log(somar(10, 20));\nconsole.log(media(8, 9, 10));",
+      "validation": {
+        "strategy": "function-test",
+        "functionName": "dobrar",
+        "testCases": [
+          { "input": [7], "expectedOutput": 14 },
+          { "input": [0], "expectedOutput": 0 },
+          { "input": [-3], "expectedOutput": -6 }
+        ],
+        "additionalTests": [
+          {
+            "functionName": "somar",
+            "testCases": [
+              { "input": [10, 20], "expectedOutput": 30 },
+              { "input": [0, 0], "expectedOutput": 0 }
+            ]
+          },
+          {
+            "functionName": "media",
+            "testCases": [
+              { "input": [8, 9, 10], "expectedOutput": 9 },
+              { "input": [10, 10, 10], "expectedOutput": 10 }
+            ]
+          }
+        ]
+      },
+      "hints": [
+        "A função `dobrar` recebe 1 número e retorna `n * 2`. Não esqueça do `return`!",
+        "A função `somar` recebe 2 números e retorna `a + b`. Cada parâmetro precisa de tipo: `(a: number, b: number)`.",
+        "Para a média de 3 números, some e divida por 3. Cuidado com parênteses: `(a + b + c) / 3` (sem parênteses, só o `c` seria dividido!)."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "a + b + c / 3",
+          "message": "Pegadinha de matemática! Sem parênteses, só o `c` é dividido por 3 (a divisão tem prioridade). Use `(a + b + c) / 3` com parênteses!"
+        },
+        {
+          "pattern": "console.log(n * 2)",
+          "message": "A função deve **retornar** o valor com `return`, não imprimir com `console.log`! Quem imprime é o código que chama a função. Use `return n * 2;`."
+        }
+      ]
+    },
+    {
+      "id": "05-07",
+      "title": "Validador de senha",
+      "type": "exercise",
+      "difficulty": 3,
+      "xpReward": 25,
+      "instructions": "Crie uma função `validarSenha(senha: string): string` que avalia a força de uma senha pelo tamanho:\n\n- Menos de 6 caracteres → retorna `\"Fraca\"`\n- De 6 a 9 caracteres → retorna `\"Média\"`\n- 10 ou mais caracteres → retorna `\"Forte\"`\n\nUse `senha.length` para saber o tamanho da string!\n\nAs chamadas de teste já estão no código.",
+      "starterCode": "// Crie a função validarSenha\n\n\n\n\nconsole.log(validarSenha(\"abc\"));\nconsole.log(validarSenha(\"abc12345\"));\nconsole.log(validarSenha(\"senhaForte123\"));",
+      "solution": "function validarSenha(senha: string): string {\n  if (senha.length < 6) {\n    return \"Fraca\";\n  } else if (senha.length < 10) {\n    return \"Média\";\n  } else {\n    return \"Forte\";\n  }\n}\n\nconsole.log(validarSenha(\"abc\"));\nconsole.log(validarSenha(\"abc12345\"));\nconsole.log(validarSenha(\"senhaForte123\"));",
+      "validation": {
+        "strategy": "function-test",
+        "functionName": "validarSenha",
+        "testCases": [
+          { "input": ["abc"], "expectedOutput": "Fraca" },
+          { "input": ["abc12345"], "expectedOutput": "Média" },
+          { "input": ["senhaForte123"], "expectedOutput": "Forte" },
+          { "input": ["12345"], "expectedOutput": "Fraca" },
+          { "input": ["123456"], "expectedOutput": "Média" },
+          { "input": ["1234567890"], "expectedOutput": "Forte" }
+        ]
+      },
+      "hints": [
+        "`senha.length` retorna o número de caracteres. `\"abc\"` tem length 3, `\"abc12345\"` tem length 8.",
+        "Use `if / else if / else` para as 3 faixas. Comece com `< 6`, depois `< 10`, e o `else` pega o resto.",
+        "Como `return` encerra a função na hora, tecnicamente nem precisa de `else` — mas fica mais claro com ele."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "console.log(\"Fraca\")",
+          "message": "A função deve **retornar** (`return`) o texto, não imprimir com `console.log`! A impressão já é feita nas linhas de teste."
+        },
+        {
+          "pattern": "senha.length <= 6",
+          "message": "Cuidado: `< 6` e `<= 6` são diferentes! Uma senha com exatamente 6 caracteres deve ser \"Média\", não \"Fraca\". Use `< 6` para a faixa fraca."
+        }
+      ]
+    },
+    {
+      "id": "05-08",
+      "title": "Desafio: Mini-calculadora",
+      "type": "challenge",
+      "difficulty": 3,
+      "xpReward": 35,
+      "instructions": "Crie uma função `calcular(a: number, b: number, operacao: string): number` que funciona como uma calculadora:\n\n- Se `operacao` for `\"+\"` → retorna `a + b`\n- Se for `\"-\"` → retorna `a - b`\n- Se for `\"*\"` → retorna `a * b`\n- Se for `\"/\"` → retorna `a / b`\n- Se for qualquer outra coisa → retorna `0`\n\nUse `if / else if / else` comparando `operacao` com cada símbolo.\n\nLembre: compare strings com `===` e aspas! `operacao === \"+\"`",
+      "starterCode": "// Crie a função calcular\n\n\n\n\n\n\nconsole.log(calcular(10, 3, \"+\"));\nconsole.log(calcular(10, 3, \"-\"));\nconsole.log(calcular(10, 3, \"*\"));\nconsole.log(calcular(10, 3, \"/\"));",
+      "solution": "function calcular(a: number, b: number, operacao: string): number {\n  if (operacao === \"+\") {\n    return a + b;\n  } else if (operacao === \"-\") {\n    return a - b;\n  } else if (operacao === \"*\") {\n    return a * b;\n  } else if (operacao === \"/\") {\n    return a / b;\n  } else {\n    return 0;\n  }\n}\n\nconsole.log(calcular(10, 3, \"+\"));\nconsole.log(calcular(10, 3, \"-\"));\nconsole.log(calcular(10, 3, \"*\"));\nconsole.log(calcular(10, 3, \"/\"));",
+      "validation": {
+        "strategy": "function-test",
+        "functionName": "calcular",
+        "testCases": [
+          { "input": [10, 3, "+"], "expectedOutput": 13 },
+          { "input": [10, 3, "-"], "expectedOutput": 7 },
+          { "input": [10, 3, "*"], "expectedOutput": 30 },
+          { "input": [10, 3, "/"], "expectedOutput": 3.3333333333333335 },
+          { "input": [5, 5, "?"], "expectedOutput": 0 }
+        ]
+      },
+      "hints": [
+        "Use `if/else if` comparando a `operacao` com cada símbolo. Lembre: os símbolos são strings! `operacao === \"+\"`",
+        "São 4 operações conhecidas (+, -, *, /) e um `else` final para qualquer outra coisa que retorna 0.",
+        "Para a divisão, pode retornar `a / b` direto. TypeScript lida com decimais automaticamente."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "operacao === +",
+          "message": "O `+` sem aspas é o operador matemático de soma! Para comparar com o símbolo de texto, use aspas: `operacao === \"+\"`"
+        }
+      ]
+    },
+    {
+      "id": "05-09",
+      "title": "Quiz: Funções",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "O que `: void` indica no retorno de uma função?",
+          "options": ["Retorna zero", "Retorna null", "Não retorna nada", "Retorna uma string vazia"],
+          "correctIndex": 2,
+          "explanation": "`void` significa \"vazio\" — a função não retorna nenhum valor. Ela faz coisas (como imprimir), mas não produz um resultado que possa ser guardado numa variável."
+        },
+        {
+          "id": "q2",
+          "question": "O que acontece quando o `return` é executado?",
+          "options": ["O programa inteiro para", "O loop atual para", "A função encerra e retorna o valor", "Nada de especial"],
+          "correctIndex": 2,
+          "explanation": "`return` encerra a função **imediatamente** e envia o valor de volta para quem chamou. Qualquer código depois do `return` dentro da mesma função é ignorado."
+        },
+        {
+          "id": "q3",
+          "question": "Qual é a forma curta de `(x: number): number => { return x * 2; }`?",
+          "options": ["(x: number): number => x * 2", "(x) => x * 2", "x => x * 2", "function(x) { return x * 2 }"],
+          "correctIndex": 0,
+          "explanation": "Quando a arrow function tem só UMA expressão, pode remover as `{ }` e o `return` — o resultado da expressão é retornado automaticamente. Os tipos são mantidos pra manter a segurança do TypeScript."
+        },
+        {
+          "id": "q4",
+          "question": "O que é um parâmetro?",
+          "options": ["O nome da função", "Uma variável que a função recebe", "O valor de retorno", "O tipo da função"],
+          "correctIndex": 1,
+          "explanation": "Parâmetro é a variável declarada na definição da função (como `nome: string`). O valor passado na chamada (como `\"Aria\"`) é chamado de argumento. Parâmetro = buraco, Argumento = o que entra no buraco!"
+        }
+      ]
+    }
+  ]
+}

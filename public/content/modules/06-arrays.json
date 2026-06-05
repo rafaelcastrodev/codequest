@@ -1,0 +1,251 @@
+{
+  "id": "06-arrays",
+  "title": "Arrays",
+  "description": "Organize coleções de dados em listas",
+  "lessons": [
+    {
+      "id": "06-01",
+      "title": "O que é um array?",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Até agora, cada variável guarda **um único valor** — um nome, um número, um verdadeiro/falso. Mas e quando você precisa guardar **vários valores do mesmo tipo**?\n\nPense na playlist de músicas do seu celular. Você não cria uma variável separada pra cada música (`musica1`, `musica2`, `musica3`...) — seria um pesadelo! Em vez disso, você tem **uma lista** que contém todas as músicas.\n\nEm programação, essa lista se chama **array**."
+        },
+        {
+          "type": "explanation",
+          "content": "Um **array** é uma coleção ordenada de valores. Imagine uma fileira de armários escolares numerados: cada armário tem um **número** (a posição) e guarda **uma coisa** (o valor).\n\nSe uma variável é uma gaveta, um array é o **gaveteiro inteiro** — várias gavetas juntas, cada uma com seu número.\n\nCaracterísticas de um array:\n- Guarda **múltiplos valores** em uma única variável\n- Os valores ficam em **ordem** (posição 0, 1, 2...)\n- Todos os valores costumam ser do **mesmo tipo** (só números, só textos, etc.)\n- O tamanho pode **mudar** — dá pra adicionar e remover itens"
+        },
+        {
+          "type": "interactive-example",
+          "code": "const frutas: string[] = [\"maçã\", \"banana\", \"uva\"];\nconsole.log(frutas);\nconsole.log(frutas.length);",
+          "highlightLines": [1],
+          "explanation": "Vamos destrinchar a linha 1:\n\n- `const frutas` → nome da variável (o gaveteiro)\n- `: string[]` → o tipo! `string[]` significa \"array de strings\" (lista de textos). O `[]` depois do tipo é o que indica \"isso é um array\"\n- `= [\"maçã\", \"banana\", \"uva\"]` → os valores iniciais, entre colchetes `[ ]`, separados por vírgula\n\n`.length` retorna quantos itens o array tem — neste caso, `3`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const vidas: number[] = [3, 3, 2, 3, 1];\nconsole.log(vidas);\nconsole.log(`Partidas jogadas: ${vidas.length}`);\n\nconst poderes: string[] = [];\nconsole.log(`Poderes: ${poderes.length}`);",
+          "highlightLines": [1, 5],
+          "explanation": "`number[]` é um array de números — aqui guardamos as vidas restantes de cada partida. Perceba que valores podem se repetir (tem dois `3`).\n\nNa linha 5, criamos um array **vazio** com `[]`. Ele começa com 0 itens, mas podemos adicionar depois. É como ter um gaveteiro novo sem nada dentro — ainda."
+        }
+      ]
+    },
+    {
+      "id": "06-02",
+      "title": "Acessando elementos",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Cada item de um array fica numa **posição**, chamada de **índice**. Aqui vem a parte que pega todo mundo de surpresa:\n\n**A contagem começa em 0, não em 1!**\n\nPense assim: num prédio americano, o térreo é o andar 0, não o andar 1. Em arrays é igual:\n\n- Posição `0` → primeiro item\n- Posição `1` → segundo item\n- Posição `2` → terceiro item\n\nIsso se chama **indexação baseada em zero** e é assim em quase todas as linguagens de programação. Parece estranho no começo, mas você acostuma rápido!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "const herois: string[] = [\"Aria\", \"Kael\", \"Luna\", \"Zeph\"];\n\nconsole.log(herois[0]);  // Primeiro\nconsole.log(herois[2]);  // Terceiro\nconsole.log(herois[herois.length - 1]);  // Último",
+          "highlightLines": [3, 4, 5],
+          "explanation": "Para acessar um item, use `nomeDoArray[posição]`:\n\n- `herois[0]` → `\"Aria\"` (primeiro, posição 0)\n- `herois[2]` → `\"Luna\"` (terceiro, posição 2 — lembre: começa em 0!)\n- `herois[herois.length - 1]` → `\"Zeph\"` (último). Como `length` é 4, o último está na posição 3 (que é `4 - 1`). Esse truque funciona pra qualquer tamanho de array!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "const notas: number[] = [8.5, 7.0, 9.2, 6.8];\n\nconsole.log(`Primeira prova: ${notas[0]}`);\nconsole.log(`Terceira prova: ${notas[2]}`);\n\n// Cuidado com índice que não existe!\nconsole.log(notas[10]);",
+          "highlightLines": [7],
+          "explanation": "E se você tentar acessar uma posição que não existe? Na linha 7, `notas[10]` retorna `undefined` — que significa \"nada aqui\". O TypeScript não dá erro, mas o valor é vazio. É como abrir o armário número 10 quando o corredor só tem 4 armários — não tem nada lá!\n\nPor isso sempre confira o `.length` antes de acessar posições distantes."
+        }
+      ]
+    },
+    {
+      "id": "06-03",
+      "title": "Adicionando e removendo",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Arrays são **dinâmicos** — diferente de uma variável comum que só troca o valor, um array pode **crescer e encolher** conforme você precisa.\n\nPense numa fila de cinema. Pessoas podem:\n- **Entrar no final** da fila (mais comum)\n- **Sair do final** da fila (desistiu)\n- **Entrar na frente** (alguém guardou lugar — raridade!)\n- **Sair da frente** (próximo a ser atendido)\n\nEm arrays, cada uma dessas ações tem um método específico."
+        },
+        {
+          "type": "explanation",
+          "content": "Os 4 métodos principais para modificar arrays:\n\n**Operações no FINAL:**\n- `.push(item)` → **adiciona** ao final (o mais usado!)\n- `.pop()` → **remove** o último e retorna ele\n\n**Operações no INÍCIO:**\n- `.unshift(item)` → **adiciona** ao início\n- `.shift()` → **remove** o primeiro e retorna ele\n\nDica pra memorizar: **push** e **pop** mexem no **final** (pense numa pilha de pratos — você coloca e tira de cima). **Shift** e **unshift** mexem no **início** (pense em \"deslocar\" a fila)."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const inventario: string[] = [\"espada\", \"escudo\"];\n\ninventario.push(\"poção\");\nconsole.log(inventario);\n\nconst removido: string | undefined = inventario.pop();\nconsole.log(`Removido: ${removido}`);\nconsole.log(inventario);",
+          "highlightLines": [3, 6],
+          "explanation": "Passo a passo:\n1. Começamos com `[\"espada\", \"escudo\"]`\n2. `push(\"poção\")` adiciona no final → `[\"espada\", \"escudo\", \"poção\"]`\n3. `pop()` remove o último (\"poção\") e **retorna** ele, salvamos na variável `removido`\n4. Array volta a ser `[\"espada\", \"escudo\"]`\n\nNote que `pop()` faz duas coisas: remove **e** retorna o item. Útil quando você quer usar o item antes de descartá-lo!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "const fila: string[] = [\"Ana\", \"Bruno\", \"Carol\"];\nconsole.log(`Fila: ${fila}`);\n\n// Próximo da fila é atendido\nconst atendido: string | undefined = fila.shift();\nconsole.log(`Atendido: ${atendido}`);\n\n// Alguém entra na frente (prioridade)\nfila.unshift(\"VIP\");\nconsole.log(`Fila agora: ${fila}`);",
+          "highlightLines": [5, 9],
+          "explanation": "`shift()` remove o **primeiro** da fila (\"Ana\"). Depois `unshift(\"VIP\")` adiciona alguém no **início**.\n\nNa prática, `push` e `pop` são muito mais comuns que `shift` e `unshift`. Mas é bom saber que existem para quando precisar manipular o início do array!"
+        }
+      ]
+    },
+    {
+      "id": "06-04",
+      "title": "for...of — iterando",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Uma das coisas mais comuns que fazemos com arrays é **percorrer todos os itens**, um por um. Isso se chama **iterar** sobre o array.\n\nImagine que você tem uma caixa de figurinhas e quer ver cada uma. Você pega a primeira, olha, guarda. Pega a segunda, olha, guarda. E assim até acabar. É exatamente isso que vamos fazer com o código!\n\nExistem duas formas principais de percorrer um array. Vamos ver a mais simples primeiro."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const habilidades: string[] = [\"Fireball\", \"Ice Shield\", \"Thunder\"];\n\nfor (const habilidade of habilidades) {\n  console.log(`🔮 ${habilidade}`);\n}",
+          "highlightLines": [3],
+          "explanation": "O `for...of` é a forma mais limpa de percorrer um array. Leia assim: \"**para cada** habilidade **do** array habilidades, faça...\"\n\nA cada volta do loop:\n- Volta 1: `habilidade` vale `\"Fireball\"`\n- Volta 2: `habilidade` vale `\"Ice Shield\"`\n- Volta 3: `habilidade` vale `\"Thunder\"`\n\nA variável `habilidade` automaticamente recebe o próximo valor. Você não precisa se preocupar com índices!"
+        },
+        {
+          "type": "explanation",
+          "content": "Mas e quando você **precisa saber a posição** de cada item? Por exemplo, pra mostrar um ranking numerado (1°, 2°, 3°...).\n\nNesse caso, o `for` tradicional (que aprendemos no módulo de loops) é a melhor opção. Ele te dá acesso ao **índice** `i`, e você usa `array[i]` pra acessar o item."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const habilidades: string[] = [\"Fireball\", \"Ice Shield\", \"Thunder\"];\n\n// Se precisar do índice também, use for clássico:\nfor (let i: number = 0; i < habilidades.length; i++) {\n  console.log(`${i + 1}. ${habilidades[i]}`);\n}",
+          "highlightLines": [4, 5],
+          "explanation": "O `for` clássico começa em `i = 0` e vai até `i < habilidades.length` (ou seja, 0, 1 e 2).\n\nNa linha 5, usamos `i + 1` pra exibir números a partir de 1 (mais natural pro usuário), mas acessamos com `habilidades[i]` que começa em 0.\n\n**Resumindo:**\n- Precisa só do valor? → Use `for...of` (mais limpo)\n- Precisa da posição também? → Use `for` tradicional"
+        }
+      ]
+    },
+    {
+      "id": "06-05",
+      "title": "map e filter",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Agora vem a parte mais legal dos arrays: dois métodos que são como **superpoderes**.\n\nImagine que você tem uma caixa de figurinhas e quer:\n- **Transformar** cada figurinha numa versão brilhante → isso é o **`.map()`**\n- **Filtrar** e ficar só com as figurinhas raras → isso é o **`.filter()`**\n\nO mais importante: os dois criam um **novo array** sem modificar o original. É como fazer uma cópia transformada, mantendo o original intacto."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const numeros: number[] = [1, 2, 3, 4, 5];\n\n// map: dobrar cada número\nconst dobrados: number[] = numeros.map((n: number): number => n * 2);\nconsole.log(dobrados);\nconsole.log(numeros);  // Original intacto!",
+          "highlightLines": [4],
+          "explanation": "`.map()` percorre cada item e aplica uma **transformação**. Leia assim: \"mapeie cada `n` para `n * 2`\".\n\n- `1` → `1 * 2` = `2`\n- `2` → `2 * 2` = `4`\n- `3` → `3 * 2` = `6`\n- ...e assim por diante\n\nResultado: `[2, 4, 6, 8, 10]`. E repare na linha 6: o array `numeros` original continua `[1, 2, 3, 4, 5]` — `map` não altera o array original!\n\nO `(n: number): number => n * 2` é uma **arrow function** inline — uma função anônima curta que recebe `n` e retorna `n * 2`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const numeros: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\n// filter: só os pares\nconst pares: number[] = numeros.filter((n: number): boolean => n % 2 === 0);\nconsole.log(pares);",
+          "highlightLines": [4],
+          "explanation": "`.filter()` percorre cada item e faz uma **pergunta** (true ou false). Só os que responderem `true` entram no novo array.\n\nA pergunta aqui é: `n % 2 === 0` (é par?).\n- `1 % 2 === 0`? → `false` (fora!)\n- `2 % 2 === 0`? → `true` (entra!)\n- `3 % 2 === 0`? → `false` (fora!)\n- `4 % 2 === 0`? → `true` (entra!)\n- ...e assim por diante\n\nResultado: `[2, 4, 6, 8, 10]`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const numeros: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\n// Combinando: filtrar pares E dobrar!\nconst paresDobrados: number[] = numeros\n  .filter((n: number): boolean => n % 2 === 0)\n  .map((n: number): number => n * 2);\nconsole.log(paresDobrados);",
+          "highlightLines": [4, 5, 6],
+          "explanation": "A mágica acontece quando você **encadeia** os dois! Leia da esquerda pra direita:\n\n1. Pegue `numeros` → `[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]`\n2. `.filter(par)` → mantém só os pares → `[2, 4, 6, 8, 10]`\n3. `.map(dobrar)` → dobra cada um → `[4, 8, 12, 16, 20]`\n\nIsso é super poderoso! Você pode montar \"pipelines\" de transformação encadeando quantos `.filter()` e `.map()` quiser."
+        }
+      ]
+    },
+    {
+      "id": "06-06",
+      "title": "Lista de tarefas",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 20,
+      "instructions": "Hora de praticar manipulação de arrays! Vamos criar uma mini lista de tarefas.\n\nCrie um array `tarefas` do tipo `string[]` com 3 tarefas iniciais:\n`\"Estudar TypeScript\"`, `\"Jogar CodeQuest\"`, `\"Ler um livro\"`\n\nDepois:\n1. Adicione `\"Fazer exercícios\"` ao final do array\n2. Remova a primeira tarefa da lista (a que já foi feita!)\n3. Imprima cada tarefa restante no formato `\"- Tarefa\"` usando `for...of`\n\nO resultado deve ser exatamente:\n```\n- Jogar CodeQuest\n- Ler um livro\n- Fazer exercícios\n```",
+      "starterCode": "// Crie o array de tarefas\n\n\n// Adicione \"Fazer exercícios\" ao final\n\n// Remova a primeira tarefa\n\n// Imprima com for...of\n",
+      "solution": "const tarefas: string[] = [\"Estudar TypeScript\", \"Jogar CodeQuest\", \"Ler um livro\"];\n\ntarefas.push(\"Fazer exercícios\");\ntarefas.shift();\n\nfor (const tarefa of tarefas) {\n  console.log(`- ${tarefa}`);\n}",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "- Jogar CodeQuest\n- Ler um livro\n- Fazer exercícios"
+          }
+        ]
+      },
+      "hints": [
+        "Para adicionar ao final de um array, use `.push()`. Exemplo: `tarefas.push(\"Fazer exercícios\")`",
+        "Para remover o primeiro item, use `.shift()`. Cuidado: `.pop()` remove o ÚLTIMO, não o primeiro!",
+        "Use `for (const tarefa of tarefas)` para percorrer cada item, e `console.log(`- ${tarefa}`)` para imprimir no formato pedido."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": ".pop()",
+          "message": "`.pop()` remove o ÚLTIMO item! Para remover o primeiro, use `.shift()`."
+        },
+        {
+          "pattern": "tarefas.remove",
+          "message": "Arrays não têm método `.remove()`! Use `.shift()` para remover o primeiro ou `.pop()` para remover o último."
+        }
+      ]
+    },
+    {
+      "id": "06-07",
+      "title": "Desafio: Maior número",
+      "type": "challenge",
+      "difficulty": 3,
+      "xpReward": 35,
+      "instructions": "Crie uma função `encontrarMaior(numeros: number[]): number` que recebe um array de números e retorna o maior deles.\n\n**Regra importante:** Não use `Math.max` — o objetivo é fazer manualmente com um loop!\n\nA ideia é: comece assumindo que o primeiro número é o maior, depois percorra o array. Se encontrar um número ainda maior, atualize.\n\nTeste com:\n```\nconsole.log(encontrarMaior([3, 7, 2, 9, 4]));\nconsole.log(encontrarMaior([100]));\nconsole.log(encontrarMaior([-5, -2, -8]));\n```\n\nEsperado: `9`, `100`, `-2`",
+      "starterCode": "// Crie a função encontrarMaior\n\n\n\n\n\nconsole.log(encontrarMaior([3, 7, 2, 9, 4]));\nconsole.log(encontrarMaior([100]));\nconsole.log(encontrarMaior([-5, -2, -8]));",
+      "solution": "function encontrarMaior(numeros: number[]): number {\n  let maior: number = numeros[0];\n  for (const num of numeros) {\n    if (num > maior) {\n      maior = num;\n    }\n  }\n  return maior;\n}\n\nconsole.log(encontrarMaior([3, 7, 2, 9, 4]));\nconsole.log(encontrarMaior([100]));\nconsole.log(encontrarMaior([-5, -2, -8]));",
+      "validation": {
+        "strategy": "function-test",
+        "functionName": "encontrarMaior",
+        "testCases": [
+          { "input": [[3, 7, 2, 9, 4]], "expectedOutput": 9 },
+          { "input": [[100]], "expectedOutput": 100 },
+          { "input": [[-5, -2, -8]], "expectedOutput": -2 },
+          { "input": [[1, 1, 1]], "expectedOutput": 1 }
+        ]
+      },
+      "hints": [
+        "Comece assumindo que o primeiro item é o maior: `let maior: number = numeros[0]`. Não use `0` — pense: e se todos forem negativos?",
+        "Percorra o array com `for (const num of numeros)`. Dentro do loop, verifique: `if (num > maior) { maior = num; }`",
+        "No final, depois do loop, retorne `maior` com `return`. A função testa cada número e vai \"guardando\" o maior que encontrou."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "let maior: number = 0",
+          "message": "Se todos os números forem negativos (ex: [-5, -2, -8]), `0` seria maior que todos! Inicialize com `numeros[0]` — o primeiro elemento do array."
+        },
+        {
+          "pattern": "Math.max",
+          "message": "O desafio é implementar manualmente sem `Math.max`! Use um loop e uma variável para rastrear o maior."
+        }
+      ]
+    },
+    {
+      "id": "06-08",
+      "title": "Quiz: Arrays",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Qual o índice do primeiro elemento de um array?",
+          "options": ["1", "0", "-1", "Depende do array"],
+          "correctIndex": 1,
+          "explanation": "Em TypeScript (e na maioria das linguagens), arrays começam no índice 0. O primeiro item está na posição 0, o segundo na posição 1, e assim por diante."
+        },
+        {
+          "id": "q2",
+          "question": "O que `.push(\"x\")` faz?",
+          "options": ["Adiciona ao início", "Adiciona ao final", "Remove o \"x\"", "Procura o \"x\""],
+          "correctIndex": 1,
+          "explanation": "`.push()` adiciona um elemento ao final do array. Para adicionar ao início, use `.unshift()`."
+        },
+        {
+          "id": "q3",
+          "question": "O que `[1, 2, 3].map(n => n * 10)` retorna?",
+          "options": ["[1, 2, 3]", "[10, 20, 30]", "60", "[10]"],
+          "correctIndex": 1,
+          "explanation": "`.map()` aplica a função a cada elemento e retorna um novo array. `1*10=10`, `2*10=20`, `3*10=30`. O array original não é alterado."
+        },
+        {
+          "id": "q4",
+          "question": "O que `[5, 12, 3, 8].filter(n => n > 6)` retorna?",
+          "options": ["[5, 12, 3, 8]", "[12, 8]", "[5, 3]", "2"],
+          "correctIndex": 1,
+          "explanation": "`.filter()` mantém só os itens onde a condição é verdadeira. `12 > 6` ✓ e `8 > 6` ✓ — os outros são descartados."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "id": "04-loops",
+  "title": "Loops",
+  "description": "Repita ações sem escrever o mesmo código várias vezes",
+  "lessons": [
+    {
+      "id": "04-01",
+      "title": "for — repetindo com contador",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Imagine que você quer imprimir os números de 1 a 10. Sem loops, seriam 10 linhas de `console.log`. E se fossem 1000? Você escreveria 1000 linhas? Claro que não!\n\nProgramadores são preguiçosos (no bom sentido). Se algo se repete, a gente automatiza.\n\nO **`for`** (\"para\" em inglês) repete um bloco de código quantas vezes você quiser. Ele é como um robô que segue instruções: \"comece aqui, continue enquanto isso for verdade, e dê um passo depois de cada volta\"."
+        },
+        {
+          "type": "interactive-example",
+          "code": "for (let i: number = 1; i <= 5; i++) {\n  console.log(`Repetição ${i}`);\n}",
+          "highlightLines": [1],
+          "explanation": "Esse `for` tem 3 partes separadas por `;` dentro dos parênteses:\n\n1. **Início:** `let i = 1` → cria um contador começando em 1\n2. **Condição:** `i <= 5` → continua repetindo enquanto `i` for até 5\n3. **Passo:** `i++` → depois de cada volta, soma 1 ao contador\n\n`i++` é atalho pra `i = i + 1`. O loop roda 5 vezes:\n- Volta 1: i=1 → imprime \"Repetição 1\"\n- Volta 2: i=2 → imprime \"Repetição 2\"\n- ...\n- Volta 5: i=5 → imprime \"Repetição 5\"\n- Depois: i vira 6, `6 <= 5` é `false` → PARA!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "// Contagem regressiva!\nfor (let t: number = 10; t >= 1; t--) {\n  console.log(t);\n}\nconsole.log(\"LANÇAR!\");",
+          "highlightLines": [2],
+          "explanation": "Aqui o loop conta pra trás! `t--` subtrai 1 a cada volta (atalho pra `t = t - 1`).\n\nComeça em 10, vai diminuindo: 10, 9, 8... até 1. Quando `t` vira 0, a condição `t >= 1` é `false` e o loop para.\n\nA linha `\"LANÇAR!\"` está fora do loop, então só aparece uma vez, no final."
+        },
+        {
+          "type": "interactive-example",
+          "code": "// Somando números de 1 a 100\nlet soma: number = 0;\n\nfor (let i: number = 1; i <= 100; i++) {\n  soma = soma + i;\n}\n\nconsole.log(`A soma de 1 até 100 é: ${soma}`);",
+          "highlightLines": [2, 4, 5],
+          "explanation": "Este loop soma todos os números de 1 a 100 em milissegundos! A variável `soma` começa em 0 e vai acumulando: 0+1=1, 1+2=3, 3+3=6, 6+4=10...\n\nO resultado é 5050. O matemático Gauss descobriu isso com 10 anos de idade — mas ele fez de cabeça, sem loop! 🧠"
+        }
+      ]
+    },
+    {
+      "id": "04-02",
+      "title": "while — repetindo com condição",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "O **`while`** (\"enquanto\") é o primo mais simples do `for`. Ele repete enquanto uma condição for verdadeira, sem se preocupar com contadores.\n\nÉ perfeito quando você **não sabe quantas vezes** vai repetir. Tipo: \"enquanto o monstro estiver vivo, continue atacando!\" — você não sabe quantos turnos vai levar."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let hpMonstro: number = 50;\nlet ataque: number = 15;\nlet turno: number = 1;\n\nwhile (hpMonstro > 0) {\n  hpMonstro = hpMonstro - ataque;\n  console.log(`Turno ${turno}: Monstro com ${Math.max(0, hpMonstro)} HP`);\n  turno++;\n}\n\nconsole.log(\"Monstro derrotado!\");",
+          "highlightLines": [5],
+          "explanation": "O while checa a condição **antes** de cada volta:\n\n- Turno 1: `50 > 0`? Sim! → ataca → HP do monstro: 35\n- Turno 2: `35 > 0`? Sim! → ataca → HP: 20\n- Turno 3: `20 > 0`? Sim! → ataca → HP: 5\n- Turno 4: `5 > 0`? Sim! → ataca → HP: -10\n- Verifica: `-10 > 0`? **NÃO!** → para o loop\n\n`Math.max(0, hpMonstro)` garante que não mostra HP negativo — mostra 0 no mínimo."
+        },
+        {
+          "type": "explanation",
+          "content": "**PERIGO: Loop infinito!** ⚠️\n\nSe a condição do `while` nunca virar `false`, o loop roda PARA SEMPRE e o programa trava.\n\nPor exemplo: `while (true) { console.log(\"socorro\"); }` — isso nunca para!\n\nSempre certifique-se de que algo dentro do loop **muda** a condição eventualmente. No exemplo do monstro, o `hpMonstro` diminui a cada turno — isso garante que `hpMonstro > 0` eventualmente vira `false`.\n\n(Se você travar por acidente, não se preocupe — o CodeQuest tem um timeout de 5 segundos pra te proteger!)"
+        }
+      ]
+    },
+    {
+      "id": "04-03",
+      "title": "break e continue",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Dois comandos especiais te dão controle extra dentro de loops:\n\n- **`break`** → **PARA** o loop imediatamente. \"Chega, não quero mais repetir!\"\n- **`continue`** → **PULA** pro próximo ciclo. \"Esse eu não quero, pula pro próximo!\"\n\nPense num corredor de supermercado: `break` é sair do corredor inteiro; `continue` é pular um produto e ir pro próximo."
+        },
+        {
+          "type": "interactive-example",
+          "code": "// break: acha o primeiro múltiplo de 7 e para\nfor (let i: number = 1; i <= 100; i++) {\n  if (i % 7 === 0) {\n    console.log(`Primeiro múltiplo de 7: ${i}`);\n    break;\n  }\n}",
+          "highlightLines": [5],
+          "explanation": "O loop testa 1, 2, 3, 4, 5, 6... quando chega no 7, `7 % 7 === 0` é `true`! Mostra \"Primeiro múltiplo de 7: 7\" e o `break` para tudo.\n\nSem o `break`, o loop continuaria até 100 mostrando 7, 14, 21, 28... Mas a gente só queria o primeiro!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "// continue: imprime só os números ímpares\nfor (let i: number = 1; i <= 10; i++) {\n  if (i % 2 === 0) {\n    continue;\n  }\n  console.log(i);\n}",
+          "highlightLines": [3, 4],
+          "explanation": "A cada volta, se `i` for par (`i % 2 === 0`), o `continue` pula direto pra próxima volta — o `console.log` não roda.\n\nResultado: 1, 3, 5, 7, 9 (só os ímpares!).\n\n`continue` é como dizer: \"esse não me interessa, próximo!\""
+        }
+      ]
+    },
+    {
+      "id": "04-04",
+      "title": "Loops aninhados",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Um loop dentro de outro loop se chama **loop aninhado**. Para cada volta do loop de fora, o loop de dentro roda **inteiro**.\n\nPense num relógio: para cada **hora** que passa, os **minutos** vão de 0 a 59. O loop das horas é o externo, o dos minutos é o interno.\n\nOu pense numa grade de Minecraft: para cada **linha** do mapa, você percorre todas as **colunas**."
+        },
+        {
+          "type": "interactive-example",
+          "code": "for (let linha: number = 1; linha <= 3; linha++) {\n  let texto: string = \"\";\n  for (let coluna: number = 1; coluna <= 3; coluna++) {\n    texto += `(${linha},${coluna}) `;\n  }\n  console.log(texto);\n}",
+          "highlightLines": [1, 3],
+          "explanation": "Loop externo: linha vai de 1 a 3.\nPara cada linha, o loop interno (coluna) vai de 1 a 3.\n\nResultado:\n`(1,1) (1,2) (1,3)`\n`(2,1) (2,2) (2,3)`\n`(3,1) (3,2) (3,3)`\n\nTotal: 3 linhas × 3 colunas = 9 pares. Se fossem 100×100, seriam 10.000 — mas o computador faz isso num piscar de olhos!"
+        }
+      ]
+    },
+    {
+      "id": "04-05",
+      "title": "Tabuada",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 20,
+      "instructions": "Imprima a tabuada do número `7` de 1 a 10!\n\nFormato esperado:\n```\n7 x 1 = 7\n7 x 2 = 14\n...\n7 x 10 = 70\n```\n\nUse um loop `for` que vai de 1 a 10, e template literals para montar cada linha.",
+      "starterCode": "const numero: number = 7;\n\n// Imprima a tabuada\n",
+      "solution": "const numero: number = 7;\n\nfor (let i: number = 1; i <= 10; i++) {\n  console.log(`${numero} x ${i} = ${numero * i}`);\n}",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70"
+          }
+        ]
+      },
+      "hints": [
+        "O `for` deve ir de 1 a 10: `for (let i = 1; i <= 10; i++)`",
+        "Dentro do loop, use template literal: `console.log(`${numero} x ${i} = ${numero * i}`)`",
+        "A multiplicação `numero * i` calcula o resultado. Como `numero` é 7: 7×1=7, 7×2=14, etc."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "i <= 7",
+          "message": "A tabuada vai de 1 a 10, não até 7! O 7 é o número da tabuada, não o limite. Use `i <= 10`."
+        },
+        {
+          "pattern": "i = 0",
+          "message": "Tabuadas começam em 1, não em 0! Use `let i = 1`."
+        }
+      ]
+    },
+    {
+      "id": "04-06",
+      "title": "Padrão de asteriscos",
+      "type": "exercise",
+      "difficulty": 3,
+      "xpReward": 25,
+      "instructions": "Imprima um triângulo de asteriscos com 5 linhas:\n```\n*\n**\n***\n****\n*****\n```\n\nA linha 1 tem 1 asterisco, a linha 2 tem 2, e assim por diante.\n\nDica: use um loop externo para as linhas e um loop interno para montar cada linha. Monte uma string com os asteriscos antes de imprimir!",
+      "starterCode": "// Imprima o triângulo de asteriscos\n",
+      "solution": "for (let linha: number = 1; linha <= 5; linha++) {\n  let texto: string = \"\";\n  for (let col: number = 1; col <= linha; col++) {\n    texto += \"*\";\n  }\n  console.log(texto);\n}",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "*\n**\n***\n****\n*****"
+          }
+        ]
+      },
+      "hints": [
+        "Loop externo controla as linhas: `for (let linha = 1; linha <= 5; linha++)`",
+        "Antes do loop interno, crie uma string vazia: `let texto = \"\";`",
+        "O segredo do loop interno: ele vai até `linha` (não até 5!). Na linha 1, repete 1 vez. Na linha 3, repete 3 vezes. Fica: `for (let col = 1; col <= linha; col++)`",
+        "No loop interno, concatene: `texto += \"*\";`. Depois do loop interno, imprima: `console.log(texto);`"
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "col <= 5",
+          "message": "Se o loop interno sempre vai até 5, todas as linhas terão 5 asteriscos! O truque é usar `col <= linha` — assim cada linha tem a quantidade certa."
+        },
+        {
+          "pattern": "console.log(\"*\")",
+          "message": "Se usar `console.log` dentro do loop interno, cada `*` vai para uma linha separada! Monte a string completa primeiro (`texto += \"*\"`) e imprima só no final da linha."
+        }
+      ]
+    },
+    {
+      "id": "04-07",
+      "title": "Desafio: FizzBuzz",
+      "type": "challenge",
+      "difficulty": 3,
+      "xpReward": 35,
+      "instructions": "FizzBuzz é um dos desafios mais famosos da programação! Funciona assim:\n\nImprima os números de 1 a 20, mas com regras especiais:\n\n- Se o número é divisível por 3, imprima `\"Fizz\"` no lugar\n- Se é divisível por 5, imprima `\"Buzz\"` no lugar\n- Se é divisível por 3 **E** por 5, imprima `\"FizzBuzz\"`\n- Se não é divisível por nenhum, imprima o número normal\n\n**Atenção com a ordem!** Teste a condição mais específica (divisível por ambos) primeiro, senão ela nunca será alcançada.\n\nDica: \"divisível por 3\" = `i % 3 === 0`",
+      "starterCode": "// FizzBuzz de 1 a 20\n",
+      "solution": "for (let i: number = 1; i <= 20; i++) {\n  if (i % 3 === 0 && i % 5 === 0) {\n    console.log(\"FizzBuzz\");\n  } else if (i % 3 === 0) {\n    console.log(\"Fizz\");\n  } else if (i % 5 === 0) {\n    console.log(\"Buzz\");\n  } else {\n    console.log(i);\n  }\n}",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz"
+          }
+        ]
+      },
+      "hints": [
+        "Use `%` (módulo) para checar divisibilidade: `i % 3 === 0` significa que `i` divide por 3 sem resto.",
+        "A condição \"divisível por 3 E por 5\" precisa vir PRIMEIRO! Porque 15 é divisível por 3 e por 5 — se testar `% 3` sozinho antes, ele imprimiria \"Fizz\" em vez de \"FizzBuzz\".",
+        "Para \"divisível por ambos\", combine com `&&`: `i % 3 === 0 && i % 5 === 0`. O número 15 é o primeiro que bate nas duas."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "if (i % 3 === 0)",
+          "message": "Se checar divisível por 3 primeiro, o número 15 vai imprimir \"Fizz\" em vez de \"FizzBuzz\"! O 15 é divisível por 3, então entraria aí e nunca chegaria na condição combinada. Teste a condição `i % 3 === 0 && i % 5 === 0` antes!"
+        }
+      ]
+    },
+    {
+      "id": "04-08",
+      "title": "Quiz: Loops",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Quantas vezes roda: `for (let i = 0; i < 5; i++)`?",
+          "options": ["4", "5", "6", "Infinito"],
+          "correctIndex": 1,
+          "explanation": "`i` começa em 0 e vai até 4 (0, 1, 2, 3, 4 = 5 valores). Quando `i` chega a 5, a condição `i < 5` é `false` e o loop para."
+        },
+        {
+          "id": "q2",
+          "question": "O que `break` faz?",
+          "options": ["Pula para a próxima repetição", "Sai do loop imediatamente", "Reinicia o loop", "Pausa o programa"],
+          "correctIndex": 1,
+          "explanation": "`break` interrompe o loop inteiro — é a saída de emergência! O programa continua com o código que vem depois do loop."
+        },
+        {
+          "id": "q3",
+          "question": "O que `continue` faz?",
+          "options": ["Sai do loop", "Continua o programa normalmente", "Pula para a próxima repetição", "Não faz nada"],
+          "correctIndex": 2,
+          "explanation": "`continue` pula o resto do bloco e vai direto para a próxima volta do loop. É como dizer \"esse não me interessa, próximo!\"."
+        },
+        {
+          "id": "q4",
+          "question": "Qual o perigo de `while (true)`?",
+          "options": ["Erro de sintaxe", "Loop infinito", "Roda apenas uma vez", "Nunca executa"],
+          "correctIndex": 1,
+          "explanation": "`while (true)` nunca para porque a condição é eternamente `true`. Precisa de um `break` dentro para sair! Sem ele, o programa trava."
+        }
+      ]
+    }
+  ]
+}

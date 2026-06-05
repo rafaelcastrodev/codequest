@@ -1,0 +1,242 @@
+{
+  "id": "02-tipos",
+  "title": "Tipos de Dados",
+  "description": "Descubra os diferentes tipos de informação que existem",
+  "lessons": [
+    {
+      "id": "02-01",
+      "title": "Strings — o mundo dos textos",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Lembra que cada variável tem um **tipo**? O tipo diz que tipo de informação cabe naquela caixa.\n\nO primeiro tipo que vamos explorar é a **string** — que é só um nome bonito para **texto**.\n\nTudo que está entre aspas é uma string: o nome do seu personagem, uma mensagem de chat, o título de uma música, uma frase inteira..."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let mensagem: string = \"Olá, mundo!\";\nconsole.log(mensagem);\n\nlet nomeDoJogo: string = \"Minecraft\";\nconsole.log(nomeDoJogo);",
+          "highlightLines": [1, 4],
+          "explanation": "Strings sempre ficam entre aspas duplas `\"...\"`. Tudo que está lá dentro é tratado como texto — letras, números, espaços, pontuação, emojis, tudo.\n\nSem as aspas, o computador acharia que `Minecraft` é o nome de uma variável e daria erro!"
+        },
+        {
+          "type": "explanation",
+          "content": "Strings têm **superpoderes** embutidos! Elas sabem o próprio tamanho e podem se transformar.\n\nÉ como se cada texto viesse com um kit de ferramentas. Quer saber quantas letras tem? Quer transformar tudo em maiúsculas? A string já sabe fazer isso sozinha."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let grito: string = \"socorro\";\n\nconsole.log(grito.length);\nconsole.log(grito.toUpperCase());\nconsole.log(grito.toLowerCase());",
+          "highlightLines": [3, 4, 5],
+          "explanation": "O `.length` conta quantos caracteres a string tem — `\"socorro\"` tem 7 letras.\n\n`.toUpperCase()` transforma em MAIÚSCULAS (útil pra GRITAR no chat 😄).\n`.toLowerCase()` faz o contrário, tudo minúsculo.\n\nEsses `.algumaCoisas()` se chamam **métodos** — são ações que a string sabe executar."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let frase: string = \"Eu adoro programar!\";\n\nconsole.log(frase[0]);\nconsole.log(frase[3]);\nconsole.log(frase.includes(\"adoro\"));",
+          "highlightLines": [3, 4, 5],
+          "explanation": "Cada letra da string tem uma **posição** (começando do 0!):\n- Posição 0 → `\"E\"`\n- Posição 1 → `\"u\"`\n- Posição 2 → `\" \"` (o espaço!)\n- Posição 3 → `\"a\"`\n\n`.includes(\"adoro\")` verifica se o texto contém a palavra `\"adoro\"` e retorna `true`. Super útil pra buscas!"
+        }
+      ]
+    },
+    {
+      "id": "02-02",
+      "title": "Numbers — inteiros e decimais",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "O tipo **`number`** é pra guardar... números! Tanto inteiros (`42`, `-7`, `0`) quanto decimais (`3.14`, `9.99`, `0.5`).\n\nEm TypeScript, não importa se é inteiro ou decimal — tudo é `number`. Simples assim!\n\nE a melhor parte: você pode fazer toda a matemática que quiser com eles."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let vida: number = 100;\nlet dano: number = 35;\n\nlet vidaRestante: number = vida - dano;\nconsole.log(vidaRestante);\n\nlet moedas: number = 10;\nlet preco: number = 3;\nlet troco: number = moedas - preco;\nconsole.log(troco);",
+          "highlightLines": [4, 9],
+          "explanation": "As operações matemáticas funcionam igualzinho à escola:\n- `+` soma\n- `-` subtrai\n- `*` multiplica\n- `/` divide\n\n`vida - dano` → `100 - 35` → `65`. Simples!"
+        },
+        {
+          "type": "explanation",
+          "content": "Existe um operador que talvez você nunca tenha visto: o **`%`** (módulo). Ele retorna o **resto** da divisão.\n\nPor exemplo: se você tem 10 biscoitos e quer dividir igualmente entre 3 amigos, cada um recebe 3 e **sobra 1**. Esse 1 é o resultado de `10 % 3`.\n\nParece inútil? Mas é um dos operadores mais usados na programação! Já vamos ver por quê."
+        },
+        {
+          "type": "interactive-example",
+          "code": "// Resto da divisão\nconsole.log(10 % 3);\nconsole.log(10 % 2);\nconsole.log(7 % 2);\n\n// Truque mágico: descobrir se um número é par!\nlet numero: number = 8;\nlet ehPar: boolean = numero % 2 === 0;\nconsole.log(ehPar);\n\nlet outroNumero: number = 7;\nconsole.log(outroNumero % 2 === 0);",
+          "highlightLines": [2, 3, 4, 8],
+          "explanation": "`10 % 3` → divide 10 por 3 → dá 3 com resto **1**\n`10 % 2` → divide 10 por 2 → dá 5 com resto **0** (divide certinho!)\n`7 % 2` → divide 7 por 2 → dá 3 com resto **1**\n\nO truque: se `numero % 2` dá `0`, o número divide por 2 certinho, ou seja, é **par**! Se dá `1`, é ímpar. Programadores usam isso o tempo todo."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let base: number = 2;\nlet expoente: number = 10;\nlet resultado: number = base ** expoente;\nconsole.log(resultado);\n\nlet raiz: number = Math.sqrt(144);\nconsole.log(raiz);\n\nlet arredondado: number = Math.round(3.7);\nconsole.log(arredondado);",
+          "highlightLines": [3, 6, 9],
+          "explanation": "`**` é a potência: `2 ** 10` = 2×2×2×2×2×2×2×2×2×2 = 1024 (1 KB em bytes!).\n\n`Math.sqrt()` calcula a raiz quadrada: √144 = 12.\n\n`Math.round()` arredonda: 3.7 vira 4.\n\n`Math` é um objeto especial do TypeScript cheio de funções matemáticas prontas."
+        }
+      ]
+    },
+    {
+      "id": "02-03",
+      "title": "Booleans — verdadeiro ou falso",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "O tipo **`boolean`** é o mais simples de todos: ele só tem **dois valores possíveis**.\n\n- `true` → verdadeiro (sim, ligado, ativo)\n- `false` → falso (não, desligado, inativo)\n\nParece pouca coisa, mas booleans são a **base de todas as decisões** que o computador toma! Toda pergunta de sim/não vira um boolean:\n\n\"O jogador está vivo?\" → `true` ou `false`\n\"Acabou o tempo?\" → `true` ou `false`\n\"A senha está correta?\" → `true` ou `false`"
+        },
+        {
+          "type": "interactive-example",
+          "code": "let temEscudo: boolean = true;\nlet estaEnvenenado: boolean = false;\nlet modoEscuro: boolean = true;\n\nconsole.log(temEscudo);\nconsole.log(estaEnvenenado);\nconsole.log(modoEscuro);",
+          "highlightLines": [1, 2, 3],
+          "explanation": "Perceba: `true` e `false` são escritos **sem aspas**! Se colocar aspas, vira string.\n\n- `true` (boolean) → o computador entende como verdadeiro\n- `\"true\"` (string) → o computador entende como um texto que por acaso tem as letras t-r-u-e\n\nSão coisas completamente diferentes!"
+        },
+        {
+          "type": "explanation",
+          "content": "A coisa mais legal dos booleans é que você pode **criá-los a partir de comparações**. Toda vez que você pergunta \"isso é maior que aquilo?\", o resultado é um boolean!\n\nÉ como um juiz num jogo: você faz uma pergunta e ele responde `true` ou `false`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let vida: number = 30;\nlet vidaMaxima: number = 100;\n\nlet estaBaixo: boolean = vida < 50;\nconsole.log(estaBaixo);\n\nlet estaCheio: boolean = vida === vidaMaxima;\nconsole.log(estaCheio);\n\nlet temVida: boolean = vida > 0;\nconsole.log(temVida);",
+          "highlightLines": [4, 7, 10],
+          "explanation": "`vida < 50` → \"30 é menor que 50?\" → `true`!\n`vida === vidaMaxima` → \"30 é igual a 100?\" → `false`!\n`vida > 0` → \"30 é maior que 0?\" → `true`!\n\nComparações são **expressões** que o computador avalia e gera um boolean automaticamente. Vamos usar MUITO isso quando aprendermos condicionais!"
+        }
+      ]
+    },
+    {
+      "id": "02-04",
+      "title": "Template Literals — texto turbinado",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Imagine que você quer mostrar a mensagem: \"Aria tem 100 de vida e 50 de ouro\".\n\nO problema é que os números estão em variáveis. Como misturar texto com variáveis?\n\nUm jeito é usar `+` pra colar tudo junto:\n`\"Aria tem \" + vida + \" de vida e \" + ouro + \" de ouro\"`\n\n...mas isso é horrível de ler e fácil de errar! Tem um jeito muito melhor."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let heroi: string = \"Aria\";\nlet vida: number = 100;\nlet ouro: number = 50;\n\n// Jeito antigo (feio):\nconsole.log(\"Nome: \" + heroi + \" | Vida: \" + vida);\n\n// Template literal (lindo!):\nconsole.log(`Nome: ${heroi} | Vida: ${vida} | Ouro: ${ouro}`);",
+          "highlightLines": [6, 9],
+          "explanation": "**Template literals** usam crases `` ` ` `` (aquela tecla perto do 1 no teclado) em vez de aspas. Dentro delas, você coloca variáveis usando `${variavel}`.\n\nO computador substitui `${heroi}` pelo valor `\"Aria\"`, `${vida}` pelo valor `100`, e assim vai. Muito mais fácil de ler!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "let nivel: number = 5;\nlet xpAtual: number = 230;\nlet xpProximo: number = 300;\n\nconsole.log(`Nível ${nivel}`);\nconsole.log(`XP: ${xpAtual}/${xpProximo}`);\nconsole.log(`Faltam ${xpProximo - xpAtual} XP para o próximo nível!`);",
+          "highlightLines": [7],
+          "explanation": "Olha a linha 7: dentro de `${ }` você pode colocar **contas matemáticas**, não só variáveis!\n\n`${xpProximo - xpAtual}` → `${300 - 230}` → `${70}` → aparece `70` no texto.\n\nVocê pode colocar qualquer expressão lá dentro — variáveis, contas, comparações, chamadas de função..."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let preco: number = 49.9;\nlet quantidade: number = 3;\n\nconsole.log(`Total: R$ ${preco * quantidade}`);\nconsole.log(`Tem desconto? ${preco * quantidade > 100 ? \"Sim!\" : \"Não\"}`);",
+          "highlightLines": [4, 5],
+          "explanation": "Na linha 4, a conta `preco * quantidade` (49.9 × 3 = 149.7) é feita automaticamente.\n\nNa linha 5, temos algo novo: o operador `? :` (ternário). Ele funciona assim:\n`condição ? valorSeTrue : valorSeFalse`\n\n`149.7 > 100` é `true`, então mostra `\"Sim!\"`. Se fosse `false`, mostraria `\"Não\"`. É um mini if/else dentro do texto!"
+        }
+      ]
+    },
+    {
+      "id": "02-05",
+      "title": "Ficha de RPG",
+      "type": "exercise",
+      "difficulty": 1,
+      "xpReward": 15,
+      "instructions": "Crie a ficha de um personagem de RPG com as seguintes variáveis:\n\n1. `nome` (string): `\"Kael\"`\n2. `classe` (string): `\"Guerreiro\"`\n3. `hp` (number): `150`\n4. `forca` (number): `18`\n5. `temMagia` (boolean): `false`\n\nDepois, imprima a ficha usando **template literals** no formato:\n`\"Kael — Guerreiro | HP: 150 | Força: 18 | Magia: false\"`\n\nDica: use crases `` ` `` e `${variavel}` dentro do texto!",
+      "starterCode": "// Crie as variáveis\n\n\n\n\n\n// Imprima a ficha com template literal\n",
+      "solution": "const nome: string = \"Kael\";\nconst classe: string = \"Guerreiro\";\nconst hp: number = 150;\nconst forca: number = 18;\nconst temMagia: boolean = false;\n\nconsole.log(`${nome} — Guerreiro | HP: ${hp} | Força: ${forca} | Magia: ${temMagia}`);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "Kael — Guerreiro | HP: 150 | Força: 18 | Magia: false"
+          }
+        ]
+      },
+      "hints": [
+        "Crie cada variável com `const` (os valores não mudam neste exercício). Exemplo: const nome: string = \"Kael\";",
+        "Para o template literal, use crases (não aspas!): `texto ${variavel} mais texto`",
+        "O formato é: `${nome} — Guerreiro | HP: ${hp} | Força: ${forca} | Magia: ${temMagia}`"
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "console.log(nome + \" —",
+          "message": "Funciona, mas tente usar template literals com crases! É mais limpo: `${nome} — ${classe} | ...`"
+        },
+        {
+          "pattern": "Kael - Guerreiro",
+          "message": "Quase! O separador é `—` (travessão), não `-` (hífen). Copie o caractere do enunciado."
+        }
+      ]
+    },
+    {
+      "id": "02-06",
+      "title": "Calculadora simples",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 20,
+      "instructions": "Crie duas variáveis `a` e `b` do tipo `number` com os valores `24` e `7`.\n\nDepois, imprima os resultados das 4 operações usando template literals:\n```\n24 + 7 = 31\n24 - 7 = 17\n24 * 7 = 168\n24 / 7 = 3.4285714285714284\n```\n\nDica: você pode fazer contas dentro de `${ }`, tipo `${a + b}`!",
+      "starterCode": "const a: number = 24;\nconst b: number = 7;\n\n// Imprima as 4 operações\n",
+      "solution": "const a: number = 24;\nconst b: number = 7;\n\nconsole.log(`${a} + ${b} = ${a + b}`);\nconsole.log(`${a} - ${b} = ${a - b}`);\nconsole.log(`${a} * ${b} = ${a * b}`);\nconsole.log(`${a} / ${b} = ${a / b}`);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "24 + 7 = 31\n24 - 7 = 17\n24 * 7 = 168\n24 / 7 = 3.4285714285714284"
+          }
+        ]
+      },
+      "hints": [
+        "Cada linha usa template literal: `${a} + ${b} = ${a + b}` — o primeiro `${a}` mostra o número, e `${a + b}` calcula o resultado.",
+        "Dentro de `${ }` você pode colocar expressões como `a + b`, `a * b`, etc. O computador calcula antes de imprimir.",
+        "São 4 linhas de `console.log` — uma para cada operação: +, -, *, /"
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "console.log(a + b)",
+          "message": "Isso mostra só o resultado (31)! O enunciado pede o formato `24 + 7 = 31`. Use template literals para montar a frase toda."
+        }
+      ]
+    },
+    {
+      "id": "02-07",
+      "title": "Quiz: Tipos de Dados",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Qual o tipo da variável: `let ativo = true;`?",
+          "options": ["string", "number", "boolean", "object"],
+          "correctIndex": 2,
+          "explanation": "`true` e `false` são os dois únicos valores do tipo `boolean`. Lembre: sem aspas! `\"true\"` seria string."
+        },
+        {
+          "id": "q2",
+          "question": "Qual o resultado de `\"Olá\" + \" \" + \"mundo\"`?",
+          "options": ["Erro", "OláMundo", "Olá mundo", "Olá + mundo"],
+          "correctIndex": 2,
+          "explanation": "O `+` entre strings faz **concatenação**: cola os textos um no outro. O `\" \"` no meio adiciona o espaço entre as palavras."
+        },
+        {
+          "id": "q3",
+          "question": "Qual a diferença entre `42` e `\"42\"`?",
+          "options": ["Nenhuma, são iguais", "42 é number, \"42\" é string", "42 é inteiro, \"42\" é decimal", "42 é const, \"42\" é let"],
+          "correctIndex": 1,
+          "explanation": "`42` sem aspas é um número — dá pra somar, subtrair, etc. `\"42\"` com aspas é texto — pra o computador é a mesma coisa que `\"abc\"`, só letras! São tipos completamente diferentes."
+        },
+        {
+          "id": "q4",
+          "question": "O que `console.log(`Tenho ${10 + 2} anos`)` imprime?",
+          "options": ["Tenho ${10 + 2} anos", "Tenho 10 + 2 anos", "Tenho 12 anos", "Erro"],
+          "correctIndex": 2,
+          "explanation": "Dentro de `${ }` em template literals, expressões são calculadas automaticamente. `10 + 2` vira `12`, então imprime `Tenho 12 anos`."
+        },
+        {
+          "id": "q5",
+          "question": "Qual o resultado de `17 % 5`?",
+          "options": ["3.4", "3", "2", "5"],
+          "correctIndex": 2,
+          "explanation": "`%` retorna o **resto** da divisão, não o resultado! 17 ÷ 5 = 3 com resto **2**. Então `17 % 5` é `2`."
+        }
+      ]
+    }
+  ]
+}

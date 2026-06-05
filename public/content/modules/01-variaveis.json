@@ -1,0 +1,246 @@
+{
+  "id": "01-variaveis",
+  "title": "Variáveis e Constantes",
+  "description": "Aprenda a guardar informações na memória do computador",
+  "lessons": [
+    {
+      "id": "01-01",
+      "title": "O que é uma variável?",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Quando você joga um jogo, o computador precisa **lembrar** várias coisas: quantos pontos você tem, qual é o seu nome no jogo, se o personagem está vivo ou não...\n\nMas como o computador guarda essas informações? Ele não tem um caderno!\n\nA resposta: ele usa **variáveis**."
+        },
+        {
+          "type": "explanation",
+          "content": "Pense assim: o computador tem um **armário gigante** cheio de caixas. Cada caixa tem:\n\n- Uma **etiqueta** com o nome (pra saber o que tem dentro)\n- Um **conteúdo** (o valor guardado lá dentro)\n\nUma **variável** é exatamente isso — uma caixa com nome onde você guarda um dado.\n\nPor exemplo: uma caixa com a etiqueta `pontos` e o conteúdo `100`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let pontos: number = 100;\nconsole.log(pontos);",
+          "highlightLines": [1],
+          "explanation": "Aqui criamos uma caixa chamada `pontos` que guarda o número `100`. Vamos entender cada pedaço:\n\n- `let` → diz ao computador: \"cria uma caixa nova pra mim!\"\n- `pontos` → é o nome que colamos na etiqueta\n- `: number` → o tipo de dado (aqui, um número)\n- `= 100` → o valor que colocamos dentro da caixa\n\nO `console.log(pontos)` é como abrir a caixa e olhar o que tem dentro — ele mostra `100` na tela."
+        },
+        {
+          "type": "explanation",
+          "content": "Talvez você esteja pensando: \"Pra que esse `: number`? O computador não vê que `100` é um número?\"\n\nBoa pergunta! Em TypeScript, nós dizemos o **tipo** de cada variável de propósito. É como se fosse um aviso na caixa: \"AQUI SÓ ENTRA NÚMERO\". Se alguém tentar enfiar um texto lá dentro, o TypeScript grita: \"Ei, isso aqui é uma caixa de números!\"\n\nIsso parece chato agora, mas te salva de bugs muito loucos no futuro. Confia!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "let nome: string = \"CodeQuest\";\nconsole.log(nome);\n\nnome = \"MegaQuest\";\nconsole.log(nome);",
+          "highlightLines": [4],
+          "explanation": "Variáveis criadas com `let` podem **trocar de valor**! É como apagar o que está escrito na caixa e escrever outra coisa.\n\nNa linha 1, a caixa `nome` recebe `\"CodeQuest\"`. Na linha 4, trocamos o conteúdo para `\"MegaQuest\"`. O antigo valor sumiu — a caixa só guarda um valor por vez.\n\nPercebeu que textos ficam entre aspas `\"...\"` e números não? Isso é importante!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "let vidas: number = 3;\nconsole.log(vidas);\n\nvidas = vidas - 1;\nconsole.log(vidas);\n\nvidas = vidas - 1;\nconsole.log(vidas);",
+          "highlightLines": [4, 7],
+          "explanation": "Olha que legal: `vidas = vidas - 1` pode parecer estranho, mas funciona assim:\n\n1. O computador olha o lado direito: `vidas - 1` → `3 - 1` → `2`\n2. Depois guarda o resultado `2` de volta na caixa `vidas`\n\nÉ igualzinho a perder uma vida no jogo! Começou com 3, perdeu uma, ficou com 2. Perdeu mais uma, ficou com 1."
+        }
+      ]
+    },
+    {
+      "id": "01-02",
+      "title": "let vs const",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Existem duas formas de criar variáveis em TypeScript:\n\n- **`let`** → o valor **pode mudar** depois (como um quadro branco — você apaga e reescreve)\n- **`const`** → o valor **nunca muda** (como uma gravação em pedra — ficou ali pra sempre)\n\nImagina que `let` é o placar do jogo (muda a cada ponto) e `const` é o seu nome de usuário (não muda no meio da partida)."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const nomeDoJogo: string = \"CodeQuest\";\nconsole.log(nomeDoJogo);\n\nlet pontuacao: number = 0;\npontuacao = pontuacao + 50;\nconsole.log(pontuacao);",
+          "highlightLines": [1, 4, 5],
+          "explanation": "O nome do jogo é `const` porque não vai mudar. A pontuação é `let` porque vai aumentando.\n\nSe você tentasse escrever `nomeDoJogo = \"OutroJogo\"` depois, o TypeScript ia mostrar um erro vermelho. Ele leva `const` muito a sério!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "const PI: number = 3.14159;\nconsole.log(PI);\n\n// Se tentarmos mudar:\n// PI = 3.0; ← ERRO! Não pode mudar um const",
+          "highlightLines": [1],
+          "explanation": "PI é aquele número da matemática (3,14159...) que nunca muda. Faz total sentido usar `const`.\n\nAs linhas começando com `//` são **comentários** — o computador ignora elas. Servem pra deixar anotações no código, tipo post-its."
+        },
+        {
+          "type": "explanation",
+          "content": "**Regra de ouro:** sempre comece com `const`. Só troque pra `let` quando você realmente precisar mudar o valor depois.\n\nPor quê? Porque quando você lê um código e vê `const`, já sabe: \"esse valor não muda, não preciso me preocupar\". Isso facilita muito entender o que o programa faz.\n\nProgramadores profissionais fazem isso o tempo todo!"
+        }
+      ]
+    },
+    {
+      "id": "01-03",
+      "title": "Nomeando variáveis",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Escolher bons nomes de variáveis é tipo escolher um bom nome de usuário — parece bobeira, mas faz MUITA diferença.\n\nImagine abrir um código e encontrar isto:\n`let x = 100;`\n\nO que é `x`? Pontos? Vidas? Moedas? Ninguém sabe! Agora olha:\n`let pontosDeVida = 100;`\n\nAhhh, agora sim! Só de ler o nome, você entende o que está guardado ali."
+        },
+        {
+          "type": "explanation",
+          "content": "TypeScript tem algumas **regras** para nomes de variáveis:\n\n- Deve começar com **letra** (ou `_`). Nunca com número!\n- **Sem espaços**, sem acentos, sem caracteres especiais\n- Letras maiúsculas e minúsculas são diferentes (`nome` ≠ `Nome`)\n\nE tem uma **convenção** (combinado entre programadores):\n\n- Use **camelCase**: a primeira palavra começa minúscula, as seguintes começam com maiúscula\n- Exemplo: `nomeDoJogador`, `pontosDeVida`, `estaVivo`\n\nO nome vem de \"camelo\" — as maiúsculas no meio parecem as corcovas! 🐫"
+        },
+        {
+          "type": "interactive-example",
+          "code": "// Bons nomes (claros e descritivos):\nlet nomeDoJogador: string = \"Rafael\";\nlet pontosDeVida: number = 100;\nlet estaVivo: boolean = true;\nlet quantidadeDeMoedas: number = 42;\n\nconsole.log(nomeDoJogador);\nconsole.log(pontosDeVida);",
+          "highlightLines": [2, 3, 4, 5],
+          "explanation": "Veja como cada nome **descreve exatamente** o que está guardado. Daqui a 6 meses, quando você reler esse código, vai entender na hora.\n\nO tipo `boolean` apareceu de novo — é pra valores `true` (verdadeiro) ou `false` (falso). Vamos falar mais dele depois!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "// Nomes ruins (evite esses!):\n// let x: number = 100;       ← o que é x??\n// let ndj: string = \"Rafa\";  ← abreviação confusa\n// let a1b2: number = 50;     ← parece senha\n\n// Nomes bons equivalentes:\nlet pontos: number = 100;\nlet nomeDoJogador: string = \"Rafa\";\nlet velocidade: number = 50;\n\nconsole.log(nomeDoJogador);",
+          "highlightLines": [7, 8, 9],
+          "explanation": "Resumindo: se alguém ler o nome da variável e não souber o que ela guarda, o nome está ruim. Renomeie!\n\nProgramadores gastam mais tempo **lendo** código do que escrevendo. Nomes bons economizam muito tempo."
+        }
+      ]
+    },
+    {
+      "id": "01-04",
+      "title": "Crie sua primeira variável",
+      "type": "exercise",
+      "difficulty": 1,
+      "xpReward": 10,
+      "instructions": "Hora de praticar! Crie uma variável chamada `idade` do tipo `number` com o valor `12`.\n\nDepois, use `console.log(idade)` para mostrar o valor no console.\n\nLembre da receita:\n`let nome: tipo = valor;`",
+      "starterCode": "// Crie sua variável aqui\n\n",
+      "solution": "let idade: number = 12;\nconsole.log(idade);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "12"
+          }
+        ]
+      },
+      "hints": [
+        "Use a palavra `let` para criar uma variável. A receita é: let nome: tipo = valor;",
+        "O tipo é `number` (número) e o valor é `12`. Fica: let idade: number = 12;",
+        "Não esqueça do `console.log(idade)` na linha de baixo para mostrar o resultado!"
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "var idade",
+          "message": "Quase! Em TypeScript moderno, preferimos `let` em vez de `var`. Tente trocar `var` por `let`."
+        },
+        {
+          "pattern": "\"12\"",
+          "message": "Cuidado! `\"12\"` com aspas é texto (string), não um número. Tire as aspas: apenas `12`."
+        },
+        {
+          "pattern": "let idade = 12",
+          "message": "Funciona, mas vamos praticar com tipos! Adicione `: number` depois de `idade` para dizer que é um número."
+        }
+      ]
+    },
+    {
+      "id": "01-05",
+      "title": "Variáveis de personagem",
+      "type": "exercise",
+      "difficulty": 1,
+      "xpReward": 15,
+      "instructions": "Vamos criar a ficha de um personagem de jogo! Crie 3 variáveis:\n\n1. `nomeHeroi` (string) com o valor `\"Aria\"`\n2. `nivel` (number) com o valor `1`\n3. `estaVivo` (boolean) com o valor `true`\n\nDepois imprima as três com `console.log`, uma por linha, nessa ordem.\n\nDica: strings usam aspas `\"Aria\"`, numbers não `1`, e booleans são `true` ou `false` sem aspas.",
+      "starterCode": "// Crie as variáveis do personagem\n\n\n\n// Imprima os valores\n",
+      "solution": "let nomeHeroi: string = \"Aria\";\nlet nivel: number = 1;\nlet estaVivo: boolean = true;\n\nconsole.log(nomeHeroi);\nconsole.log(nivel);\nconsole.log(estaVivo);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "Aria\n1\ntrue"
+          }
+        ]
+      },
+      "hints": [
+        "Cada variável segue a receita: let nome: tipo = valor; Comece com nomeHeroi: let nomeHeroi: string = \"Aria\";",
+        "Boolean é um tipo que só tem dois valores: `true` (verdadeiro) ou `false` (falso). Sem aspas! Fica: let estaVivo: boolean = true;",
+        "Use um `console.log()` pra cada variável, na ordem pedida: primeiro nomeHeroi, depois nivel, depois estaVivo."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "nome_heroi",
+          "message": "Em TypeScript usamos camelCase (estilo camelo): `nomeHeroi` com N maiúsculo, sem underline."
+        },
+        {
+          "pattern": "\"true\"",
+          "message": "`\"true\"` com aspas é uma string (texto)! Booleans são escritos sem aspas: apenas `true` ou `false`."
+        }
+      ]
+    },
+    {
+      "id": "01-06",
+      "title": "Trocando valores",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 20,
+      "instructions": "Desafio clássico de lógica!\n\nVocê tem duas variáveis: `a` com valor `10` e `b` com valor `20`.\n\nSeu objetivo: trocar os valores! No final, `a` deve valer `20` e `b` deve valer `10`.\n\nParece fácil, mas tem uma pegadinha: se fizer `a = b` direto, vai perder o valor original de `a`! É como tentar trocar o líquido de dois copos — precisa de um copo vazio no meio.\n\nUse uma **variável temporária** (um \"copo auxiliar\") para resolver.",
+      "starterCode": "let a: number = 10;\nlet b: number = 20;\n\n// Troque os valores aqui\n\n\nconsole.log(a);\nconsole.log(b);",
+      "solution": "let a: number = 10;\nlet b: number = 20;\n\nlet temp: number = a;\na = b;\nb = temp;\n\nconsole.log(a);\nconsole.log(b);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "20\n10"
+          }
+        ]
+      },
+      "hints": [
+        "Se fizer `a = b` direto, tanto `a` quanto `b` ficam com 20 e o 10 se perde! Precisa salvar o 10 antes.",
+        "Crie uma variável temporária: `let temp: number = a;` — agora o 10 está salvo em `temp`.",
+        "Passo a passo: 1) `let temp = a` (temp guarda 10), 2) `a = b` (a vira 20), 3) `b = temp` (b recebe o 10 que estava guardado)."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "a = b;\nb = a;",
+          "message": "Se fizer `a = b` primeiro, ambas viram `20` e o `10` se perdeu! Você precisa guardar o valor original de `a` numa variável temporária antes."
+        },
+        {
+          "pattern": "a = 20",
+          "message": "A ideia é trocar os valores de forma inteligente, não escrever os números na mão! Imagine que você não sabe quais são os valores — use uma variável temporária."
+        }
+      ]
+    },
+    {
+      "id": "01-07",
+      "title": "Quiz: Variáveis",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Qual palavra usamos para criar uma variável que pode mudar de valor?",
+          "options": ["var", "let", "const", "new"],
+          "correctIndex": 1,
+          "explanation": "`let` cria uma variável que pode mudar (como um quadro branco). `const` cria uma que não pode mudar (como uma gravação em pedra). `var` é antigo e evitamos em TypeScript moderno."
+        },
+        {
+          "id": "q2",
+          "question": "O que acontece se tentarmos mudar o valor de um `const`?",
+          "options": ["O valor muda normalmente", "O TypeScript dá um erro", "O valor é ignorado", "O programa trava"],
+          "correctIndex": 1,
+          "explanation": "`const` significa constante — o TypeScript protege esse valor! Se você tentar mudar, ele mostra um erro vermelho antes mesmo de executar o código."
+        },
+        {
+          "id": "q3",
+          "question": "Qual é o nome correto em camelCase para \"pontos de vida\"?",
+          "options": ["pontos_de_vida", "PontosDeVida", "pontosDeVida", "pontos-de-vida"],
+          "correctIndex": 2,
+          "explanation": "Em camelCase, a primeira palavra é toda minúscula e cada palavra seguinte começa com maiúscula: `pontosDeVida`. O nome vem do camelo — as maiúsculas são as corcovas! 🐫"
+        },
+        {
+          "id": "q4",
+          "question": "Qual o resultado de:\n```\nlet x: number = 5;\nx = x + 3;\nconsole.log(x);\n```",
+          "options": ["5", "3", "8", "Erro"],
+          "correctIndex": 2,
+          "explanation": "`x` começa com 5. Depois, `x = x + 3` pega o valor atual (5), soma 3, e guarda o resultado (8) de volta em `x`. É como dizer: \"pega o que tem na caixa, soma 3, e guarda de volta\"."
+        }
+      ]
+    }
+  ]
+}

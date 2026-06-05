@@ -1,0 +1,213 @@
+{
+  "id": "07-objetos",
+  "title": "Objetos",
+  "description": "Agrupe informações relacionadas em estruturas",
+  "lessons": [
+    {
+      "id": "07-01",
+      "title": "O que é um objeto?",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Nos módulos anteriores, você aprendeu a guardar dados simples em variáveis e listas de dados em arrays. Mas tem um problema: e quando os dados são **diferentes entre si, mas relacionados**?\n\nPense num personagem de jogo. Ele tem um nome (texto), uma vida (número), uma classe (texto), um nível (número), e está vivo ou não (booleano). Tipos diferentes, mas tudo sobre **a mesma coisa**.\n\nSe usarmos variáveis separadas, fica bagunçado:\n```\nconst heroiNome = \"Aria\";\nconst heroiClasse = \"Maga\";\nconst heroiNivel = 5;\nconst heroiHp = 120;\n```\n\nE se tivermos 3 personagens? 12 variáveis? 20? Vira um caos!"
+        },
+        {
+          "type": "explanation",
+          "content": "É aí que entram os **objetos**. Um objeto agrupa informações relacionadas num único lugar. Cada informação tem um **nome** (chamado de **propriedade** ou **chave**) e um **valor**.\n\nSe variáveis são gavetas soltas e arrays são gaveteiros numerados (posição 0, 1, 2...), um objeto é como uma **ficha de cadastro** — cada campo tem um **rótulo** e você acessa pelo nome, não pelo número.\n\nExemplo da vida real:\n- **Ficha do aluno:** nome → \"Rafael\", idade → 12, turma → \"7B\"\n- **Perfil de rede social:** usuario → \"gamer123\", seguidores → 42, verificado → false\n- **Personagem de RPG:** nome → \"Aria\", classe → \"Maga\", hp → 120"
+        },
+        {
+          "type": "interactive-example",
+          "code": "const heroi = {\n  nome: \"Aria\",\n  classe: \"Maga\",\n  nivel: 5,\n  hp: 120,\n  estaVivo: true\n};\n\nconsole.log(heroi.nome);\nconsole.log(heroi.hp);\nconsole.log(`${heroi.nome} é uma ${heroi.classe} nível ${heroi.nivel}`);",
+          "highlightLines": [1, 9, 10],
+          "explanation": "Vamos destrinchar:\n\n- Criamos um objeto com `{ }` (chaves)\n- Cada propriedade é `nome: valor`, separada por vírgula\n- `nome: \"Aria\"` → a propriedade `nome` tem o valor `\"Aria\"`\n- `hp: 120` → a propriedade `hp` tem o valor `120`\n\nPara acessar, usamos o **ponto**: `heroi.nome` retorna `\"Aria\"`, `heroi.hp` retorna `120`. É como dizer \"do herói, me dá o nome\"."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const musica = {\n  titulo: \"Bohemian Rhapsody\",\n  artista: \"Queen\",\n  ano: 1975,\n  duracao: 354,\n  favorita: true\n};\n\nconst minutos: number = Math.floor(musica.duracao / 60);\nconst segundos: number = musica.duracao % 60;\nconsole.log(`${musica.titulo} — ${musica.artista}`);\nconsole.log(`Duração: ${minutos}:${segundos}`);\nconsole.log(`Favorita: ${musica.favorita ? \"Sim!\" : \"Não\"}`);",
+          "highlightLines": [1, 9, 10],
+          "explanation": "Objetos podem ter propriedades de **qualquer tipo**: strings, numbers, booleans... Aqui temos título (string), ano (number), favorita (boolean) — tudo organizado dentro de um único objeto `musica`.\n\nE podemos usar as propriedades em cálculos normalmente! Na linha 9, convertemos a duração em segundos para minutos e segundos."
+        }
+      ]
+    },
+    {
+      "id": "07-02",
+      "title": "Propriedades e valores",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Propriedades de objetos não são só para leitura — você pode **alterar** valores a qualquer momento usando o mesmo operador ponto.\n\nPense novamente na ficha de cadastro: você pode ler o que está escrito, mas também pode apagar e escrever algo novo no campo.\n\nUma coisa que confunde bastante: mesmo que o objeto seja `const`, o **conteúdo** pode mudar! O `const` protege a **referência** (a \"etiqueta\" que aponta pro objeto), não o conteúdo. É como dizer: \"essa ficha vai ser sempre a ficha do Kael\", mas os dados dentro da ficha podem mudar."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const jogador = {\n  nome: \"Kael\",\n  ouro: 100,\n  xp: 0\n};\n\n// Ler\nconsole.log(`Ouro: ${jogador.ouro}`);\n\n// Alterar\njogador.ouro = jogador.ouro + 50;\nconsole.log(`Ouro após venda: ${jogador.ouro}`);\n\n// Adicionar nova propriedade\n(jogador as any).titulo = \"Cavaleiro\";\nconsole.log(jogador);",
+          "highlightLines": [11, 15],
+          "explanation": "Na linha 11, lemos o valor atual (`100`), somamos `50`, e guardamos de volta. Agora `jogador.ouro` vale `150`.\n\nIsso funciona porque `const` só impede `jogador = outraCoisa` (trocar o objeto inteiro), mas `jogador.ouro = 150` (mudar uma propriedade dentro) é permitido.\n\nPense assim: `const` trava qual formulário você segura, mas você ainda pode preencher e alterar os campos dentro dele."
+        },
+        {
+          "type": "interactive-example",
+          "code": "const personagem = {\n  nome: \"Luna\",\n  hp: 80,\n  hpMax: 80\n};\n\n// Tomou dano!\nconst dano: number = 25;\npersonagem.hp = personagem.hp - dano;\nconsole.log(`${personagem.nome} tomou ${dano} de dano!`);\nconsole.log(`HP: ${personagem.hp}/${personagem.hpMax}`);\n\n// Curou!\nconst cura: number = 15;\npersonagem.hp = Math.min(personagem.hp + cura, personagem.hpMax);\nconsole.log(`${personagem.nome} se curou em ${cura}!`);\nconsole.log(`HP: ${personagem.hp}/${personagem.hpMax}`);",
+          "highlightLines": [9, 15],
+          "explanation": "Aqui simulamos dano e cura num personagem. Na linha 9, reduzimos o HP. Na linha 15, usamos `Math.min()` para garantir que o HP nunca passe do máximo — se `hp + cura` der mais que `hpMax`, usamos `hpMax` em vez disso.\n\nPerceba como o objeto funciona perfeitamente para representar algo que muda ao longo do tempo, como o estado de um personagem durante uma partida!"
+        }
+      ]
+    },
+    {
+      "id": "07-03",
+      "title": "Interfaces — tipos para objetos",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Até agora, criamos objetos e o TypeScript adivinhou os tipos. Mas em projetos maiores, queremos ser **explícitos** sobre a forma do objeto — quais propriedades ele tem e de que tipo são.\n\nPara isso, usamos **`interface`**. Pense assim: antes de imprimir um formulário, você cria o **modelo** dele — define quais campos existem e que tipo de dado cada um aceita. A interface é esse modelo.\n\nDepois de criar a interface, todo objeto que usar aquele tipo **deve** ter exatamente as propriedades definidas. Se faltar uma ou o tipo estiver errado, o TypeScript reclama **antes** de rodar — você descobre o erro na hora de escrever, não quando o programa já está rodando!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "interface Personagem {\n  nome: string;\n  classe: string;\n  nivel: number;\n  hp: number;\n  estaVivo: boolean;\n}\n\nconst mago: Personagem = {\n  nome: \"Luna\",\n  classe: \"Curandeira\",\n  nivel: 3,\n  hp: 80,\n  estaVivo: true\n};\n\nconsole.log(`${mago.nome} — ${mago.classe} (Nv. ${mago.nivel})`);",
+          "highlightLines": [1, 9],
+          "explanation": "Na linha 1, `interface Personagem` define o contrato: todo `Personagem` **deve** ter nome (string), classe (string), nivel (number), hp (number) e estaVivo (boolean).\n\nNa linha 9, `const mago: Personagem` diz \"essa variável segue o formato Personagem\". Se você esquecer de colocar `estaVivo`, o TypeScript avisa na hora!\n\nÉ como um checklist: a interface é a lista, e o TypeScript confere se você preencheu tudo."
+        },
+        {
+          "type": "explanation",
+          "content": "A grande vantagem da interface é a **segurança**. Sem ela, você pode escrever `mago.nievl` (com typo) e só descobrir o problema quando o programa trava. Com interface, o editor já sublinha em vermelho e diz: \"a propriedade 'nievl' não existe em Personagem\".\n\nAlém disso, interfaces funcionam como **documentação**. Qualquer pessoa que olhar `interface Personagem` entende instantaneamente que dados um personagem tem.\n\nDica: por convenção, nomes de interfaces começam com **letra maiúscula**, como `Personagem`, `Item`, `Configuracao`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "interface ConfigJogo {\n  dificuldade: string;\n  som: boolean;\n  volume: number;\n}\n\nconst config: ConfigJogo = {\n  dificuldade: \"normal\",\n  som: true,\n  volume: 75\n};\n\nconsole.log(`Dificuldade: ${config.dificuldade}`);\nconsole.log(`Som: ${config.som ? \"Ligado\" : \"Desligado\"}`);\nconsole.log(`Volume: ${config.volume}%`);",
+          "highlightLines": [1, 7],
+          "explanation": "Interfaces servem pra qualquer tipo de objeto, não só personagens! Aqui usamos para configurações de um jogo. O padrão é sempre o mesmo:\n\n1. Defina a interface com os campos e tipos\n2. Crie o objeto usando `: NomeDaInterface`\n3. O TypeScript garante que está tudo certo\n\nSe você tentar fazer `config.volume = \"alto\"`, o TypeScript reclama: volume é `number`, não `string`!"
+        }
+      ]
+    },
+    {
+      "id": "07-04",
+      "title": "Arrays de objetos",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Aqui é onde a mágica acontece: quando combinamos **arrays** e **objetos**, podemos representar coleções de coisas complexas!\n\nPense nos exemplos:\n- Uma lista de **contatos** do celular (cada contato tem nome, telefone, foto)\n- O **inventário** de um jogo (cada item tem nome, tipo, poder)\n- Um **ranking** de jogadores (cada jogador tem nome, pontos, nível)\n- As **cartas** de um baralho (cada carta tem naipe, valor, imagem)\n\nEm todos esses casos, temos um **array** (a lista) onde cada item é um **objeto** (com várias propriedades). O tipo fica `NomeDaInterface[]` — é só adicionar `[]` depois!"
+        },
+        {
+          "type": "interactive-example",
+          "code": "interface Item {\n  nome: string;\n  tipo: string;\n  poder: number;\n}\n\nconst inventario: Item[] = [\n  { nome: \"Espada de Fogo\", tipo: \"arma\", poder: 25 },\n  { nome: \"Escudo de Gelo\", tipo: \"defesa\", poder: 15 },\n  { nome: \"Poção de Cura\", tipo: \"consumivel\", poder: 50 }\n];\n\n// Listar itens\nfor (const item of inventario) {\n  console.log(`${item.nome} (${item.tipo}) — Poder: ${item.poder}`);\n}",
+          "highlightLines": [7, 14],
+          "explanation": "Na linha 7, `Item[]` significa \"um array onde cada elemento é um `Item`\". Dentro dos colchetes `[ ]`, cada `{ }` é um objeto que segue a interface `Item`.\n\nNo `for...of` (linha 14), a variável `item` recebe cada objeto por vez. E podemos acessar as propriedades normalmente: `item.nome`, `item.tipo`, `item.poder`.\n\nÉ como ter uma mochila (o array) cheia de fichas (os objetos) — tiramos uma ficha por vez e lemos as informações."
+        },
+        {
+          "type": "interactive-example",
+          "code": "interface Item {\n  nome: string;\n  tipo: string;\n  poder: number;\n}\n\nconst inventario: Item[] = [\n  { nome: \"Espada de Fogo\", tipo: \"arma\", poder: 25 },\n  { nome: \"Escudo de Gelo\", tipo: \"defesa\", poder: 15 },\n  { nome: \"Poção de Cura\", tipo: \"consumivel\", poder: 50 }\n];\n\n// Filtrar só armas\nconst armas: Item[] = inventario.filter((item: Item): boolean => item.tipo === \"arma\");\nconsole.log(`Armas encontradas: ${armas.length}`);\n\n// Map: só os nomes\nconst nomes: string[] = inventario.map((item: Item): string => item.nome);\nconsole.log(`Itens: ${nomes}`);",
+          "highlightLines": [14, 18],
+          "explanation": "Tudo que aprendemos sobre arrays funciona com arrays de objetos! Na linha 14, `.filter()` seleciona só os itens cujo `tipo` é `\"arma\"`. Na linha 18, `.map()` extrai só o nome de cada item, criando um array de strings.\n\nPerceba como `.map()` pode **transformar** o tipo: começamos com `Item[]` e terminamos com `string[]`. Isso é super útil pra pegar apenas a informação que você precisa."
+        }
+      ]
+    },
+    {
+      "id": "07-05",
+      "title": "Inventário de RPG",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 25,
+      "instructions": "Vamos criar o inventário de um RPG!\n\nCrie uma interface `Item` com estas propriedades:\n- `nome` (string)\n- `quantidade` (number)\n- `valor` (number)\n\nCrie um array `inventario` do tipo `Item[]` com 3 itens:\n1. `\"Poção\"`, quantidade `5`, valor `10`\n2. `\"Espada\"`, quantidade `1`, valor `150`\n3. `\"Flecha\"`, quantidade `20`, valor `2`\n\nDepois, calcule o valor total do inventário. O valor de cada item é `quantidade × valor`. Some todos e imprima:\n`\"Valor total: 240\"`\n\n(Poção: 5×10=50 + Espada: 1×150=150 + Flecha: 20×2=40 = 240)",
+      "starterCode": "// Crie a interface Item\n\n\n\n// Crie o array inventario\n\n\n\n\n\n// Calcule e imprima o valor total\n",
+      "solution": "interface Item {\n  nome: string;\n  quantidade: number;\n  valor: number;\n}\n\nconst inventario: Item[] = [\n  { nome: \"Poção\", quantidade: 5, valor: 10 },\n  { nome: \"Espada\", quantidade: 1, valor: 150 },\n  { nome: \"Flecha\", quantidade: 20, valor: 2 }\n];\n\nlet total: number = 0;\nfor (const item of inventario) {\n  total += item.quantidade * item.valor;\n}\nconsole.log(`Valor total: ${total}`);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "Valor total: 240"
+          }
+        ]
+      },
+      "hints": [
+        "A interface define a forma: `interface Item { nome: string; quantidade: number; valor: number; }`",
+        "O valor de cada item é `quantidade × valor`. Crie uma variável `let total: number = 0` e percorra o array com `for...of`, somando `item.quantidade * item.valor` a cada volta.",
+        "Use `total += item.quantidade * item.valor` dentro do loop. O `+=` é atalho para `total = total + ...`. No final, imprima com template literal."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "item.valor",
+          "message": "Não esqueça de multiplicar! O valor total de cada item é `item.quantidade * item.valor`, não só `item.valor`."
+        }
+      ]
+    },
+    {
+      "id": "07-06",
+      "title": "Desafio: Agenda de contatos",
+      "type": "challenge",
+      "difficulty": 3,
+      "xpReward": 35,
+      "instructions": "Crie uma agenda de contatos com filtro de favoritos!\n\nCrie uma interface `Contato` com: `nome` (string), `telefone` (string), `favorito` (boolean).\n\nCrie um array `agenda` do tipo `Contato[]` com estes contatos:\n1. `\"Alice\"`, `\"1111-1111\"`, favorito: `true`\n2. `\"Bob\"`, `\"2222-2222\"`, favorito: `false`\n3. `\"Carol\"`, `\"3333-3333\"`, favorito: `true`\n4. `\"David\"`, `\"4444-4444\"`, favorito: `false`\n\nCrie uma função `listarFavoritos(contatos: Contato[]): void` que percorre o array e imprime apenas os contatos favoritos no formato:\n```\n⭐ Alice — 1111-1111\n⭐ Carol — 3333-3333\n```\n\nChame a função passando `agenda`.",
+      "starterCode": "// Interface Contato\n\n\n\n// Array agenda\n\n\n\n\n\n// Função listarFavoritos\n\n\n\n\n// Chamar a função\n",
+      "solution": "interface Contato {\n  nome: string;\n  telefone: string;\n  favorito: boolean;\n}\n\nconst agenda: Contato[] = [\n  { nome: \"Alice\", telefone: \"1111-1111\", favorito: true },\n  { nome: \"Bob\", telefone: \"2222-2222\", favorito: false },\n  { nome: \"Carol\", telefone: \"3333-3333\", favorito: true },\n  { nome: \"David\", telefone: \"4444-4444\", favorito: false }\n];\n\nfunction listarFavoritos(contatos: Contato[]): void {\n  for (const contato of contatos) {\n    if (contato.favorito) {\n      console.log(`⭐ ${contato.nome} — ${contato.telefone}`);\n    }\n  }\n}\n\nlistarFavoritos(agenda);",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "⭐ Alice — 1111-1111\n⭐ Carol — 3333-3333"
+          }
+        ]
+      },
+      "hints": [
+        "A interface Contato tem 3 campos: `nome: string`, `telefone: string`, `favorito: boolean`. Crie o array com 4 objetos seguindo os dados fornecidos.",
+        "Na função, use `for (const contato of contatos)` para percorrer. Dentro do loop, use `if (contato.favorito)` para verificar — como é boolean, não precisa de `=== true`.",
+        "Outra opção: use `.filter()` para obter só os favoritos primeiro, depois percorra o resultado com `for...of` para imprimir."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "contato.favorito === \"true\"",
+          "message": "`favorito` é boolean (`true`/`false`), não string! Use `contato.favorito` direto, sem aspas."
+        },
+        {
+          "pattern": "contato.favorito == true",
+          "message": "Simplificado: como `favorito` já é boolean, `if (contato.favorito)` é suficiente — não precisa comparar com `true`!"
+        }
+      ]
+    },
+    {
+      "id": "07-07",
+      "title": "Quiz: Objetos",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Como acessar a propriedade `nome` de um objeto `heroi`?",
+          "options": ["heroi[nome]", "heroi->nome", "heroi.nome", "heroi::nome"],
+          "correctIndex": 2,
+          "explanation": "Em TypeScript/JavaScript, usamos o ponto: `heroi.nome`. Também é possível usar colchetes com aspas: `heroi[\"nome\"]`, mas o ponto é mais comum e prático."
+        },
+        {
+          "id": "q2",
+          "question": "Para que serve uma `interface`?",
+          "options": ["Criar uma função", "Definir a forma de um objeto", "Criar um array", "Importar um módulo"],
+          "correctIndex": 1,
+          "explanation": "Interface define quais propriedades e tipos um objeto deve ter — é o modelo/contrato de forma. O TypeScript usa isso para verificar se você preencheu tudo corretamente."
+        },
+        {
+          "id": "q3",
+          "question": "O que é `Contato[]`?",
+          "options": ["Um contato opcional", "Um array de contatos", "Um contato com array", "Erro de sintaxe"],
+          "correctIndex": 1,
+          "explanation": "`Contato[]` é a tipagem de um array cujo cada elemento é do tipo `Contato`. O `[]` depois do nome da interface indica \"array de\"."
+        },
+        {
+          "id": "q4",
+          "question": "Posso mudar propriedades de um objeto `const`?",
+          "options": ["Não, const trava tudo", "Sim, const protege só a referência", "Só com let", "Depende do tipo"],
+          "correctIndex": 1,
+          "explanation": "`const` impede reatribuir a variável, mas o conteúdo do objeto pode mudar. `const heroi = {...}; heroi.hp = 50;` funciona normalmente — o `const` protege a etiqueta, não a ficha!"
+        }
+      ]
+    }
+  ]
+}
