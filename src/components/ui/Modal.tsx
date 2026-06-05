@@ -45,10 +45,11 @@ export function Modal({ open, onClose, title, children, className = '' }: ModalP
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-heading text-xl font-semibold text-[#E8E8F0]">{title}</h2>
                 <button
+                  aria-label="Fechar"
                   onClick={onClose}
                   className="text-[#8888AA] hover:text-[#E8E8F0] transition-colors text-xl leading-none"
                 >
-                  ✕
+                  <span aria-hidden="true">✕</span>
                 </button>
               </div>
             )}

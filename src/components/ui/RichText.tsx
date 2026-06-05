@@ -49,7 +49,7 @@ export function RichText({ content, className = '' }: RichTextProps) {
   return (
     <div className={className}>
       {lines.map((line, i) => (
-        <p key={i} className={line.trim() === '' ? 'h-3' : ''}>
+        <p key={`${i}-${line.slice(0, 20)}`} className={line.trim() === '' ? 'h-3' : ''}>
           {parseInline(line)}
         </p>
       ))}

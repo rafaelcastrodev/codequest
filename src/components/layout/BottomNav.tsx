@@ -35,8 +35,9 @@ export function BottomNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-bg-surface/95 backdrop-blur-md border-t border-bg-elevated flex items-center safe-bottom">
-      <NavTab to="/" icon="🗺️" label="Mapa" active={pathname === '/'} />
+      <NavTab to="/" icon="🗺️" label="Jornada" active={pathname === '/'} />
       <NavTab to="/profile" icon="👤" label="Perfil" active={pathname === '/profile'} />
+      <NavTab to="/about" icon="ℹ️" label="Sobre" active={pathname === '/about'} />
       <NavTab to="/settings" icon="⚙️" label="Config" active={pathname === '/settings'} />
     </nav>
   );

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { STORAGE_KEYS } from './constants';
 
 export interface CompletedExercise {
   stars: number;
@@ -30,11 +31,18 @@ const LEVEL_TITLES = ['', 'Aprendiz', 'Aprendiz', 'Explorador', 'Explorador', 'H
 const MAX_LIVES = 5;
 const REGEN_INTERVAL_MS = 30 * 60 * 1000;
 
+function toLocalDateString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 function computeLevel(xp: number): number {
   for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (xp >= LEVEL_THRESHOLDS[i]) return i;
+    if (xp >= LEVEL_THRESHOLDS[i]!) return i + 1;
   }
-  return 0;
+  return 1;
 }
 
 export function getLevelTitle(level: number): string {
@@ -43,8 +51,9 @@ export function getLevelTitle(level: number): string {
 
 export function getLevelProgress(xp: number): { current: number; next: number; percent: number } {
   const level = computeLevel(xp);
-  const current = LEVEL_THRESHOLDS[level] ?? 0;
-  const next = LEVEL_THRESHOLDS[level + 1] ?? LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1]!;
+  const idx = level - 1;
+  const current = LEVEL_THRESHOLDS[idx] ?? 0;
+  const next = LEVEL_THRESHOLDS[idx + 1] ?? LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1]!;
   const percent = next === current ? 100 : Math.round(((xp - current) / (next - current)) * 100);
   return { current, next, percent };
 }
@@ -79,7 +88,7 @@ const defaultProfile: ProfileData = {
 const defaultState = {
   profile: defaultProfile,
   xp: 0,
-  level: 0,
+  level: 1,
   streak: { current: 0, best: 0, lastDate: '' },
   lives: { current: MAX_LIVES, lastRegen: new Date().toISOString() },
   completedExercises: {} as Record<string, CompletedExercise>,
@@ -106,7 +115,6 @@ export const useProgressStore = create<ProgressState>()(
           const existing = s.completedExercises[id];
           const attempts = (existing?.attempts ?? 0) + 1;
           const bestStars = Math.max(existing?.stars ?? 0, stars);
-          const bestHints = Math.min(existing?.hintsUsed ?? hintsUsed, hintsUsed);
           return {
             completedExercises: {
               ...s.completedExercises,
@@ -114,7 +122,7 @@ export const useProgressStore = create<ProgressState>()(
                 stars: bestStars,
                 attempts,
                 completedAt: new Date().toISOString(),
-                hintsUsed: bestHints,
+                hintsUsed,
               },
             },
           };
@@ -123,9 +131,8 @@ export const useProgressStore = create<ProgressState>()(
       updateStreak: () =>
         set((s) => {
           const now = new Date();
-          const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-          const yd = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-          const yesterday = `${yd.getFullYear()}-${String(yd.getMonth() + 1).padStart(2, '0')}-${String(yd.getDate()).padStart(2, '0')}`;
+          const today = toLocalDateString(now);
+          const yesterday = toLocalDateString(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1));
           const { lastDate, current, best } = s.streak;
 
           if (lastDate === today) return {};
@@ -181,7 +188,7 @@ export const useProgressStore = create<ProgressState>()(
       resetProgress: () => set({ ...defaultState, profile: get().profile }),
     }),
     {
-      name: 'codequest-progress',
+      name: STORAGE_KEYS.progress,
       partialize: (s) => ({
         profile: s.profile,
         xp: s.xp,

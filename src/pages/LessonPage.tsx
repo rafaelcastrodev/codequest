@@ -51,7 +51,7 @@ function LessonComplete({ lesson, onNext, onMap }: LessonCompleteProps) {
       </div>
       <div className="flex gap-3 justify-center">
         <Button variant="ghost" size="md" className="w-32" onClick={onMap}>
-          🗺️ Mapa
+          🗺️ Jornada
         </Button>
         <Button variant="primary" size="md" className="w-40" onClick={onNext}>
           Continuar →
@@ -143,7 +143,12 @@ export function LessonPage() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs text-[#8888AA] font-body">Passo {stepIndex + 1} de {totalSteps}</span>
-            <span className="text-xs font-semibold text-primary font-body">{lesson.title}</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-primary font-body">{lesson.title}</span>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+                ✕ Sair
+              </Button>
+            </div>
           </div>
           <ProgressBar value={stepIndex + 1} max={totalSteps} variant="primary" size="sm" />
         </div>

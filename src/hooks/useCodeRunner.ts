@@ -47,12 +47,6 @@ export function useCodeRunner(): CodeRunnerAPI {
       commonMistakes: CommonMistake[],
       hintsUsed: number,
     ): Promise<RunOutcome> => {
-      const mistake = checkCommonMistakes(code, commonMistakes);
-      if (mistake) {
-        setState({ status: 'mistake', output: '', errorMessage: null, mistakeMessage: mistake });
-        return { type: 'mistake' };
-      }
-
       setState({ status: 'running', output: '', errorMessage: null, mistakeMessage: null });
 
       const testResult = await runTests(code, validation);
@@ -60,6 +54,12 @@ export function useCodeRunner(): CodeRunnerAPI {
       if (testResult.passed) {
         setState({ status: 'passed', output: testResult.feedback, errorMessage: null, mistakeMessage: null });
         return { type: 'passed', stars: starsFromHints(hintsUsed) };
+      }
+
+      const mistake = checkCommonMistakes(code, commonMistakes ?? []);
+      if (mistake) {
+        setState({ status: 'mistake', output: '', errorMessage: null, mistakeMessage: mistake });
+        return { type: 'mistake' };
       }
 
       setState({

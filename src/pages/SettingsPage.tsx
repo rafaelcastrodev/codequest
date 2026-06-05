@@ -78,8 +78,8 @@ export function SettingsPage() {
 
       <Modal open={resetModalOpen} onClose={() => setResetModalOpen(false)} title="Resetar Progresso">
         <p className="text-[#8888AA] font-body text-sm mb-6">
-          Isso vai apagar <strong className="text-accent">todo</strong> o seu progresso: XP, streak,
-          lições concluídas e badges. Essa ação não pode ser desfeita.
+          Isso vai apagar <strong className="text-accent">todo</strong> o seu progresso: XP, ofensiva,
+          lições concluídas e troféus. Essa ação não pode ser desfeita.
         </p>
         <div className="flex gap-3">
           <Button variant="ghost" size="md" className="flex-1" onClick={() => setResetModalOpen(false)}>

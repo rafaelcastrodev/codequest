@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { STORAGE_KEYS } from './constants';
 
 interface SettingsState {
   soundEnabled: boolean;
@@ -12,10 +13,10 @@ export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
       soundEnabled: true,
-      livesEnabled: true,
+      livesEnabled: false,
       toggleSound: () => set((s) => ({ soundEnabled: !s.soundEnabled })),
       toggleLives: () => set((s) => ({ livesEnabled: !s.livesEnabled })),
     }),
-    { name: 'codequest-settings' },
+    { name: STORAGE_KEYS.settings },
   ),
 );

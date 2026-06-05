@@ -24,6 +24,7 @@ describe('getLevelTitle', () => {
 
   it('handles out-of-range levels gracefully', () => {
     expect(getLevelTitle(0)).toBe('');
+    expect(getLevelTitle(11)).toBe('Mestre do Código');
     expect(getLevelTitle(99)).toBe('Mestre do Código');
   });
 });
@@ -54,10 +55,10 @@ describe('useProgressStore', () => {
   });
 
   describe('XP and levels', () => {
-    it('starts with 0 XP and level 0', () => {
+    it('starts with 0 XP and level 1', () => {
       const { xp, level } = useProgressStore.getState();
       expect(xp).toBe(0);
-      expect(level).toBe(0);
+      expect(level).toBe(1);
     });
 
     it('adds XP correctly', () => {
@@ -67,16 +68,16 @@ describe('useProgressStore', () => {
 
     it('levels up at correct thresholds', () => {
       act(() => useProgressStore.getState().addXP(50));
-      expect(useProgressStore.getState().level).toBe(1);
+      expect(useProgressStore.getState().level).toBe(2);
 
       act(() => useProgressStore.getState().addXP(70));
       expect(useProgressStore.getState().xp).toBe(120);
-      expect(useProgressStore.getState().level).toBe(2);
+      expect(useProgressStore.getState().level).toBe(3);
     });
 
-    it('reaches level 10 at 2000 XP', () => {
+    it('reaches level 11 at 2000 XP', () => {
       act(() => useProgressStore.getState().addXP(2000));
-      expect(useProgressStore.getState().level).toBe(10);
+      expect(useProgressStore.getState().level).toBe(11);
     });
   });
 
@@ -268,7 +269,7 @@ describe('useProgressStore', () => {
 
       const state = useProgressStore.getState();
       expect(state.xp).toBe(0);
-      expect(state.level).toBe(0);
+      expect(state.level).toBe(1);
       expect(state.streak.current).toBe(0);
       expect(state.profile.name).toBe('Alice');
     });

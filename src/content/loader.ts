@@ -2,7 +2,6 @@ import type { Curriculum, Module, AchievementsFile } from './curriculum.types';
 import { validateCurriculum, validateModule, validateAchievements } from './validators';
 
 const BASE = '/content';
-const IS_DEV = import.meta.env.DEV;
 
 const cache = new Map<string, unknown>();
 
@@ -18,19 +17,25 @@ async function fetchJSON<T>(path: string): Promise<T> {
 
 export async function loadCurriculum(): Promise<Curriculum> {
   const data = await fetchJSON<Curriculum>('curriculum.json');
-  if (IS_DEV) validateCurriculum(data);
+  if (!validateCurriculum(data)) {
+    throw new Error('curriculum.json has invalid schema');
+  }
   return data;
 }
 
 export async function loadModule(file: string): Promise<Module> {
   const data = await fetchJSON<Module>(file);
-  if (IS_DEV) validateModule(data);
+  if (!validateModule(data)) {
+    throw new Error(`${file} has invalid schema`);
+  }
   return data;
 }
 
 export async function loadAchievements(): Promise<AchievementsFile> {
   const data = await fetchJSON<AchievementsFile>('achievements.json');
-  if (IS_DEV) validateAchievements(data);
+  if (!validateAchievements(data)) {
+    throw new Error('achievements.json has invalid schema');
+  }
   return data;
 }
 

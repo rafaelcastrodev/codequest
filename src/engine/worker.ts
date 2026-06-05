@@ -12,6 +12,8 @@ interface WorkerOutput {
   error?: string;
 }
 
+const MAX_OUTPUT_LINES = 1000;
+
 function stringifyArg(arg: unknown): string {
   if (arg === null) return 'null';
   if (typeof arg === 'undefined') return 'undefined';
@@ -26,52 +28,75 @@ function stringifyArg(arg: unknown): string {
   return String(arg);
 }
 
+const BLOCKED_GLOBALS = [
+  'fetch', 'XMLHttpRequest', 'localStorage', 'sessionStorage', 'indexedDB',
+  'importScripts', 'self', 'postMessage', 'close',
+  'WebSocket', 'Worker', 'SharedWorker', 'BroadcastChannel',
+  'navigator', 'location', 'origin', 'caches',
+  'EventSource', 'ServiceWorker', 'Notification',
+] as const;
+
+function lockdownPrototypes(): void {
+  const freezeTarget = (obj: object): void => {
+    try {
+      Object.freeze(obj);
+    } catch { /* some envs restrict freezing builtins */ }
+  };
+
+  freezeTarget(Object.prototype);
+  freezeTarget(Array.prototype);
+  freezeTarget(Function.prototype);
+  freezeTarget(String.prototype);
+  freezeTarget(Number.prototype);
+  freezeTarget(Boolean.prototype);
+  freezeTarget(RegExp.prototype);
+  freezeTarget(Date.prototype);
+  freezeTarget(Error.prototype);
+  freezeTarget(Promise.prototype);
+  freezeTarget(Map.prototype);
+  freezeTarget(Set.prototype);
+  freezeTarget(JSON);
+  freezeTarget(Math);
+}
+
+function buildSandboxedCode(userCode: string): string {
+  const blockedParams = BLOCKED_GLOBALS.join(',');
+  const undefinedArgs = BLOCKED_GLOBALS.map(() => 'void 0').join(',');
+
+  return `"use strict";
+(function(${blockedParams}, eval, Function, globalThis) {
+${userCode}
+}).call(Object.create(null), ${undefinedArgs}, void 0, void 0, void 0);`;
+}
+
 self.onmessage = (event: MessageEvent<WorkerInput>) => {
   const { code } = event.data;
   const lines: string[] = [];
 
   const mockConsole = {
     log: (...args: unknown[]) => {
-      if (lines.length < 1000) lines.push(args.map(stringifyArg).join(' '));
+      if (lines.length < MAX_OUTPUT_LINES) lines.push(args.map(stringifyArg).join(' '));
     },
     warn: (...args: unknown[]) => {
-      if (lines.length < 1000) lines.push(args.map(stringifyArg).join(' '));
+      if (lines.length < MAX_OUTPUT_LINES) lines.push(args.map(stringifyArg).join(' '));
     },
     error: (...args: unknown[]) => {
-      if (lines.length < 1000) lines.push(args.map(stringifyArg).join(' '));
+      if (lines.length < MAX_OUTPUT_LINES) lines.push(args.map(stringifyArg).join(' '));
     },
     info: (...args: unknown[]) => {
-      if (lines.length < 1000) lines.push(args.map(stringifyArg).join(' '));
+      if (lines.length < MAX_OUTPUT_LINES) lines.push(args.map(stringifyArg).join(' '));
     },
   };
 
   try {
-    const fn = new Function(
-      'console',
-      'fetch',
-      'XMLHttpRequest',
-      'localStorage',
-      'sessionStorage',
-      'indexedDB',
-      'importScripts',
-      'eval',
-      'Function',
-      'self',
-      'postMessage',
-      'close',
-      'WebSocket',
-      'Worker',
-      'SharedWorker',
-      'BroadcastChannel',
-      code,
-    );
-    fn(
-      mockConsole,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-    );
+    lockdownPrototypes();
 
-    if (lines.length >= 1000) {
+    const sandboxed = buildSandboxedCode(code);
+
+    const fn = new Function('console', sandboxed);
+    fn(mockConsole);
+
+    if (lines.length >= MAX_OUTPUT_LINES) {
       lines.push('[... output truncado — limite de 1000 linhas atingido]');
     }
     const result: WorkerOutput = { success: true, output: lines.join('\n') };

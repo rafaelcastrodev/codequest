@@ -74,7 +74,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         <div className="flex items-center gap-1.5">
           <span className="text-lg">🔥</span>
           <span className="font-heading font-bold text-warning">{streak.current}</span>
-          <span className="text-xs text-[#8888AA] font-body">dias</span>
+          <span className="text-xs text-[#8888AA] font-body">ofensiva</span>
         </div>
 
         {livesEnabled && (
@@ -89,8 +89,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin">
-        <NavItem to="/" icon="🗺️" label="Mapa" active={location.pathname === '/'} onClick={onNavigate} />
+        <NavItem to="/" icon="🗺️" label="Jornada" active={location.pathname === '/'} onClick={onNavigate} />
         <NavItem to="/profile" icon="👤" label="Perfil" active={location.pathname === '/profile'} onClick={onNavigate} />
+        <NavItem to="/about" icon="ℹ️" label="Sobre" active={location.pathname === '/about'} onClick={onNavigate} />
         <NavItem to="/settings" icon="⚙️" label="Configurações" active={location.pathname === '/settings'} onClick={onNavigate} />
       </nav>
 

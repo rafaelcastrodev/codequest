@@ -1,7 +1,6 @@
-import { lazy, Suspense, useState, useCallback, useEffect } from 'react';
+import { lazy, Suspense, useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import type { Monaco } from '@monaco-editor/react';
+import { motion } from 'framer-motion';
 import { useExercise } from '@/hooks/useExercise';
 import { useCodeRunner } from '@/hooks/useCodeRunner';
 import { useProgressStore } from '@/store/progress.store';
@@ -11,205 +10,15 @@ import { useAchievements } from '@/hooks/useAchievements';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
+import { HintPanel } from '@/components/exercise/HintPanel';
+import { OutputPanel } from '@/components/exercise/OutputPanel';
+import { SuccessOverlay } from '@/components/exercise/SuccessOverlay';
+import { defineCodeQuestTheme } from '@/engine/monaco-theme';
 import { triggerConfetti } from '@/utils/confetti';
 import { playSound } from '@/utils/sounds';
 import { lessonPath } from '@/utils/lesson-path';
-import type { ExerciseLesson } from '@/content/curriculum.types';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then((m) => ({ default: m.Editor })));
-
-function defineCodeQuestTheme(monaco: Monaco): void {
-  monaco.editor.defineTheme('codequest-dark', {
-    base: 'vs-dark',
-    inherit: true,
-    rules: [
-      { token: 'keyword', foreground: '7C5CFC', fontStyle: 'bold' },
-      { token: 'string', foreground: '00D4AA' },
-      { token: 'number', foreground: 'FFB84D' },
-      { token: 'comment', foreground: '8888AA', fontStyle: 'italic' },
-      { token: 'type', foreground: '7C5CFC' },
-    ],
-    colors: {
-      'editor.background': '#0A0A15',
-      'editor.foreground': '#E8E8F0',
-      'editorLineNumber.foreground': '#8888AA',
-      'editorLineNumber.activeForeground': '#00D4AA',
-      'editor.selectionBackground': '#25254266',
-      'editor.lineHighlightBackground': '#1A1A2E88',
-      'editorCursor.foreground': '#00D4AA',
-      'editorBracketMatch.background': '#00D4AA22',
-      'editorBracketMatch.border': '#00D4AA',
-    },
-  });
-}
-
-interface HintPanelProps {
-  hints: string[];
-  hintsUsed: number;
-  onUseHint: () => void;
-}
-
-function HintPanel({ hints, hintsUsed, onUseHint }: HintPanelProps) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <div className="border border-warning/30 rounded-xl overflow-hidden">
-      <button
-        onClick={() => setExpanded((e) => !e)}
-        className="w-full flex items-center justify-between px-4 py-2.5 bg-warning/10 text-warning hover:bg-warning/20 transition-colors"
-      >
-        <span className="font-body font-semibold text-sm">
-          💡 Dica {hintsUsed}/{hints.length}
-        </span>
-        <span className="text-xs opacity-70">{expanded ? '▲' : '▼'}</span>
-      </button>
-
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 py-3 bg-warning/5 space-y-2">
-              {hints.slice(0, hintsUsed).map((hint, i) => (
-                <div key={i} className="text-sm text-[#E8E8F0] font-body">
-                  <span className="text-warning font-semibold">#{i + 1}</span> {hint}
-                </div>
-              ))}
-              {hintsUsed < hints.length && (
-                <Button variant="warning" size="sm" onClick={onUseHint} className="mt-1 text-xs">
-                  Revelar próxima dica {hintsUsed < 2 ? '(−1★)' : '(já 1★)'}
-                </Button>
-              )}
-              {hintsUsed >= hints.length && (
-                <p className="text-xs text-[#8888AA] font-body">Todas as dicas foram reveladas.</p>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-interface OutputPanelProps {
-  output: string;
-  errorMessage: string | null;
-  mistakeMessage: string | null;
-  status: string;
-}
-
-function OutputPanel({ output, errorMessage, mistakeMessage, status }: OutputPanelProps) {
-  const isEmpty = !output && !errorMessage && !mistakeMessage;
-
-  return (
-    <div className="bg-[#0A0A15] border border-bg-elevated rounded-xl overflow-hidden h-40 flex flex-col">
-      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-bg-elevated flex-shrink-0">
-        <div className="flex gap-1">
-          <div className="w-2.5 h-2.5 rounded-full bg-accent/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-warning/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-primary/50" />
-        </div>
-        <span className="text-xs text-[#8888AA] font-mono">console</span>
-        {status === 'running' && (
-          <span className="ml-auto text-xs text-[#8888AA] font-body animate-pulse">executando...</span>
-        )}
-      </div>
-      <div className="flex-1 p-3 overflow-y-auto scrollbar-thin">
-        {isEmpty && (
-          <p className="text-[#8888AA] font-mono text-xs opacity-50">
-            Clique em ▶ Executar para ver a saída aqui
-          </p>
-        )}
-        {mistakeMessage && (
-          <p className="text-warning font-mono text-xs leading-relaxed">⚠️ {mistakeMessage}</p>
-        )}
-        {errorMessage && !mistakeMessage && (
-          <pre className="text-accent font-mono text-xs leading-relaxed whitespace-pre-wrap">❌ {errorMessage}</pre>
-        )}
-        {output && (
-          <pre className={`font-mono text-xs leading-relaxed whitespace-pre-wrap ${status === 'passed' ? 'text-primary' : 'text-[#E8E8F0]'}`}>{status === 'passed' ? '✅ ' : '📋 '}{output}</pre>
-        )}
-      </div>
-    </div>
-  );
-}
-
-interface SuccessOverlayProps {
-  lesson: ExerciseLesson;
-  stars: number;
-  onNext: () => void;
-  onMap: () => void;
-}
-
-function XPCounter({ xp }: { xp: number }) {
-  return (
-    <motion.div
-      initial={{ scale: 0.5, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
-      className="bg-secondary/20 border border-secondary/30 rounded-xl px-4 py-2 mb-6 inline-block"
-    >
-      <motion.span
-        className="text-secondary font-heading font-bold text-lg"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        +{xp} XP
-      </motion.span>
-    </motion.div>
-  );
-}
-
-function SuccessOverlay({ lesson, stars, onNext, onMap }: SuccessOverlayProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl"
-    >
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        className="bg-bg-surface border border-primary/40 rounded-2xl p-8 text-center max-w-sm w-full mx-4 shadow-[0_0_40px_rgba(0,212,170,0.2)]"
-      >
-        <div className="text-5xl mb-3">🎉</div>
-        <h2 className="font-heading text-2xl font-bold text-primary mb-1">Incrível!</h2>
-        <p className="text-[#8888AA] font-body text-sm mb-4">{lesson.title}</p>
-
-        <div className="flex justify-center gap-1 mb-4">
-          {[1, 2, 3].map((s) => (
-            <motion.span
-              key={s}
-              initial={{ scale: 0, rotate: -30 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: s * 0.1, type: 'spring', stiffness: 400 }}
-              className="text-3xl"
-            >
-              {s <= stars ? '⭐' : '☆'}
-            </motion.span>
-          ))}
-        </div>
-
-        <XPCounter xp={lesson.xpReward} />
-
-        <div className="flex gap-3">
-          <Button variant="ghost" size="md" className="flex-1" onClick={onMap}>
-            🗺️ Mapa
-          </Button>
-          <Button variant="primary" size="md" className="flex-1" onClick={onNext}>
-            Próximo →
-          </Button>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
 
 export function ExercisePage() {
   const { moduleId, lessonId } = useParams<{ moduleId: string; lessonId: string }>();
@@ -228,6 +37,7 @@ export function ExercisePage() {
   const [shakeKey, setShakeKey] = useState(0);
   const [noLivesModal, setNoLivesModal] = useState(false);
   const [mobileTab, setMobileTab] = useState<'instructions' | 'code'>('instructions');
+  const pendingAchievementCheck = useRef(false);
 
   const resetRunner = runner.reset;
 
@@ -240,6 +50,13 @@ export function ExercisePage() {
       if (moduleId && lessonId) setCurrentLesson(moduleId, lessonId);
     }
   }, [exercise, moduleId, lessonId, setCurrentLesson, resetRunner]);
+
+  useEffect(() => {
+    if (pendingAchievementCheck.current) {
+      pendingAchievementCheck.current = false;
+      checkAndUnlock();
+    }
+  }, [completedExercises, checkAndUnlock]);
 
   const handleRun = useCallback(async () => {
     if (!exercise || runner.status === 'running') return;
@@ -260,7 +77,7 @@ export function ExercisePage() {
       updateStreak();
       triggerConfetti();
       if (soundEnabled) playSound('success');
-      setTimeout(() => checkAndUnlock(), 50);
+      pendingAchievementCheck.current = true;
     } else if (outcome.type === 'failed' || outcome.type === 'error') {
       setEditorBorderStatus('err');
       setShakeKey((k) => k + 1);
@@ -272,7 +89,7 @@ export function ExercisePage() {
         }
       }
     }
-  }, [exercise, runner, code, hintsUsed, addXP, completeExercise, completedExercises, updateStreak, livesEnabled, consumeLife, soundEnabled, checkAndUnlock]);
+  }, [exercise, runner, code, hintsUsed, addXP, completeExercise, completedExercises, updateStreak, livesEnabled, consumeLife, soundEnabled]);
 
   const handleNext = useCallback(() => {
     if (!mod || !moduleId) return navigate('/');
@@ -331,7 +148,6 @@ export function ExercisePage() {
         )}
       </div>
 
-      {/* Mobile: button to switch to code */}
       <div className="lg:hidden p-3 border-t border-bg-elevated">
         <Button variant="primary" size="md" className="w-full" onClick={() => setMobileTab('code')}>
           Abrir Editor →
@@ -354,10 +170,11 @@ export function ExercisePage() {
       <div className="flex items-center justify-between px-4 py-2 border-b border-bg-elevated bg-bg-surface flex-shrink-0">
         <div className="flex items-center gap-2">
           <button
+            aria-label="Voltar às instruções"
             onClick={() => setMobileTab('instructions')}
             className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated transition-colors"
           >
-            ←
+            <span aria-hidden="true">←</span>
           </button>
           <span className="font-mono text-xs text-[#8888AA]">student.ts</span>
         </div>
@@ -422,6 +239,11 @@ export function ExercisePage() {
               wordWrap: 'on',
               renderLineHighlight: 'line',
               smoothScrolling: true,
+              quickSuggestions: false,
+              suggestOnTriggerCharacters: false,
+              parameterHints: { enabled: false },
+              wordBasedSuggestions: 'off',
+              tabCompletion: 'off',
             }}
           />
         </Suspense>
@@ -448,7 +270,7 @@ export function ExercisePage() {
         </p>
         <div className="flex gap-3">
           <Button variant="ghost" size="md" className="flex-1" onClick={() => navigate('/')}>
-            Voltar ao Mapa
+            Voltar à Jornada
           </Button>
           <Button variant="primary" size="md" className="flex-1" onClick={() => navigate('/settings')}>
             Configurações
@@ -456,7 +278,6 @@ export function ExercisePage() {
         </div>
       </Modal>
 
-      {/* Desktop: side-by-side. Mobile: toggle between panels */}
       <div className="hidden lg:flex lg:flex-row flex-1 overflow-hidden">
         {instructionsPanel}
         {editorPanel}

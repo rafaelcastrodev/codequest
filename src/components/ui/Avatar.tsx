@@ -32,7 +32,7 @@ export function Avatar({ id, size = 'md', className = '', onClick }: AvatarProps
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onClick={onClick}
-      onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+      onKeyDown={onClick ? (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onClick()) : undefined}
       className={`
         ${sizeClasses[size]} rounded-xl bg-bg-elevated border border-bg-elevated
         flex items-center justify-center select-none

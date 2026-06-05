@@ -6,6 +6,7 @@ import { ExercisePage } from '@/pages/ExercisePage';
 import { QuizPage } from '@/pages/QuizPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { SettingsPage } from '@/pages/SettingsPage';
+import { AboutPage } from '@/pages/AboutPage';
 
 export function AppRouter() {
   return (
@@ -18,6 +19,7 @@ export function AppRouter() {
           <Route path="quiz/:moduleId/:lessonId" element={<QuizPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="about" element={<AboutPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

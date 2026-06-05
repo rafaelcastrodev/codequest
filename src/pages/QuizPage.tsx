@@ -186,7 +186,7 @@ function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
 
       <div className="flex gap-3">
         <Button variant="ghost" size="md" className="flex-1" onClick={onMap}>
-          🗺️ Mapa
+          🗺️ Jornada
         </Button>
         <Button variant="primary" size="md" className="flex-1" onClick={onNext}>
           Próximo →
@@ -211,6 +211,7 @@ export function QuizPage() {
   const [showingResult, setShowingResult] = useState(false);
   const [canAdvance, setCanAdvance] = useState(false);
   const xpAwarded = useRef(false);
+  const pendingAchievementCheck = useRef(false);
 
   const quiz = lesson?.type === 'quiz' ? (lesson as QuizLesson) : null;
 
@@ -218,9 +219,18 @@ export function QuizPage() {
     if (moduleId && lessonId) setCurrentLesson(moduleId, lessonId);
   }, [moduleId, lessonId, setCurrentLesson]);
 
+  useEffect(() => {
+    if (pendingAchievementCheck.current) {
+      pendingAchievementCheck.current = false;
+      checkAndUnlock();
+    }
+  }, [completedExercises, checkAndUnlock]);
+
   function handleAnswer(selectedIndex: number) {
     if (!quiz) return;
-    const isCorrect = selectedIndex === quiz.questions[currentQuestionIndex]!.correctIndex;
+    const currentQuestion = quiz.questions[currentQuestionIndex];
+    if (!currentQuestion) return;
+    const isCorrect = selectedIndex === currentQuestion.correctIndex;
     setAnsweredCorrect((prev) => [...prev, isCorrect]);
     setCanAdvance(true);
   }
@@ -240,7 +250,7 @@ export function QuizPage() {
         xpAwarded.current = true;
         triggerConfetti();
         if (soundEnabled) playSound('success');
-        setTimeout(() => checkAndUnlock(), 50);
+        pendingAchievementCheck.current = true;
       }
       setShowingResult(true);
     } else {
@@ -292,7 +302,7 @@ export function QuizPage() {
         ) : (
           <motion.div key={`q-${currentQuestionIndex}`} className="space-y-6">
             <QuestionCard
-              question={quiz.questions[currentQuestionIndex]!}
+              question={quiz.questions[currentQuestionIndex] ?? quiz.questions[0]!}
               questionNumber={currentQuestionIndex + 1}
               totalQuestions={quiz.questions.length}
               onAnswer={handleAnswer}

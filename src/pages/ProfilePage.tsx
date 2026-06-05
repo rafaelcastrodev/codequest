@@ -50,6 +50,8 @@ export function ProfilePage() {
     useProgressStore();
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState(profile.name);
   const levelData = getLevelProgress(xp);
   const title = getLevelTitle(level);
   const completedCount = Object.keys(completedExercises).length;
@@ -59,6 +61,16 @@ export function ProfilePage() {
     loadAchievements().then((f) => setAllAchievements(f.achievements));
   }, []);
 
+  function saveName() {
+    const trimmed = nameInput.trim();
+    if (trimmed.length > 0) {
+      setProfile(trimmed, profile.avatar);
+    } else {
+      setNameInput(profile.name);
+    }
+    setEditingName(false);
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       <h1 className="font-heading text-2xl font-bold text-[#E8E8F0]">Perfil</h1>
@@ -66,7 +78,28 @@ export function ProfilePage() {
       <div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 flex items-center gap-5">
         <Avatar id={profile.avatar} size="xl" onClick={() => setAvatarModalOpen(true)} />
         <div className="flex-1 min-w-0">
-          <h2 className="font-heading text-xl font-bold text-[#E8E8F0]">{profile.name}</h2>
+          {editingName ? (
+            <input
+              autoFocus
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              onBlur={saveName}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') saveName();
+                if (e.key === 'Escape') { setNameInput(profile.name); setEditingName(false); }
+              }}
+              maxLength={20}
+              className="font-heading text-xl font-bold text-[#E8E8F0] bg-bg-elevated border border-primary/40 rounded-lg px-2 py-0.5 w-full outline-none focus:ring-2 focus:ring-primary/50"
+            />
+          ) : (
+            <button
+              onClick={() => { setNameInput(profile.name); setEditingName(true); }}
+              className="group flex items-center gap-2 text-left"
+            >
+              <h2 className="font-heading text-xl font-bold text-[#E8E8F0]">{profile.name}</h2>
+              <span className="text-[#8888AA] opacity-0 group-hover:opacity-100 transition-opacity text-sm">✏️</span>
+            </button>
+          )}
           <p className="text-[#8888AA] font-body text-sm">Nível {level} · {title}</p>
           <div className="mt-3 space-y-1">
             <div className="flex justify-between text-xs font-body">
@@ -80,10 +113,10 @@ export function ProfilePage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { icon: '🔥', label: 'Streak', value: `${streak.current} dias` },
+          { icon: '🔥', label: 'Ofensiva', value: `${streak.current} dias` },
           { icon: '⭐', label: 'Estrelas', value: totalStars },
           { icon: '✅', label: 'Lições', value: completedCount },
-          { icon: '🏆', label: 'Badges', value: `${achievements.length}/${allAchievements.length}` },
+          { icon: '🏆', label: 'Troféus', value: `${achievements.length}/${allAchievements.length}` },
         ].map((stat) => (
           <motion.div
             key={stat.label}
@@ -100,7 +133,7 @@ export function ProfilePage() {
       {allAchievements.length > 0 && (
         <div>
           <h2 className="font-heading font-semibold text-[#E8E8F0] mb-3">
-            Badges{' '}
+            Troféus{' '}
             <span className="text-[#8888AA] font-body font-normal text-sm">
               {achievements.length}/{allAchievements.length}
             </span>
@@ -114,7 +147,7 @@ export function ProfilePage() {
       )}
 
       <Modal open={avatarModalOpen} onClose={() => setAvatarModalOpen(false)} title="Escolha seu avatar">
-        <div className="grid grid-cols-4 gap-3 mt-2">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3 mt-2">
           {AVATAR_IDS.map((id) => (
             <Avatar
               key={id}

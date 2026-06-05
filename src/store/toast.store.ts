@@ -31,7 +31,7 @@ export const useToastStore = create<ToastState>((set) => ({
         {
           id: `toast-${++nextId}`,
           variant: 'achievement',
-          title: 'Badge Desbloqueado!',
+          title: 'Troféu Desbloqueado!',
           message: achievement.title,
           icon: achievement.icon,
         },

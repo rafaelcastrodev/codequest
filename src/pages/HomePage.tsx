@@ -81,6 +81,7 @@ export function HomePage() {
   const [modules, setModules] = useState<Map<string, Module>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [failedModules, setFailedModules] = useState<string[]>([]);
 
   useEffect(() => {
     loadCurriculum()
@@ -93,10 +94,16 @@ export function HomePage() {
           }),
         );
         const map = new Map<string, Module>();
-        loaded.forEach((r) => {
-          if (r.status === 'fulfilled') map.set(r.value[0], r.value[1]);
+        const failed: string[] = [];
+        loaded.forEach((r, i) => {
+          if (r.status === 'fulfilled') {
+            map.set(r.value[0], r.value[1]);
+          } else {
+            failed.push(c.modules[i]!.title);
+          }
         });
         setModules(map);
+        setFailedModules(failed);
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Erro ao carregar conteúdo'))
       .finally(() => setLoading(false));
@@ -155,6 +162,14 @@ export function HomePage() {
           Complete as missões para dominar o TypeScript!
         </p>
       </div>
+
+      {failedModules.length > 0 && (
+        <div className="bg-accent/10 border border-accent/30 rounded-xl p-4 mb-6 text-center">
+          <p className="text-accent font-body text-sm">
+            ⚠️ Não foi possível carregar: {failedModules.join(', ')}
+          </p>
+        </div>
+      )}
 
       <div className="relative space-y-4">
         {curriculum?.modules.map((m, i) => {
