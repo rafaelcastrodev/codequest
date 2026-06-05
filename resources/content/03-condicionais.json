@@ -1,0 +1,203 @@
+{
+  "id": "03-condicionais",
+  "title": "Condicionais",
+  "description": "Ensine o computador a tomar decisões",
+  "lessons": [
+    {
+      "id": "03-01",
+      "title": "if — tomando decisões",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Até agora, o computador executava todas as linhas, uma após a outra. Mas e se quisermos que ele **só faça algo se uma condição for verdadeira**?\n\nÉ pra isso que existe o `if` (\"se\" em inglês). Ele checa uma condição e só executa o bloco de código dentro das `{ }` se o resultado for `true`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let hp: number = 30;\n\nif (hp < 50) {\n  console.log(\"⚠️ HP baixo! Cuidado!\");\n}\n\nconsole.log(\"Jogo continua...\");",
+          "highlightLines": [3, 4, 5],
+          "explanation": "Como `hp` é `30` e `30 < 50` é `true`, a mensagem de aviso aparece. Se `hp` fosse `80`, a linha dentro do `if` seria **ignorada**."
+        }
+      ]
+    },
+    {
+      "id": "03-02",
+      "title": "else — o caminho alternativo",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "O `else` (\"senão\") entra em ação quando a condição do `if` é `false`. É o caminho alternativo — ou faz isso, ou faz aquilo."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let nota: number = 7;\n\nif (nota >= 6) {\n  console.log(\"Aprovado! 🎉\");\n} else {\n  console.log(\"Reprovado 😢\");\n}",
+          "highlightLines": [3, 4, 5, 6, 7],
+          "explanation": "Se `nota >= 6` for verdade → \"Aprovado!\". Se não → \"Reprovado\". Sempre um dos dois é executado, nunca os dois juntos."
+        }
+      ]
+    },
+    {
+      "id": "03-03",
+      "title": "else if — múltiplas opções",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Quando há mais de dois caminhos possíveis, usamos `else if` para checar condições extras. O computador testa de cima para baixo e executa o **primeiro** bloco cuja condição seja `true`."
+        },
+        {
+          "type": "interactive-example",
+          "code": "let temperatura: number = 35;\n\nif (temperatura >= 35) {\n  console.log(\"🔥 Muito quente!\");\n} else if (temperatura >= 25) {\n  console.log(\"☀️ Agradável\");\n} else if (temperatura >= 15) {\n  console.log(\"🧥 Um pouco frio\");\n} else {\n  console.log(\"🥶 Congelando!\");\n}",
+          "highlightLines": [3, 5, 7, 9],
+          "explanation": "Com `35`, cai no primeiro bloco. Se fosse `20`, pulava o primeiro (`20 >= 35` é falso), pulava o segundo (`20 >= 25` é falso) e caía no terceiro (`20 >= 15` é verdade)."
+        }
+      ]
+    },
+    {
+      "id": "03-04",
+      "title": "Operadores de comparação",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Para criar condições, usamos **operadores de comparação**. Cada um retorna `true` ou `false`:\n\n- `===` → é igual? (usa 3 sinais!)\n- `!==` → é diferente?\n- `>` → é maior?\n- `<` → é menor?\n- `>=` → é maior ou igual?\n- `<=` → é menor ou igual?"
+        },
+        {
+          "type": "interactive-example",
+          "code": "let vidas: number = 3;\n\nconsole.log(vidas === 3);   // true\nconsole.log(vidas !== 0);   // true\nconsole.log(vidas > 5);     // false\nconsole.log(vidas <= 3);    // true",
+          "highlightLines": [3, 4, 5, 6],
+          "explanation": "Cada comparação gera um `boolean`. Sempre use `===` (igualdade estrita) em TypeScript, nunca `==` (igualdade fraca)."
+        }
+      ]
+    },
+    {
+      "id": "03-05",
+      "title": "Operadores lógicos",
+      "type": "theory",
+      "xpReward": 5,
+      "steps": [
+        {
+          "type": "explanation",
+          "content": "Para combinar condições, usamos **operadores lógicos**:\n\n- `&&` (E) → **ambas** precisam ser verdade\n- `||` (OU) → **pelo menos uma** precisa ser verdade\n- `!` (NÃO) → **inverte** o valor"
+        },
+        {
+          "type": "interactive-example",
+          "code": "let hp: number = 100;\nlet temEscudo: boolean = true;\n\n// E (&&): ambas precisam ser true\nif (hp > 50 && temEscudo) {\n  console.log(\"Pode atacar com segurança!\");\n}\n\n// OU (||): basta uma ser true\nlet temPocao: boolean = false;\nif (temEscudo || temPocao) {\n  console.log(\"Tem pelo menos um item de proteção\");\n}\n\n// NÃO (!): inverte\nif (!temPocao) {\n  console.log(\"Sem poção! Compre uma.\");\n}",
+          "highlightLines": [5, 11, 16],
+          "explanation": "`&&` é como \"e também\", `||` é como \"ou então\", `!` é como \"o oposto de\"."
+        }
+      ]
+    },
+    {
+      "id": "03-06",
+      "title": "Sistema de notas",
+      "type": "exercise",
+      "difficulty": 2,
+      "xpReward": 20,
+      "instructions": "Crie um sistema de notas que recebe uma variável `nota` (number) com valor `85` e imprime a letra correspondente:\n\n- 90 ou mais → `\"A\"`\n- 80 ou mais → `\"B\"`\n- 70 ou mais → `\"C\"`\n- 60 ou mais → `\"D\"`\n- Menos que 60 → `\"F\"`",
+      "starterCode": "const nota: number = 85;\n\n// Use if/else if/else para imprimir a letra\n",
+      "solution": "const nota: number = 85;\n\nif (nota >= 90) {\n  console.log(\"A\");\n} else if (nota >= 80) {\n  console.log(\"B\");\n} else if (nota >= 70) {\n  console.log(\"C\");\n} else if (nota >= 60) {\n  console.log(\"D\");\n} else {\n  console.log(\"F\");\n}",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "B"
+          }
+        ]
+      },
+      "hints": [
+        "Comece testando o caso mais alto: `if (nota >= 90)`",
+        "Depois use `else if` para cada faixa, em ordem decrescente.",
+        "O `else` final pega tudo abaixo de 60 (nota F)."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "if (nota >= 60)",
+          "message": "Cuidado com a ordem! Se checar `>= 60` primeiro, `85` cairia como \"D\"! Comece sempre do maior para o menor."
+        },
+        {
+          "pattern": "nota == 85",
+          "message": "Não compare com valores fixos! Use `>=` para faixas: `nota >= 90`, `nota >= 80`, etc."
+        },
+        {
+          "pattern": "nota === 85",
+          "message": "Não compare com valores fixos! Use `>=` para faixas: `nota >= 90`, `nota >= 80`, etc."
+        }
+      ]
+    },
+    {
+      "id": "03-07",
+      "title": "Desafio: Classificador de idade",
+      "type": "challenge",
+      "difficulty": 3,
+      "xpReward": 30,
+      "instructions": "Crie um programa que classifica uma pessoa pela idade.\n\nDada a variável `idade` com valor `12`, imprima:\n\n- Se `idade < 0` ou `idade > 150` → `\"Idade inválida\"`\n- Se `idade < 13` → `\"Criança\"`\n- Se `idade < 18` → `\"Adolescente\"`\n- Se `idade < 65` → `\"Adulto\"`\n- Se `idade >= 65` → `\"Idoso\"`\n\n**Bônus:** Use o operador `||` para checar as duas condições de idade inválida.",
+      "starterCode": "const idade: number = 12;\n\n// Classifique a idade\n",
+      "solution": "const idade: number = 12;\n\nif (idade < 0 || idade > 150) {\n  console.log(\"Idade inválida\");\n} else if (idade < 13) {\n  console.log(\"Criança\");\n} else if (idade < 18) {\n  console.log(\"Adolescente\");\n} else if (idade < 65) {\n  console.log(\"Adulto\");\n} else {\n  console.log(\"Idoso\");\n}",
+      "validation": {
+        "strategy": "output-match",
+        "testCases": [
+          {
+            "setupCode": "",
+            "testCode": "",
+            "expectedOutput": "Criança"
+          }
+        ]
+      },
+      "hints": [
+        "Primeiro teste o caso inválido: `if (idade < 0 || idade > 150)`",
+        "Use `||` (OU) para combinar as duas condições de invalidade.",
+        "Depois, teste cada faixa do menor para o maior com `else if`."
+      ],
+      "commonMistakes": [
+        {
+          "pattern": "idade < 0 && idade > 150",
+          "message": "Um número não pode ser menor que 0 E maior que 150 ao mesmo tempo! Use `||` (OU): `idade < 0 || idade > 150`."
+        }
+      ]
+    },
+    {
+      "id": "03-08",
+      "title": "Quiz: Condicionais",
+      "type": "quiz",
+      "xpReward": 10,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "O que `if (true)` faz?",
+          "options": ["Sempre executa o bloco", "Nunca executa o bloco", "Dá erro", "Depende do contexto"],
+          "correctIndex": 0,
+          "explanation": "A condição é literalmente `true`, então o bloco sempre é executado."
+        },
+        {
+          "id": "q2",
+          "question": "Qual operador significa \"E\" (ambos verdadeiros)?",
+          "options": ["||", "&&", "!!", "=="],
+          "correctIndex": 1,
+          "explanation": "`&&` é o operador lógico E — requer que ambos os lados sejam `true`."
+        },
+        {
+          "id": "q3",
+          "question": "Qual o resultado de `!(5 > 3)`?",
+          "options": ["true", "false", "5", "Erro"],
+          "correctIndex": 1,
+          "explanation": "`5 > 3` é `true`, mas `!` inverte para `false`."
+        },
+        {
+          "id": "q4",
+          "question": "Quantos blocos executam num if/else if/else?",
+          "options": ["Todos", "Nenhum", "Exatamente um", "No mínimo um"],
+          "correctIndex": 2,
+          "explanation": "Apenas o primeiro bloco cuja condição é verdadeira executa. Se nenhuma for verdade, executa o `else` (se existir)."
+        }
+      ]
+    }
+  ]
+}
