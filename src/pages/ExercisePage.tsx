@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { RichText } from '@/components/ui/RichText';
+import { FontSizeButton } from '@/components/layout/FontSizeButton';
+import { PageInfoButton } from '@/components/layout/PageInfoButton';
 import { HintPanel } from '@/components/exercise/HintPanel';
 import { OutputPanel } from '@/components/exercise/OutputPanel';
 import { SuccessOverlay } from '@/components/exercise/SuccessOverlay';
@@ -158,9 +160,15 @@ export function ExercisePage() {
         <span className="text-xs text-[#8888AA] font-body truncate">
           {mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
         </span>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-          ✕ Sair
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
+            <FontSizeButton />
+            <PageInfoButton />
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+            ✕ Sair
+          </Button>
+        </div>
       </div>
       <div className="p-5 border-b border-bg-elevated">
         <div className="flex items-center gap-2 mb-2 flex-wrap">

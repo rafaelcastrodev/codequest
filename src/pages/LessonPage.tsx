@@ -12,6 +12,8 @@ import {
 import { Button } from "@/components/ui/Button";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { RichText } from "@/components/ui/RichText";
+import { FontSizeButton } from "@/components/layout/FontSizeButton";
+import { PageInfoButton } from "@/components/layout/PageInfoButton";
 import { lessonPath } from "@/utils/lesson-path";
 import type {
 	Module,
@@ -262,12 +264,18 @@ export function LessonPage() {
 							{mod?.title} — Lição {currentIdx + 1} de{" "}
 							{lessons.length}
 						</span>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => navigate("/")}>
-							✕ Sair
-						</Button>
+						<div className="flex items-center gap-2">
+							<div className="hidden lg:flex items-center gap-2">
+								<FontSizeButton />
+								<PageInfoButton />
+							</div>
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => navigate("/")}>
+								✕ Sair
+							</Button>
+						</div>
 					</div>
 					<div className="flex items-center justify-between">
 						<span className="text-xs font-semibold text-primary font-body">

@@ -8,6 +8,8 @@ import { useAchievements } from "@/hooks/useAchievements";
 import { useSettingsStore } from "@/store/settings.store";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { FontSizeButton } from "@/components/layout/FontSizeButton";
+import { PageInfoButton } from "@/components/layout/PageInfoButton";
 import { triggerConfetti } from "@/utils/confetti";
 import { playSound } from "@/utils/sounds";
 import { lessonPath } from "@/utils/lesson-path";
@@ -334,12 +336,18 @@ export function QuizPage() {
 						{mod?.title} — Lição {lessonIndex + 1} de{" "}
 						{lessons.length}
 					</span>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() => navigate("/")}>
-						✕ Sair
-					</Button>
+					<div className="flex items-center gap-2">
+						<div className="hidden lg:flex items-center gap-2">
+							<FontSizeButton />
+							<PageInfoButton />
+						</div>
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => navigate("/")}>
+							✕ Sair
+						</Button>
+					</div>
 				</div>
 			)}
 			<AnimatePresence mode="wait">
