@@ -116,6 +116,10 @@ export function ExercisePage() {
     );
   }
 
+  const lessons = mod?.lessons ?? [];
+  const lessonIndex = lessons.findIndex((l) => l.id === lessonId);
+  const totalLessons = lessons.length;
+
   const editorBorderClass =
     editorBorderStatus === 'ok'
       ? 'border-primary/50'
@@ -125,6 +129,14 @@ export function ExercisePage() {
 
   const instructionsPanel = (
     <div className="flex-1 lg:flex-initial lg:w-80 xl:w-96 flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
+      <div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50 flex items-center justify-between">
+        <span className="text-xs text-[#8888AA] font-body truncate">
+          {mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
+        </span>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+          ✕ Sair
+        </Button>
+      </div>
       <div className="p-5 border-b border-bg-elevated">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
           <Badge variant={exercise.type === 'challenge' ? 'accent' : 'primary'} size="sm">

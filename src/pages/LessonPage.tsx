@@ -4,11 +4,42 @@ import { motion } from 'framer-motion';
 import { loadModule } from '@/content/loader';
 import { useProgressStore } from '@/store/progress.store';
 import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { RichText } from '@/components/ui/RichText';
 import { lessonPath } from '@/utils/lesson-path';
 import type { Module, TheoryLesson, LessonStep } from '@/content/curriculum.types';
+
+interface StepNavProps {
+  total: number;
+  current: number;
+  maxVisited: number;
+  onSelect: (index: number) => void;
+}
+
+function StepNav({ total, current, maxVisited, onSelect }: StepNavProps) {
+  return (
+    <div className="flex items-center gap-1.5">
+      {Array.from({ length: total }, (_, i) => {
+        const isActive = i === current;
+        const isVisited = i <= maxVisited;
+        return (
+          <button
+            key={i}
+            onClick={() => isVisited && onSelect(i)}
+            disabled={!isVisited}
+            className={`
+              h-2 rounded-full transition-all duration-200
+              ${isActive ? 'w-6 bg-primary shadow-[0_0_8px_rgba(0,212,170,0.5)]' : 'w-2'}
+              ${!isActive && isVisited ? 'bg-primary/40 hover:bg-primary/70 cursor-pointer' : ''}
+              ${!isVisited ? 'bg-bg-elevated cursor-default' : ''}
+            `}
+            aria-label={`Passo ${i + 1}`}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 interface StepViewProps {
   step: LessonStep;
@@ -68,6 +99,7 @@ export function LessonPage() {
 
   const [mod, setMod] = useState<Module | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
+  const [maxVisited, setMaxVisited] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const xpAwarded = useRef(false);
@@ -76,12 +108,17 @@ export function LessonPage() {
     if (!moduleId) return;
     setLoading(true);
     setStepIndex(0);
+    setMaxVisited(0);
     setCompleted(false);
     xpAwarded.current = false;
     loadModule(`modules/${moduleId}.json`)
       .then(setMod)
       .finally(() => setLoading(false));
   }, [moduleId]);
+
+  useEffect(() => {
+    setMaxVisited((prev) => Math.max(prev, stepIndex));
+  }, [stepIndex]);
 
   if (loading) {
     return (
@@ -142,15 +179,18 @@ export function LessonPage() {
       {!completed && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#8888AA] font-body">Passo {stepIndex + 1} de {totalSteps}</span>
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-primary font-body">{lesson.title}</span>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-                ✕ Sair
-              </Button>
-            </div>
+            <span className="text-xs text-[#8888AA] font-body truncate">
+              {mod?.title} — Lição {currentIdx + 1} de {lessons.length}
+            </span>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+              ✕ Sair
+            </Button>
           </div>
-          <ProgressBar value={stepIndex + 1} max={totalSteps} variant="primary" size="sm" />
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-primary font-body">{lesson.title}</span>
+            <span className="text-xs text-[#8888AA] font-body">Passo {stepIndex + 1} de {totalSteps}</span>
+          </div>
+          <StepNav total={totalSteps} current={stepIndex} maxVisited={maxVisited} onSelect={setStepIndex} />
         </div>
       )}
 

@@ -287,8 +287,21 @@ export function QuizPage() {
   const correctCount = answeredCorrect.filter(Boolean).length;
   const stars = starsFromScore(correctCount, quiz.questions.length);
 
+  const lessons = mod?.lessons ?? [];
+  const lessonIndex = lessons.findIndex((l) => l.id === lessonId);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
+      {!showingResult && (
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs text-[#8888AA] font-body truncate">
+            {mod?.title} — Lição {lessonIndex + 1} de {lessons.length}
+          </span>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+            ✕ Sair
+          </Button>
+        </div>
+      )}
       <AnimatePresence mode="wait">
         {showingResult ? (
           <QuizResult
