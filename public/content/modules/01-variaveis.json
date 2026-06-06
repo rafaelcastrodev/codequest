@@ -47,7 +47,7 @@
         },
         {
           "type": "interactive-example",
-          "code": "const PI: number = 3.14159;\nconsole.log(PI);\n\n// Se tentarmos mudar:\n// PI = 3.0; ← ERRO! \n//Não pode mudar um const",
+          "code": "const PI: number = 3.14159;\nconsole.log(PI);\n\n// Se tentarmos mudar:\n// PI = 3.0; ← ERRO! \n// Não pode mudar um const",
           "highlightLines": [
             1
           ],

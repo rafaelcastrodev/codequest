@@ -27,6 +27,7 @@ export function ExercisePage() {
   const runner = useCodeRunner();
   const { addXP, completeExercise, updateStreak, completedExercises } = useProgressStore();
   const soundEnabled = useSettingsStore((s) => s.soundEnabled);
+  const debugMode = useSettingsStore((s) => s.debugMode);
   const { hintsUsed, useHint, setCurrentLesson } = useSessionStore();
   const { checkAndUnlock } = useAchievements();
 
@@ -91,6 +92,12 @@ export function ExercisePage() {
     if (!next) return navigate('/');
     navigate(lessonPath(moduleId, next));
   }, [mod, moduleId, lessonId, navigate]);
+
+  const handleSkip = useCallback(() => {
+    if (!exercise) return;
+    completeExercise(exercise.id, 1, 0);
+    handleNext();
+  }, [exercise, completeExercise, handleNext]);
 
   if (loading) {
     return (
@@ -204,6 +211,11 @@ export function ExercisePage() {
           >
             {runner.status === 'running' ? 'Executando...' : '▶ Executar'}
           </Button>
+          {debugMode && (
+            <Button variant="ghost" size="sm" onClick={handleSkip} className="text-xs text-warning">
+              Pular ⏭
+            </Button>
+          )}
         </div>
       </div>
 

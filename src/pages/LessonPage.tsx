@@ -102,7 +102,7 @@ function LessonComplete({ lesson, onNext, onMap }: LessonCompleteProps) {
 					size="md"
 					className="w-35"
 					onClick={onMap}>
-					🗺️ Jornada
+					Jornada
 				</Button>
 				<Button
 					variant="primary"

@@ -1,7 +1,12 @@
 {
   "name": "codequest",
+  "author": {
+    "name": "Rafael de Castro",
+    "email": "contact.rafaelcastro@gmail.com",
+    "url": "https://rafaelcastrodev.github.io/aboutme/"
+  },
   "private": true,
-  "version": "1.7.1",
+  "version": "1.7.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
