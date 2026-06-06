@@ -44,7 +44,7 @@ interface FakeAssistantModalProps {
 const ACTION_LABELS: Record<AssistantAction, { label: string; icon: string }> =
 	{
 		explain: { label: "Explique de outro jeito", icon: "🔄" },
-		examples: { label: "Me dê mais exemplos", icon: "💡" },
+		examples: { label: "Dê mais exemplos", icon: "💡" },
 		summary: { label: "Resuma em uma frase", icon: "📝" },
 	};
 

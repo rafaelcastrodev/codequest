@@ -166,28 +166,35 @@ function SaveModal({ open, onClose, onSave }: SaveModalProps) {
   );
 }
 
-interface TemplatePickerProps {
+interface TemplateModalProps {
+  open: boolean;
+  onClose: () => void;
   templates: PlaygroundTemplate[];
   onSelect: (template: PlaygroundTemplate) => void;
 }
 
-function TemplatePicker({ templates, onSelect }: TemplatePickerProps) {
-  if (templates.length === 0) return null;
-
+function TemplateModal({ open, onClose, templates, onSelect }: TemplateModalProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4">
-      {templates.map((t) => (
-        <button
-          key={t.id}
-          onClick={() => onSelect(t)}
-          className="flex flex-col items-center gap-2 p-4 rounded-xl border border-bg-elevated hover:border-primary/30 hover:bg-bg-elevated transition-colors"
-        >
-          <span className="text-2xl">{t.icon}</span>
-          <span className="font-body text-sm font-semibold text-[#E8E8F0]">{t.name}</span>
-          <span className="font-body text-xs text-[#8888AA] text-center">{t.description}</span>
-        </button>
-      ))}
-    </div>
+    <Modal open={open} onClose={onClose} title="Modelos">
+      <p className="text-[#8888AA] font-body text-xs mb-4">
+        Escolha um modelo como ponto de partida para experimentar.
+      </p>
+      <div className="space-y-2 max-h-80 overflow-y-auto scrollbar-thin">
+        {templates.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => { onSelect(t); onClose(); }}
+            className="w-full flex items-center gap-3 p-3 rounded-xl border border-bg-elevated hover:border-secondary/30 hover:bg-bg-elevated transition-colors text-left"
+          >
+            <span className="text-2xl flex-shrink-0">{t.icon}</span>
+            <div className="min-w-0">
+              <p className="font-body text-sm font-semibold text-[#E8E8F0]">{t.name}</p>
+              <p className="font-body text-xs text-[#8888AA]">{t.description}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </Modal>
   );
 }
 
@@ -195,6 +202,7 @@ export function PlaygroundPage() {
   const [code, setCode] = useState(DEFAULT_CODE);
   const [currentSnippetId, setCurrentSnippetId] = useState<string | null>(null);
   const [showSnippets, setShowSnippets] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState(false);
 
@@ -313,6 +321,17 @@ export function PlaygroundPage() {
             <span className="hidden sm:inline">Novo</span>
             <span className="sm:hidden">+</span>
           </Button>
+          {PLAYGROUND_TEMPLATES.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowTemplates(true)}
+              className="text-xs"
+            >
+              <span className="hidden sm:inline">Modelos</span>
+              <span className="sm:hidden">📐</span>
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -358,10 +377,6 @@ export function PlaygroundPage() {
           </Button>
         </div>
       </div>
-
-      {PLAYGROUND_TEMPLATES.length > 0 && !currentSnippetId && code === DEFAULT_CODE && (
-        <TemplatePicker templates={PLAYGROUND_TEMPLATES} onSelect={handleTemplateSelect} />
-      )}
 
       <div className="flex-1 min-h-0">
         <Suspense
@@ -437,6 +452,13 @@ export function PlaygroundPage() {
         open={showSaveModal}
         onClose={() => setShowSaveModal(false)}
         onSave={handleSaveNew}
+      />
+
+      <TemplateModal
+        open={showTemplates}
+        onClose={() => setShowTemplates(false)}
+        templates={PLAYGROUND_TEMPLATES}
+        onSelect={handleTemplateSelect}
       />
     </div>
   );
