@@ -6,6 +6,7 @@ import { TopBar } from './TopBar';
 import { BottomNav } from './BottomNav';
 import { AnimatedOutlet } from './AnimatedOutlet';
 import { ToastContainer } from '@/components/feedback/ToastContainer';
+import { OnboardingOverlay } from '@/components/onboarding';
 import { useLevelUp } from '@/hooks/useLevelUp';
 import { useProgressStore } from '@/store/progress.store';
 
@@ -82,6 +83,7 @@ export function Shell() {
 
       {!hideBottomNav && <BottomNav onNavigate={closeSidebar} />}
       <ToastContainer />
+      <OnboardingOverlay />
     </div>
   );
 }

@@ -37,7 +37,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
         <span className="font-heading font-bold text-primary text-lg">CodeQuest</span>
       </Link>
 
-      <div className="ml-auto flex items-center gap-3">
+      <div data-onboarding="topbar-stats" className="ml-auto flex items-center gap-3">
         <div className="flex items-center gap-1">
           <span className="text-sm">🔥</span>
           <span className="font-heading font-bold text-warning text-sm">{streak.current}</span>
