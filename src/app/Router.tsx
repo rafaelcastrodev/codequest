@@ -7,6 +7,7 @@ import { QuizPage } from '@/pages/QuizPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { AboutPage } from '@/pages/AboutPage';
+import { PlaygroundPage } from '@/pages/PlaygroundPage';
 
 export function AppRouter() {
   return (
@@ -17,6 +18,7 @@ export function AppRouter() {
           <Route path="lesson/:moduleId/:lessonId" element={<LessonPage />} />
           <Route path="exercise/:moduleId/:lessonId" element={<ExercisePage />} />
           <Route path="quiz/:moduleId/:lessonId" element={<QuizPage />} />
+          <Route path="playground" element={<PlaygroundPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="about" element={<AboutPage />} />

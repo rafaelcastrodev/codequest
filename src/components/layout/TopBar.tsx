@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { PageInfoButton } from '@/components/layout/PageInfoButton';
 import { useProgressStore } from '@/store/progress.store';
 
 interface TopBarProps {
@@ -7,6 +8,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ onMenuToggle }: TopBarProps) {
+  const { pathname } = useLocation();
   const streak = useProgressStore((s) => s.streak);
 
   return (
@@ -30,10 +32,14 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
       </Link>
 
       <div className="ml-auto flex items-center gap-3">
-        <div className="flex items-center gap-1">
-          <span className="text-sm">🔥</span>
-          <span className="font-heading font-bold text-warning text-sm">{streak.current}</span>
-        </div>
+        {pathname === '/' ? (
+          <div className="flex items-center gap-1">
+            <span className="text-sm">🔥</span>
+            <span className="font-heading font-bold text-warning text-sm">{streak.current}</span>
+          </div>
+        ) : (
+          <PageInfoButton />
+        )}
       </div>
     </header>
   );

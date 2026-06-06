@@ -51,6 +51,7 @@ export function BottomNav({ onNavigate }: BottomNavProps) {
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-bg-surface/95 backdrop-blur-md border-t border-bg-elevated flex items-center safe-bottom">
       <NavTab icon="🗺️" label="Jornada" active={pathname === '/'} onClick={() => go('/')} />
+      <NavTab icon="🧪" label="Play" active={pathname === '/playground'} onClick={() => go('/playground')} />
       <NavTab icon="👤" label="Perfil" active={pathname === '/profile'} onClick={() => go('/profile')} />
       <NavTab icon="ℹ️" label="Sobre" active={pathname === '/about'} onClick={() => go('/about')} />
       <NavTab icon="⚙️" label="Config" active={pathname === '/settings'} onClick={() => go('/settings')} />
