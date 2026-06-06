@@ -101,12 +101,13 @@ export function ProfilePage() {
             </button>
           )}
           <p className="text-[#8888AA] font-body text-sm">Nível {level} · {title}</p>
-          <div className="mt-3 space-y-1">
-            <div className="flex justify-between text-xs font-body">
-              <span className="text-[#8888AA]">XP: {xp}</span>
-              <span className="text-secondary">Próximo nível: {levelData.next} XP</span>
+          <div className="mt-3">
+            <div className="relative">
+              <ProgressBar value={levelData.percent} max={100} variant="secondary" size="lg" />
+              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-body font-bold text-[#E8E8F0] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                {xp} / {levelData.next} XP
+              </span>
             </div>
-            <ProgressBar value={levelData.percent} max={100} variant="secondary" size="md" />
           </div>
         </div>
       </div>
