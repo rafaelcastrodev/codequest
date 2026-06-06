@@ -1,8 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { loadModule } from "@/content/loader";
 import { useProgressStore } from "@/store/progress.store";
+import { useAssistant } from "@/hooks/useAssistant";
+import {
+	FakeAssistantButton,
+	FakeAssistantModal,
+	AssistantContentNav,
+} from "@/components/lesson/FakeAssistant";
 import { Button } from "@/components/ui/Button";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { RichText } from "@/components/ui/RichText";
@@ -69,6 +75,33 @@ function StepView({ step }: StepViewProps) {
 	);
 }
 
+function isCodeContent(content: string): boolean {
+	return (
+		content.includes("\n") &&
+		(content.includes("let ") ||
+			content.includes("const ") ||
+			content.includes("function ") ||
+			content.includes("console.log") ||
+			content.includes("=>"))
+	);
+}
+
+interface AssistantContentViewProps {
+	content: string;
+}
+
+function AssistantContentView({ content }: AssistantContentViewProps) {
+	if (isCodeContent(content)) {
+		return <CodeBlock code={content} />;
+	}
+	return (
+		<RichText
+			content={content}
+			className="text-[#E8E8F0] font-body leading-relaxed text-base"
+		/>
+	);
+}
+
 interface LessonCompleteProps {
 	lesson: TheoryLesson;
 	onNext: () => void;
@@ -124,6 +157,8 @@ export function LessonPage() {
 	const navigate = useNavigate();
 	const { addXP, completeExercise, updateStreak, completedExercises } =
 		useProgressStore();
+
+	const assistant = useAssistant(moduleId, lessonId);
 
 	const [mod, setMod] = useState<Module | null>(null);
 	const [stepIndex, setStepIndex] = useState(0);
@@ -199,10 +234,24 @@ export function LessonPage() {
 	function handleNextStep() {
 		if (stepIndex < totalSteps - 1) {
 			setStepIndex(stepIndex + 1);
+			assistant.clearAssistant();
 		} else {
 			handleComplete();
 		}
 	}
+
+	function handlePrevStep() {
+		setStepIndex(stepIndex - 1);
+		assistant.clearAssistant();
+	}
+
+	const slideVariants = {
+		enterFromRight: { opacity: 0, x: 60 },
+		enterFromLeft: { opacity: 0, x: -60 },
+		center: { opacity: 1, x: 0 },
+		exitToLeft: { opacity: 0, x: -60 },
+		exitToRight: { opacity: 0, x: 60 },
+	};
 
 	return (
 		<div className="max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0">
@@ -232,7 +281,10 @@ export function LessonPage() {
 						total={totalSteps}
 						current={stepIndex}
 						maxVisited={maxVisited}
-						onSelect={setStepIndex}
+						onSelect={(i) => {
+							setStepIndex(i);
+							assistant.clearAssistant();
+						}}
 					/>
 				</div>
 			)}
@@ -245,13 +297,38 @@ export function LessonPage() {
 						onMap={() => navigate("/")}
 					/>
 				) : (
-					<motion.div
-						key={stepIndex}
-						initial={{ opacity: 0, x: 20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.25 }}>
-						{currentStep && <StepView step={currentStep} />}
-					</motion.div>
+					<>
+						<AssistantContentNav
+							showingAssistant={assistant.showingAssistant}
+							hasAssistantContent={assistant.activeContent !== null}
+							activeAction={assistant.activeAction}
+							onShowOriginal={assistant.showOriginal}
+							onShowAssistant={assistant.showAssistantView}
+						/>
+						<AnimatePresence mode="wait">
+							{assistant.showingAssistant && assistant.activeContent ? (
+								<motion.div
+									key={`assistant-${assistant.activeContent}`}
+									variants={slideVariants}
+									initial="enterFromRight"
+									animate="center"
+									exit="exitToRight"
+									transition={{ duration: 0.25 }}>
+									<AssistantContentView content={assistant.activeContent} />
+								</motion.div>
+							) : (
+								<motion.div
+									key={`step-${stepIndex}`}
+									variants={slideVariants}
+									initial="enterFromLeft"
+									animate="center"
+									exit="exitToLeft"
+									transition={{ duration: 0.25 }}>
+									{currentStep && <StepView step={currentStep} />}
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</>
 				)}
 			</div>
 
@@ -261,9 +338,14 @@ export function LessonPage() {
 						variant="ghost"
 						size="md"
 						disabled={stepIndex === 0}
-						onClick={() => setStepIndex(stepIndex - 1)}>
+						onClick={handlePrevStep}>
 						← Anterior
 					</Button>
+					<FakeAssistantButton
+						hasContent={assistant.hasContent}
+						showingAssistant={assistant.showingAssistant}
+						onClick={assistant.openModal}
+					/>
 					<Button
 						variant="primary"
 						size="md"
@@ -274,6 +356,12 @@ export function LessonPage() {
 					</Button>
 				</div>
 			)}
+
+			<FakeAssistantModal
+				open={assistant.modalOpen}
+				onClose={assistant.closeModal}
+				onRequest={assistant.request}
+			/>
 		</div>
 	);
 }

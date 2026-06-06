@@ -1,14 +1,22 @@
 import { lazy, Suspense, useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useExercise } from '@/hooks/useExercise';
 import { useCodeRunner } from '@/hooks/useCodeRunner';
 import { useProgressStore } from '@/store/progress.store';
 import { useSessionStore } from '@/store/session.store';
 import { useSettingsStore } from '@/store/settings.store';
 import { useAchievements } from '@/hooks/useAchievements';
+import { useAssistant } from '@/hooks/useAssistant';
+import {
+  FakeAssistantButton,
+  FakeAssistantModal,
+  AssistantContentNav,
+} from '@/components/lesson/FakeAssistant';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { CodeBlock } from '@/components/ui/CodeBlock';
+import { RichText } from '@/components/ui/RichText';
 import { HintPanel } from '@/components/exercise/HintPanel';
 import { OutputPanel } from '@/components/exercise/OutputPanel';
 import { SuccessOverlay } from '@/components/exercise/SuccessOverlay';
@@ -18,6 +26,16 @@ import { playSound } from '@/utils/sounds';
 import { lessonPath } from '@/utils/lesson-path';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then((m) => ({ default: m.Editor })));
+
+function isCodeContent(content: string): boolean {
+  return content.includes('\n') && (
+    content.includes('let ') ||
+    content.includes('const ') ||
+    content.includes('function ') ||
+    content.includes('console.log') ||
+    content.includes('=>')
+  );
+}
 
 export function ExercisePage() {
   const { moduleId, lessonId } = useParams<{ moduleId: string; lessonId: string }>();
@@ -30,6 +48,8 @@ export function ExercisePage() {
   const debugMode = useSettingsStore((s) => s.debugMode);
   const { hintsUsed, useHint, setCurrentLesson } = useSessionStore();
   const { checkAndUnlock } = useAchievements();
+
+  const assistant = useAssistant(moduleId, lessonId);
 
   const [code, setCode] = useState('');
   const [successStars, setSuccessStars] = useState<number | null>(null);
@@ -126,6 +146,12 @@ export function ExercisePage() {
       ? 'border-accent/50'
       : 'border-transparent';
 
+  const slideVariants = {
+    enterFromRight: { opacity: 0, x: 40 },
+    enterFromLeft: { opacity: 0, x: -40 },
+    center: { opacity: 1, x: 0 },
+  };
+
   const instructionsPanel = (
     <div className="flex-1 lg:flex-initial lg:w-80 xl:w-96 flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
       <div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50 flex items-center justify-between">
@@ -148,15 +174,63 @@ export function ExercisePage() {
       </div>
 
       <div className="flex-1 p-5 overflow-y-auto scrollbar-thin space-y-4">
-        <div className="bg-bg-elevated rounded-xl p-4">
-          <p className="font-body text-sm text-[#E8E8F0] leading-relaxed whitespace-pre-wrap">
-            {exercise.instructions}
-          </p>
-        </div>
+        <AssistantContentNav
+          showingAssistant={assistant.showingAssistant}
+          hasAssistantContent={assistant.activeContent !== null}
+          activeAction={assistant.activeAction}
+          onShowOriginal={assistant.showOriginal}
+          onShowAssistant={assistant.showAssistantView}
+        />
+
+        <AnimatePresence mode="wait">
+          {assistant.showingAssistant && assistant.activeContent ? (
+            <motion.div
+              key={`assistant-${assistant.activeContent}`}
+              variants={slideVariants}
+              initial="enterFromRight"
+              animate="center"
+              exit={{ opacity: 0, x: 40 }}
+              transition={{ duration: 0.2 }}
+              className="bg-bg-elevated rounded-xl p-4 space-y-2"
+            >
+              {isCodeContent(assistant.activeContent) ? (
+                <CodeBlock code={assistant.activeContent} />
+              ) : (
+                <RichText
+                  content={assistant.activeContent}
+                  className="font-body text-sm text-[#E8E8F0] leading-relaxed"
+                />
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="original-instructions"
+              variants={slideVariants}
+              initial="enterFromLeft"
+              animate="center"
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="bg-bg-elevated rounded-xl p-4">
+                <p className="font-body text-sm text-[#E8E8F0] leading-relaxed whitespace-pre-wrap">
+                  {exercise.instructions}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {exercise.hints.length > 0 && (
           <HintPanel hints={exercise.hints} hintsUsed={hintsUsed} onUseHint={useHint} />
         )}
+      </div>
+
+      <div className="p-3 border-t border-bg-elevated flex justify-end">
+        <FakeAssistantButton
+          hasContent={assistant.hasContent}
+          showingAssistant={assistant.showingAssistant}
+          onClick={assistant.openModal}
+        />
       </div>
 
       <div className="lg:hidden p-3 border-t border-bg-elevated">
@@ -277,14 +351,22 @@ export function ExercisePage() {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row h-full overflow-hidden">
-      <div className="hidden lg:flex lg:flex-row flex-1 overflow-hidden">
-        {instructionsPanel}
-        {editorPanel}
+    <>
+      <div className="flex flex-col lg:flex-row h-full overflow-hidden">
+        <div className="hidden lg:flex lg:flex-row flex-1 overflow-hidden">
+          {instructionsPanel}
+          {editorPanel}
+        </div>
+        <div className="flex flex-col flex-1 overflow-hidden lg:hidden">
+          {mobileTab === 'instructions' ? instructionsPanel : editorPanel}
+        </div>
       </div>
-      <div className="flex flex-col flex-1 overflow-hidden lg:hidden">
-        {mobileTab === 'instructions' ? instructionsPanel : editorPanel}
-      </div>
-    </div>
+
+      <FakeAssistantModal
+        open={assistant.modalOpen}
+        onClose={assistant.closeModal}
+        onRequest={assistant.request}
+      />
+    </>
   );
 }
