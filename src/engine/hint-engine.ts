@@ -50,7 +50,5 @@ export function translateError(message: string): string {
 }
 
 export function starsFromHints(hintsUsed: number): number {
-  if (hintsUsed === 0) return 3;
-  if (hintsUsed === 1) return 2;
-  return 1;
+  return Math.max(1, 5 - hintsUsed);
 }

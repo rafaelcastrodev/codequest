@@ -192,6 +192,13 @@ export function HomePage() {
         });
         setModules(map);
         setFailedModules(failed);
+
+        const activeModule = c.modules.find((m) => {
+          if (!unlockedModules.includes(m.id)) return false;
+          const mod = map.get(m.id);
+          return mod?.lessons.some((l) => !completedExercises[l.id]);
+        });
+        if (activeModule) setExpandedModule(activeModule.id);
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Erro ao carregar conteúdo'))
       .finally(() => setLoading(false));

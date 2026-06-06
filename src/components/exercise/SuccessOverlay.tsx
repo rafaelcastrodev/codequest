@@ -47,13 +47,13 @@ export function SuccessOverlay({ lesson, stars, onNext, onMap }: SuccessOverlayP
         <p className="text-[#8888AA] font-body text-sm mb-4">{lesson.title}</p>
 
         <div className="flex justify-center gap-1 mb-4">
-          {[1, 2, 3].map((s) => (
+          {[1, 2, 3, 4, 5].map((s) => (
             <motion.span
               key={s}
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: s * 0.1, type: 'spring', stiffness: 400 }}
-              className="text-3xl"
+              className="text-2xl"
             >
               {s <= stars ? '⭐' : '☆'}
             </motion.span>

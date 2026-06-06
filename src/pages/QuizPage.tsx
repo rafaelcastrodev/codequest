@@ -15,9 +15,7 @@ import type { QuizLesson, QuizQuestion } from '@/content/curriculum.types';
 
 function starsFromScore(correct: number, total: number): number {
   const ratio = total === 0 ? 1 : correct / total;
-  if (ratio === 1) return 3;
-  if (ratio >= 0.75) return 2;
-  return 1;
+  return Math.max(1, Math.round(ratio * 5));
 }
 
 interface QuestionCardProps {
@@ -158,13 +156,13 @@ function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
       </div>
 
       <div className="flex justify-center gap-2">
-        {[1, 2, 3].map((s) => (
+        {[1, 2, 3, 4, 5].map((s) => (
           <motion.span
             key={s}
             initial={{ scale: 0, rotate: -20 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: s * 0.12, type: 'spring', stiffness: 400 }}
-            className="text-4xl"
+            transition={{ delay: s * 0.1, type: 'spring', stiffness: 400 }}
+            className="text-3xl"
           >
             {s <= stars ? '⭐' : '☆'}
           </motion.span>

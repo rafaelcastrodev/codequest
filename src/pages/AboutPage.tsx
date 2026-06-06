@@ -13,7 +13,7 @@ export function AboutPage() {
         <div className="text-center mb-2">
           <span className="text-4xl">⚡</span>
           <h2 className="font-heading font-bold text-primary text-xl mt-2">CodeQuest</h2>
-          <p className="text-[#8888AA] font-body text-sm">v1.0</p>
+          <p className="text-[#8888AA] font-body text-sm">v{__APP_VERSION__}</p>
         </div>
 
         <div className="space-y-3 font-body text-sm text-[#E8E8F0] leading-relaxed">
@@ -54,20 +54,9 @@ export function AboutPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 space-y-4"
+        className="bg-bg-surface border border-bg-elevated rounded-2xl p-6"
       >
-        <h2 className="font-heading font-semibold text-[#E8E8F0]">Tecnologias</h2>
-        <div className="flex flex-wrap gap-2">
-          {['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Monaco Editor', 'Zustand', 'Framer Motion'].map((tech) => (
-            <span
-              key={tech}
-              className="bg-bg-elevated text-[#8888AA] font-mono text-xs px-3 py-1.5 rounded-lg border border-bg-elevated"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-        <p className="text-xs text-[#8888AA] font-body mt-2">
+        <p className="text-xs text-[#8888AA] font-body text-center">
           100% client-side. Seu código roda no navegador com total privacidade.
         </p>
       </motion.div>
