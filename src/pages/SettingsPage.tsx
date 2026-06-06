@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSettingsStore } from '@/store/settings.store';
@@ -42,11 +42,24 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const { soundEnabled, livesEnabled, toggleSound, toggleLives, resetOnboarding } = useSettingsStore();
+  const { soundEnabled, livesEnabled, debugMode, toggleSound, toggleLives, toggleDebugMode, resetOnboarding } = useSettingsStore();
 
   const { resetProgress, profile } = useProgressStore();
   const resetOnboardingStore = useOnboardingStore((s) => s.reset);
   const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [debugVisible, setDebugVisible] = useState(debugMode);
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  function handleTitleTap() {
+    tapCount.current += 1;
+    clearTimeout(tapTimer.current);
+    tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 1500);
+    if (tapCount.current >= 7) {
+      tapCount.current = 0;
+      setDebugVisible(true);
+    }
+  }
 
   function handleReset() {
     resetProgress();
@@ -58,7 +71,12 @@ export function SettingsPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8 space-y-6">
-      <h1 className="font-heading text-2xl font-bold text-[#E8E8F0]">Configurações</h1>
+      <h1
+        className="font-heading text-2xl font-bold text-[#E8E8F0] select-none cursor-default"
+        onClick={handleTitleTap}
+      >
+        Configurações
+      </h1>
 
       <div className="bg-bg-surface border border-bg-elevated rounded-2xl px-5">
         <ToggleRow
@@ -74,6 +92,21 @@ export function SettingsPage() {
           onChange={toggleLives}
         />
       </div>
+
+      {debugVisible && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="bg-bg-surface border border-secondary/30 rounded-2xl px-5 overflow-hidden"
+        >
+          <ToggleRow
+            label="Modo Debug"
+            description="Desbloqueia todos os módulos e lições para teste"
+            checked={debugMode}
+            onChange={toggleDebugMode}
+          />
+        </motion.div>
+      )}
 
       <div className="bg-bg-surface border border-bg-elevated rounded-2xl p-5">
         <h2 className="font-heading font-semibold text-[#E8E8F0] mb-2">Conta</h2>

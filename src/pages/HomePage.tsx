@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { loadCurriculum, loadModule } from '@/content/loader';
 import { useProgressStore } from '@/store/progress.store';
+import { useSettingsStore } from '@/store/settings.store';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { lessonPath } from '@/utils/lesson-path';
 import type { Curriculum, Module, Lesson } from '@/content/curriculum.types';
@@ -164,6 +165,7 @@ function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, c
 export function HomePage() {
   const navigate = useNavigate();
   const { unlockedModules, completedExercises, unlockModule } = useProgressStore();
+  const debugMode = useSettingsStore((s) => s.debugMode);
   const [curriculum, setCurriculum] = useState<Curriculum | null>(null);
   const [modules, setModules] = useState<Map<string, Module>>(new Map());
   const [loading, setLoading] = useState(true);
@@ -194,7 +196,7 @@ export function HomePage() {
         setFailedModules(failed);
 
         const activeModule = c.modules.find((m) => {
-          if (!unlockedModules.includes(m.id)) return false;
+          if (!debugMode && !unlockedModules.includes(m.id)) return false;
           const mod = map.get(m.id);
           return mod?.lessons.some((l) => !completedExercises[l.id]);
         });
@@ -269,7 +271,7 @@ export function HomePage() {
       <div className="relative space-y-4">
         {curriculum?.modules.map((m, i) => {
           const mod = modules.get(m.id) ?? null;
-          const unlocked = unlockedModules.includes(m.id);
+          const unlocked = debugMode || unlockedModules.includes(m.id);
           const totalLessons = mod?.lessons.length ?? 0;
           const completedCount = mod
             ? mod.lessons.filter((l) => completedExercises[l.id]).length
