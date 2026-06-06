@@ -80,7 +80,7 @@ export function Shell() {
         </main>
       </div>
 
-      {!hideBottomNav && <BottomNav />}
+      {!hideBottomNav && <BottomNav onNavigate={closeSidebar} />}
       <ToastContainer />
     </div>
   );

@@ -1,16 +1,21 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface NavTabProps {
-  to: string;
   icon: string;
   label: string;
   active: boolean;
+  onClick: () => void;
 }
 
-function NavTab({ to, icon, label, active }: NavTabProps) {
+function NavTab({ icon, label, active, onClick }: NavTabProps) {
   return (
-    <Link to={to} className="flex-1 flex flex-col items-center gap-0.5 py-2 relative">
+    <button
+      onClick={() => {
+        if (!active) onClick();
+      }}
+      className="flex-1 flex flex-col items-center gap-0.5 py-2 relative"
+    >
       {active && (
         <motion.div
           layoutId="bottom-nav-indicator"
@@ -26,19 +31,29 @@ function NavTab({ to, icon, label, active }: NavTabProps) {
       >
         {label}
       </span>
-    </Link>
+    </button>
   );
 }
 
-export function BottomNav() {
+interface BottomNavProps {
+  onNavigate?: () => void;
+}
+
+export function BottomNav({ onNavigate }: BottomNavProps) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const go = (to: string) => {
+    onNavigate?.();
+    navigate(to, { replace: true });
+  };
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-bg-surface/95 backdrop-blur-md border-t border-bg-elevated flex items-center safe-bottom">
-      <NavTab to="/" icon="🗺️" label="Jornada" active={pathname === '/'} />
-      <NavTab to="/profile" icon="👤" label="Perfil" active={pathname === '/profile'} />
-      <NavTab to="/about" icon="ℹ️" label="Sobre" active={pathname === '/about'} />
-      <NavTab to="/settings" icon="⚙️" label="Config" active={pathname === '/settings'} />
+      <NavTab icon="🗺️" label="Jornada" active={pathname === '/'} onClick={() => go('/')} />
+      <NavTab icon="👤" label="Perfil" active={pathname === '/profile'} onClick={() => go('/profile')} />
+      <NavTab icon="ℹ️" label="Sobre" active={pathname === '/about'} onClick={() => go('/about')} />
+      <NavTab icon="⚙️" label="Config" active={pathname === '/settings'} onClick={() => go('/settings')} />
     </nav>
   );
 }
