@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSettingsStore } from '@/store/settings.store';
 import { useProgressStore } from '@/store/progress.store';
+import { useOnboardingStore } from '@/store/onboarding.store';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 
@@ -38,8 +40,10 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
 }
 
 export function SettingsPage() {
-  const { soundEnabled, livesEnabled, toggleSound, toggleLives } = useSettingsStore();
+  const navigate = useNavigate();
+  const { soundEnabled, livesEnabled, toggleSound, toggleLives, resetOnboarding } = useSettingsStore();
   const { resetProgress, profile } = useProgressStore();
+  const resetOnboardingStore = useOnboardingStore((s) => s.reset);
   const [resetModalOpen, setResetModalOpen] = useState(false);
 
   function handleReset() {
@@ -71,9 +75,22 @@ export function SettingsPage() {
         <p className="text-xs text-[#8888AA] font-body mb-4">
           Jogando como <strong className="text-[#E8E8F0]">{profile.name}</strong>
         </p>
-        <Button variant="danger" size="sm" onClick={() => setResetModalOpen(true)}>
-          Resetar Progresso
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="danger" size="sm" onClick={() => setResetModalOpen(true)}>
+            Resetar Progresso
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              resetOnboarding();
+              resetOnboardingStore();
+              navigate('/');
+            }}
+          >
+            Rever Tutorial
+          </Button>
+        </div>
       </div>
 
       <Modal open={resetModalOpen} onClose={() => setResetModalOpen(false)} title="Resetar Progresso">
