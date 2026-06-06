@@ -180,6 +180,11 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 
 	if (!info) return null;
 
+	const allTips = [
+		...info.tips,
+		{ icon: "🔤", label: "Tamanho da fonte", detail: "Use o botao A ao lado para alternar entre 3 tamanhos de texto" },
+	];
+
 	return (
 		<>
 			<motion.button
@@ -202,7 +207,7 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 				onClose={() => setOpen(false)}
 				title={info.title}>
 				<div className="space-y-3">
-					{info.tips.map((tip, idx) => (
+					{allTips.map((tip, idx) => (
 						<div
 							key={idx}
 							className="flex items-start gap-3 p-2 rounded-lg">

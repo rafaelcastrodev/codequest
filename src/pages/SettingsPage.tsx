@@ -107,7 +107,10 @@ export function SettingsPage() {
 						label="Modo Debug"
 						description="Desbloqueia todos os módulos e lições para teste"
 						checked={debugMode}
-						onChange={toggleDebugMode}
+						onChange={() => {
+						toggleDebugMode();
+						if (debugMode) setDebugVisible(false);
+					}}
 					/>
 				</motion.div>
 			)}

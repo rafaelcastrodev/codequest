@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { PageInfoButton } from '@/components/layout/PageInfoButton';
+import { FontSizeButton } from '@/components/layout/FontSizeButton';
 import { useProgressStore } from '@/store/progress.store';
 
 interface TopBarProps {
@@ -32,6 +33,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
       </Link>
 
       <div className="ml-auto flex items-center gap-3">
+        <FontSizeButton />
         {pathname === '/' ? (
           <div className="flex items-center gap-1">
             <span className="text-sm">🔥</span>

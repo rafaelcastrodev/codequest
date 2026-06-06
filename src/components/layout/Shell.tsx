@@ -6,9 +6,15 @@ import { AnimatedOutlet } from './AnimatedOutlet';
 import { ToastContainer } from '@/components/feedback/ToastContainer';
 import { OnboardingOverlay } from '@/components/onboarding';
 import { useLevelUp } from '@/hooks/useLevelUp';
+import { useFontScale } from '@/hooks/useFontScale';
 
 function LevelUpWatcher() {
   useLevelUp();
+  return null;
+}
+
+function FontScaleWatcher() {
+  useFontScale();
   return null;
 }
 
@@ -20,6 +26,7 @@ export function Shell() {
   return (
     <div className="flex h-screen overflow-hidden bg-bg-primary">
       <LevelUpWatcher />
+      <FontScaleWatcher />
 
       {/* Desktop sidebar — always visible */}
       <div className="hidden lg:flex">

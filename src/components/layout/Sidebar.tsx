@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Avatar } from '@/components/ui/Avatar';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useProgressStore, getLevelTitle, getLevelProgress } from '@/store/progress.store';
+import { FontSizeButton } from '@/components/layout/FontSizeButton';
 
 interface NavItemProps {
   to: string;
@@ -84,8 +85,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         <NavItem to="/settings" icon="⚙️" label="Configurações" active={location.pathname === '/settings'} onClick={onNavigate} />
       </nav>
 
-      <div className="p-4 border-t border-bg-elevated">
-        <p className="text-xs text-[#8888AA] font-body text-center">
+      <div className="p-4 border-t border-bg-elevated flex items-center justify-center gap-3">
+        <FontSizeButton />
+        <p className="text-xs text-[#8888AA] font-body">
           CodeQuest v{__APP_VERSION__}
         </p>
       </div>
