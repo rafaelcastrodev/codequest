@@ -97,7 +97,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
       <div className="p-4 border-t border-bg-elevated">
         <p className="text-xs text-[#8888AA] font-body text-center">
-          CodeQuest v1.0
+          CodeQuest v{__APP_VERSION__}
         </p>
       </div>
     </aside>
