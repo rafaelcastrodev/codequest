@@ -70,7 +70,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         </div>
       </div>
 
-      <div data-onboarding="sidebar-stats" className="px-5 py-3 border-b border-bg-elevated flex items-center gap-4">
+      <div className="px-5 py-3 border-b border-bg-elevated flex items-center gap-4">
         <div className="flex items-center gap-1.5">
           <span className="text-lg">🔥</span>
           <span className="font-heading font-bold text-warning">{streak.current}</span>

@@ -1,9 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
-import { BottomNav } from './BottomNav';
 import { AnimatedOutlet } from './AnimatedOutlet';
 import { ToastContainer } from '@/components/feedback/ToastContainer';
 import { OnboardingOverlay } from '@/components/onboarding';
@@ -29,15 +27,10 @@ function LivesRegenWatcher() {
   return null;
 }
 
-const isExerciseRoute = (path: string) =>
-  path.startsWith('/exercise/') || path.startsWith('/quiz/');
-
 export function Shell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = useCallback(() => setSidebarOpen((v) => !v), []);
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
-  const location = useLocation();
-  const hideBottomNav = isExerciseRoute(location.pathname);
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg-primary">
@@ -76,12 +69,11 @@ export function Shell() {
 
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <TopBar onMenuToggle={toggleSidebar} />
-        <main className={`flex-1 overflow-y-auto scrollbar-thin flex flex-col ${!hideBottomNav ? 'pb-16 md:pb-0' : ''}`}>
+        <main className="flex-1 overflow-y-auto scrollbar-thin flex flex-col">
           <AnimatedOutlet />
         </main>
       </div>
 
-      {!hideBottomNav && <BottomNav onNavigate={closeSidebar} />}
       <ToastContainer />
       <OnboardingOverlay />
     </div>

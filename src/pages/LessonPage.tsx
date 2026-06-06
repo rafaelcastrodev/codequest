@@ -175,7 +175,7 @@ export function LessonPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0">
       {!completed && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -194,7 +194,7 @@ export function LessonPage() {
         </div>
       )}
 
-      <div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 min-h-48">
+      <div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 min-h-48 overflow-hidden">
         {completed ? (
           <LessonComplete
             lesson={theoryLesson}

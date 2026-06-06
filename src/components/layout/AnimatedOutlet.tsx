@@ -14,7 +14,7 @@ export function AnimatedOutlet() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.15, ease: 'easeInOut' }}
-        className="flex-1 flex flex-col min-h-0"
+        className="flex-1 flex flex-col min-h-0 min-w-0"
       >
         {outlet && cloneElement(outlet)}
       </motion.div>

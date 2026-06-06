@@ -8,38 +8,20 @@ import { Button } from '@/components/ui/Button';
 
 const spring = { type: 'spring' as const, stiffness: 300, damping: 25 };
 
-interface SkipButtonProps {
-  onSkip: () => void;
-}
-
-function SkipButton({ onSkip }: SkipButtonProps) {
-  return (
-    <Button variant="ghost" size="sm" onClick={onSkip} className="text-xs">
-      Pular tutorial
-    </Button>
-  );
-}
-
 export function OnboardingWelcome() {
   const { step, nameInput, selectedAvatar, setStep, setNameInput, setSelectedAvatar } =
     useOnboardingStore();
   const setProfile = useProgressStore((s) => s.setProfile);
   const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
 
-  const skip = () => {
-    const name = nameInput.trim() || 'Jogador';
-    setProfile(name, selectedAvatar);
-    completeOnboarding();
-  };
-
   const goToAvatar = () => {
     setStep('avatar');
   };
 
-  const goToSpotlight = () => {
+  const finish = () => {
     const name = nameInput.trim() || 'Jogador';
     setProfile(name, selectedAvatar);
-    setStep('spotlight-journey');
+    completeOnboarding();
   };
 
   return createPortal(
@@ -84,8 +66,7 @@ export function OnboardingWelcome() {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <SkipButton onSkip={skip} />
+            <div className="flex justify-end">
               <Button variant="primary" size="md" onClick={goToAvatar}>
                 Continuar →
               </Button>
@@ -127,8 +108,8 @@ export function OnboardingWelcome() {
               <Button variant="ghost" size="sm" onClick={() => setStep('welcome')}>
                 ← Voltar
               </Button>
-              <Button variant="primary" size="md" onClick={goToSpotlight}>
-                Continuar →
+              <Button variant="primary" size="md" onClick={finish}>
+                Começar! 🚀
               </Button>
             </div>
           </motion.div>

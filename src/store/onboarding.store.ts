@@ -1,12 +1,6 @@
 import { create } from 'zustand';
 
-export type OnboardingStep =
-  | 'welcome'
-  | 'avatar'
-  | 'spotlight-journey'
-  | 'spotlight-stats'
-  | 'mini-exercise'
-  | 'completion';
+export type OnboardingStep = 'welcome' | 'avatar';
 
 interface OnboardingState {
   step: OnboardingStep;

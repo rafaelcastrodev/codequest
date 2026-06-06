@@ -276,7 +276,7 @@ export function HomePage() {
             : 0;
 
           return (
-            <div key={m.id} className="relative" data-onboarding={i === 0 ? 'first-module' : undefined}>
+            <div key={m.id} className="relative">
               {i < (curriculum.modules.length - 1) && (
                 <div className="absolute left-1/2 -translate-x-1/2 top-full w-0.5 h-4 bg-bg-elevated z-0" />
               )}

@@ -11,7 +11,7 @@ export function AboutPage() {
         className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 space-y-4"
       >
         <div className="text-center mb-2">
-          <span className="text-4xl">⚡</span>
+          <span className="text-5xl block">⚡</span>
           <h2 className="font-heading font-bold text-primary text-xl mt-2">CodeQuest</h2>
           <p className="text-[#8888AA] font-body text-sm">v{__APP_VERSION__}</p>
         </div>
