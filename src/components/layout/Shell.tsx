@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
@@ -6,24 +6,9 @@ import { AnimatedOutlet } from './AnimatedOutlet';
 import { ToastContainer } from '@/components/feedback/ToastContainer';
 import { OnboardingOverlay } from '@/components/onboarding';
 import { useLevelUp } from '@/hooks/useLevelUp';
-import { useProgressStore } from '@/store/progress.store';
 
 function LevelUpWatcher() {
   useLevelUp();
-  return null;
-}
-
-const REGEN_CHECK_MS = 60_000;
-
-function LivesRegenWatcher() {
-  const regenLives = useProgressStore((s) => s.regenLives);
-
-  useEffect(() => {
-    regenLives();
-    const id = setInterval(regenLives, REGEN_CHECK_MS);
-    return () => clearInterval(id);
-  }, [regenLives]);
-
   return null;
 }
 
@@ -35,7 +20,6 @@ export function Shell() {
   return (
     <div className="flex h-screen overflow-hidden bg-bg-primary">
       <LevelUpWatcher />
-      <LivesRegenWatcher />
 
       {/* Desktop sidebar — always visible */}
       <div className="hidden lg:flex">

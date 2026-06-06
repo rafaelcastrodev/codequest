@@ -1,15 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useProgressStore } from '@/store/progress.store';
-import { useSettingsStore } from '@/store/settings.store';
 
 interface TopBarProps {
   onMenuToggle?: () => void;
 }
 
 export function TopBar({ onMenuToggle }: TopBarProps) {
-  const { streak, lives } = useProgressStore();
-  const { livesEnabled } = useSettingsStore();
+  const streak = useProgressStore((s) => s.streak);
 
   return (
     <header className="h-14 bg-bg-surface border-b border-bg-elevated flex items-center px-4 gap-3 flex-shrink-0 lg:hidden">
@@ -36,12 +34,6 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
           <span className="text-sm">🔥</span>
           <span className="font-heading font-bold text-warning text-sm">{streak.current}</span>
         </div>
-        {livesEnabled && (
-          <div className="flex items-center gap-0.5">
-            <span className="text-sm">❤️</span>
-            <span className="font-heading font-bold text-accent text-sm">{lives.current}</span>
-          </div>
-        )}
       </div>
     </header>
   );

@@ -21,15 +21,8 @@ interface StreakData {
   lastDate: string;
 }
 
-interface LivesData {
-  current: number;
-  lastRegen: string;
-}
-
 const LEVEL_THRESHOLDS = [0, 50, 120, 220, 350, 500, 700, 950, 1250, 1600, 2000];
 const LEVEL_TITLES = ['', 'Aprendiz', 'Aprendiz', 'Explorador', 'Explorador', 'Hacker', 'Hacker', 'Arquiteto', 'Arquiteto', 'Mestre do Código', 'Mestre do Código'];
-const MAX_LIVES = 5;
-const REGEN_INTERVAL_MS = 30 * 60 * 1000;
 
 function toLocalDateString(date: Date): string {
   const y = date.getFullYear();
@@ -63,7 +56,6 @@ interface ProgressState {
   xp: number;
   level: number;
   streak: StreakData;
-  lives: LivesData;
   completedExercises: Record<string, CompletedExercise>;
   unlockedModules: string[];
   achievements: string[];
@@ -72,8 +64,6 @@ interface ProgressState {
   addXP: (amount: number) => void;
   completeExercise: (id: string, stars: number, hintsUsed: number) => void;
   updateStreak: () => void;
-  consumeLife: () => number;
-  regenLives: () => void;
   unlockModule: (moduleId: string) => void;
   unlockAchievement: (achievementId: string) => void;
   resetProgress: () => void;
@@ -90,7 +80,6 @@ const defaultState = {
   xp: 0,
   level: 1,
   streak: { current: 0, best: 0, lastDate: '' },
-  lives: { current: MAX_LIVES, lastRegen: new Date().toISOString() },
   completedExercises: {} as Record<string, CompletedExercise>,
   unlockedModules: ['01-variaveis'],
   achievements: [] as string[],
@@ -146,31 +135,6 @@ export const useProgressStore = create<ProgressState>()(
           };
         }),
 
-      consumeLife: () => {
-        const { lives } = get();
-        if (lives.current <= 0) return 0;
-        const remaining = lives.current - 1;
-        set((s) => ({
-          lives: { ...s.lives, current: remaining },
-        }));
-        return remaining;
-      },
-
-      regenLives: () =>
-        set((s) => {
-          const now = Date.now();
-          const lastRegen = new Date(s.lives.lastRegen).getTime();
-          const intervals = Math.floor((now - lastRegen) / REGEN_INTERVAL_MS);
-          if (intervals <= 0 || s.lives.current >= MAX_LIVES) return {};
-          const newLives = Math.min(MAX_LIVES, s.lives.current + intervals);
-          return {
-            lives: {
-              current: newLives,
-              lastRegen: new Date(lastRegen + intervals * REGEN_INTERVAL_MS).toISOString(),
-            },
-          };
-        }),
-
       unlockModule: (moduleId) =>
         set((s) => ({
           unlockedModules: s.unlockedModules.includes(moduleId)
@@ -194,7 +158,6 @@ export const useProgressStore = create<ProgressState>()(
         xp: s.xp,
         level: s.level,
         streak: s.streak,
-        lives: s.lives,
         completedExercises: s.completedExercises,
         unlockedModules: s.unlockedModules,
         achievements: s.achievements,

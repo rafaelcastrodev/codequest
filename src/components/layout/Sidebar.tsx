@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Avatar } from '@/components/ui/Avatar';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useProgressStore, getLevelTitle, getLevelProgress } from '@/store/progress.store';
-import { useSettingsStore } from '@/store/settings.store';
 
 interface NavItemProps {
   to: string;
@@ -40,8 +39,7 @@ interface SidebarProps {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const location = useLocation();
-  const { profile, xp, level, streak, lives } = useProgressStore();
-  const { livesEnabled } = useSettingsStore();
+  const { profile, xp, level, streak } = useProgressStore();
   const levelData = getLevelProgress(xp);
   const title = getLevelTitle(level);
 
@@ -76,16 +74,6 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           <span className="font-heading font-bold text-warning">{streak.current}</span>
           <span className="text-xs text-[#8888AA] font-body">ofensiva</span>
         </div>
-
-        {livesEnabled && (
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <span key={i} className={i < lives.current ? 'text-accent' : 'text-[#252542]'}>
-                ❤️
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin">

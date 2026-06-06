@@ -160,56 +160,6 @@ describe('useProgressStore', () => {
     });
   });
 
-  describe('lives', () => {
-    it('starts with 5 lives', () => {
-      expect(useProgressStore.getState().lives.current).toBe(5);
-    });
-
-    it('consumeLife decrements lives and returns remaining count', () => {
-      const result = useProgressStore.getState().consumeLife();
-      expect(result).toBe(4);
-      expect(useProgressStore.getState().lives.current).toBe(4);
-    });
-
-    it('consumeLife returns 0 when no lives left', () => {
-      useProgressStore.setState({ lives: { current: 0, lastRegen: new Date().toISOString() } });
-      expect(useProgressStore.getState().consumeLife()).toBe(0);
-      expect(useProgressStore.getState().lives.current).toBe(0);
-    });
-
-    it('regenLives adds lives after 30 minutes', () => {
-      const thirtyMinAgo = new Date(Date.now() - 31 * 60 * 1000).toISOString();
-      useProgressStore.setState({ lives: { current: 3, lastRegen: thirtyMinAgo } });
-
-      act(() => useProgressStore.getState().regenLives());
-      expect(useProgressStore.getState().lives.current).toBe(4);
-    });
-
-    it('regenLives caps at 5 lives', () => {
-      const twoHoursAgo = new Date(Date.now() - 120 * 60 * 1000).toISOString();
-      useProgressStore.setState({ lives: { current: 2, lastRegen: twoHoursAgo } });
-
-      act(() => useProgressStore.getState().regenLives());
-      expect(useProgressStore.getState().lives.current).toBe(5);
-    });
-
-    it('regenLives does nothing when already at max', () => {
-      const twoHoursAgo = new Date(Date.now() - 120 * 60 * 1000).toISOString();
-      useProgressStore.setState({ lives: { current: 5, lastRegen: twoHoursAgo } });
-
-      act(() => useProgressStore.getState().regenLives());
-      expect(useProgressStore.getState().lives.current).toBe(5);
-    });
-
-    it('regenLives does nothing when not enough time passed', () => {
-      const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-      useProgressStore.setState({ lives: { current: 3, lastRegen: tenMinAgo } });
-
-      act(() => useProgressStore.getState().regenLives());
-      expect(useProgressStore.getState().lives.current).toBe(3);
-    });
-  });
-
   describe('modules', () => {
     it('starts with 01-variaveis unlocked', () => {
       expect(useProgressStore.getState().unlockedModules).toContain('01-variaveis');

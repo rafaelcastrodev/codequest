@@ -8,7 +8,8 @@ const cache = new Map<string, unknown>();
 async function fetchJSON<T>(path: string): Promise<T> {
   const cached = cache.get(path) as T | undefined;
   if (cached) return cached;
-  const res = await fetch(`${BASE}/${path}`);
+  const headers: RequestInit = import.meta.env.DEV ? { cache: 'no-cache' } : {};
+  const res = await fetch(`${BASE}/${path}`, headers);
   if (!res.ok) throw new Error(`Failed to load ${path}: ${res.status} ${res.statusText}`);
   const data = await (res.json() as Promise<T>);
   cache.set(path, data);

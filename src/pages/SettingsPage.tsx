@@ -42,7 +42,7 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const { soundEnabled, livesEnabled, debugMode, toggleSound, toggleLives, toggleDebugMode, resetOnboarding } = useSettingsStore();
+  const { soundEnabled, debugMode, toggleSound, toggleDebugMode, resetOnboarding } = useSettingsStore();
 
   const { resetProgress, profile } = useProgressStore();
   const resetOnboardingStore = useOnboardingStore((s) => s.reset);
@@ -84,12 +84,6 @@ export function SettingsPage() {
           description="Efeitos sonoros de feedback ao acertar e errar"
           checked={soundEnabled}
           onChange={toggleSound}
-        />
-        <ToggleRow
-          label="Sistema de Vidas"
-          description="Perde uma vida ao errar. Desative para modo prática livre"
-          checked={livesEnabled}
-          onChange={toggleLives}
         />
       </div>
 

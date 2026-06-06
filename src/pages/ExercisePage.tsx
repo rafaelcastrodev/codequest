@@ -9,7 +9,6 @@ import { useSettingsStore } from '@/store/settings.store';
 import { useAchievements } from '@/hooks/useAchievements';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
 import { HintPanel } from '@/components/exercise/HintPanel';
 import { OutputPanel } from '@/components/exercise/OutputPanel';
 import { SuccessOverlay } from '@/components/exercise/SuccessOverlay';
@@ -26,8 +25,8 @@ export function ExercisePage() {
 
   const { module: mod, exercise, loading, error } = useExercise(moduleId, lessonId);
   const runner = useCodeRunner();
-  const { addXP, completeExercise, updateStreak, consumeLife, completedExercises } = useProgressStore();
-  const { livesEnabled, soundEnabled } = useSettingsStore();
+  const { addXP, completeExercise, updateStreak, completedExercises } = useProgressStore();
+  const soundEnabled = useSettingsStore((s) => s.soundEnabled);
   const { hintsUsed, useHint, setCurrentLesson } = useSessionStore();
   const { checkAndUnlock } = useAchievements();
 
@@ -35,7 +34,6 @@ export function ExercisePage() {
   const [successStars, setSuccessStars] = useState<number | null>(null);
   const [editorBorderStatus, setEditorBorderStatus] = useState<'idle' | 'ok' | 'err'>('idle');
   const [shakeKey, setShakeKey] = useState(0);
-  const [noLivesModal, setNoLivesModal] = useState(false);
   const [mobileTab, setMobileTab] = useState<'instructions' | 'code'>('instructions');
   const pendingAchievementCheck = useRef(false);
 
@@ -82,14 +80,8 @@ export function ExercisePage() {
       setEditorBorderStatus('err');
       setShakeKey((k) => k + 1);
       if (soundEnabled) playSound('error');
-      if (livesEnabled) {
-        const remaining = consumeLife();
-        if (remaining <= 0) {
-          setNoLivesModal(true);
-        }
-      }
     }
-  }, [exercise, runner, code, hintsUsed, addXP, completeExercise, completedExercises, updateStreak, livesEnabled, consumeLife, soundEnabled]);
+  }, [exercise, runner, code, hintsUsed, addXP, completeExercise, completedExercises, updateStreak, soundEnabled]);
 
   const handleNext = useCallback(() => {
     if (!mod || !moduleId) return navigate('/');
@@ -274,22 +266,6 @@ export function ExercisePage() {
 
   return (
     <div className="flex flex-col lg:flex-row h-full overflow-hidden">
-      <Modal open={noLivesModal} onClose={() => setNoLivesModal(false)} title="Sem vidas! 💔">
-        <p className="text-[#8888AA] font-body text-sm mb-6 leading-relaxed">
-          Você ficou sem vidas. Espere <strong className="text-[#E8E8F0]">30 minutos</strong> para
-          regenerar ou revise exercícios anteriores. Você também pode desativar o sistema de vidas
-          nas configurações.
-        </p>
-        <div className="flex gap-3">
-          <Button variant="ghost" size="md" className="flex-1" onClick={() => navigate('/')}>
-            Voltar à Jornada
-          </Button>
-          <Button variant="primary" size="md" className="flex-1" onClick={() => navigate('/settings')}>
-            Configurações
-          </Button>
-        </div>
-      </Modal>
-
       <div className="hidden lg:flex lg:flex-row flex-1 overflow-hidden">
         {instructionsPanel}
         {editorPanel}
