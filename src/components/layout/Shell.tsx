@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { AnimatedOutlet } from './AnimatedOutlet';
 import { ToastContainer } from '@/components/feedback/ToastContainer';
+import { FeedbackFab } from '@/components/feedback/FeedbackFab';
 import { OnboardingOverlay } from '@/components/onboarding';
 import { useLevelUp } from '@/hooks/useLevelUp';
 import { useFontScale } from '@/hooks/useFontScale';
@@ -66,6 +67,7 @@ export function Shell() {
       </div>
 
       <ToastContainer />
+      <FeedbackFab />
       <OnboardingOverlay />
     </div>
   );
