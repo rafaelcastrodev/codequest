@@ -263,11 +263,15 @@ export function ExercisePage() {
       <div className="flex items-center justify-between px-4 py-2 border-b border-bg-elevated bg-bg-surface flex-shrink-0">
         <div className="flex items-center gap-2">
           <button
-            aria-label="Voltar às instruções"
+            aria-label="Ver instruções"
             onClick={() => setMobileTab('instructions')}
             className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated transition-colors"
           >
-            <span aria-hidden="true">←</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+              <line x1="2" y1="3.5" x2="14" y2="3.5" />
+              <line x1="2" y1="7" x2="10" y2="7" />
+              <line x1="2" y1="10.5" x2="12" y2="10.5" />
+            </svg>
           </button>
           <span className="font-mono text-xs text-[#8888AA]">student.ts</span>
         </div>
