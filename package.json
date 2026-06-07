@@ -6,7 +6,7 @@
     "url": "https://rafaelcastrodev.github.io/aboutme/"
   },
   "private": true,
-  "version": "1.13.0",
+  "version": "0.13.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
