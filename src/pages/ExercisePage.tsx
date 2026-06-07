@@ -156,12 +156,19 @@ export function ExercisePage() {
 
   const instructionsPanel = (
     <div className="flex-1 lg:flex-initial lg:w-80 xl:w-96 flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
-      <div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50 flex items-center justify-between">
-        <span className="text-xs text-[#8888AA] font-body truncate">
-          {mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
-        </span>
-        <div className="flex items-center gap-2">
+      <div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-[#8888AA] font-body truncate">
+            {mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
+          </span>
+        </div>
+        <div className="flex items-center justify-end gap-2 mt-2">
           <div className="hidden lg:flex items-center gap-2">
+            <FakeAssistantButton
+              hasContent={assistant.hasContent}
+              showingAssistant={assistant.showingAssistant}
+              onClick={assistant.openModal}
+            />
             <FontSizeButton />
             <PageInfoButton />
           </div>
@@ -233,16 +240,13 @@ export function ExercisePage() {
         )}
       </div>
 
-      <div className="p-3 border-t border-bg-elevated flex justify-end">
+      <div className="lg:hidden p-3 border-t border-bg-elevated flex items-center gap-2">
         <FakeAssistantButton
           hasContent={assistant.hasContent}
           showingAssistant={assistant.showingAssistant}
           onClick={assistant.openModal}
         />
-      </div>
-
-      <div className="lg:hidden p-3 border-t border-bg-elevated">
-        <Button variant="primary" size="md" className="w-full" onClick={() => setMobileTab('code')}>
+        <Button variant="primary" size="md" className="flex-1" onClick={() => setMobileTab('code')}>
           Abrir Editor →
         </Button>
       </div>
@@ -267,11 +271,7 @@ export function ExercisePage() {
             onClick={() => setMobileTab('instructions')}
             className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated transition-colors"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-              <line x1="2" y1="3.5" x2="14" y2="3.5" />
-              <line x1="2" y1="7" x2="10" y2="7" />
-              <line x1="2" y1="10.5" x2="12" y2="10.5" />
-            </svg>
+            <span aria-hidden="true">📋</span>
           </button>
           <span className="font-mono text-xs text-[#8888AA]">student.ts</span>
         </div>
