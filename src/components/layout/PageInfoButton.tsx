@@ -183,6 +183,7 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 	const allTips = [
 		...info.tips,
 		{ icon: "🔤", label: "Tamanho da fonte", detail: "Use o botao A ao lado para alternar entre 3 tamanhos de texto" },
+		{ icon: "💬", label: "Feedback", detail: "Encontrou um bug ou tem uma sugestao? Use o botao roxo para nos enviar" },
 	];
 
 	return (

@@ -36,18 +36,20 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
       </Link>
 
       <div className="ml-auto flex items-center gap-3">
-        <FontSizeButton />
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setFeedbackOpen(true)}
           aria-label="Enviar feedback"
           title="Feedback"
-          className="w-7 h-7 flex items-center justify-center rounded-full border border-[#8888AA]/30 text-[#8888AA] hover:border-secondary/50 hover:text-secondary hover:bg-secondary/10 transition-colors"
+          className="w-7 h-7 flex items-center justify-center rounded-full bg-secondary text-white
+            shadow-[0_0_10px_rgba(124,92,252,0.4)] hover:shadow-[0_0_16px_rgba(124,92,252,0.6)]
+            transition-shadow duration-200"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
         </motion.button>
+        <FontSizeButton />
         {pathname === '/' ? (
           <div className="flex items-center gap-1">
             <span className="text-sm">🔥</span>
