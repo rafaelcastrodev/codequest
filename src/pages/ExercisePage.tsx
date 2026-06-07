@@ -331,7 +331,7 @@ export function ExercisePage() {
               scrollBeyondLastLine: false,
               automaticLayout: true,
               fontFamily: '"JetBrains Mono", monospace',
-              fontLigatures: true,
+              fontLigatures: false,
               padding: { top: 16, bottom: 16 },
               tabSize: 2,
               wordWrap: 'on',
