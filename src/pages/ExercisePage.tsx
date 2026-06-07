@@ -240,7 +240,7 @@ export function ExercisePage() {
         )}
       </div>
 
-      <div className="lg:hidden p-3 border-t border-bg-elevated flex items-center gap-2">
+      <div className="lg:hidden p-3 border-t border-bg-elevated flex items-center gap-2 flex-shrink-0">
         <FakeAssistantButton
           hasContent={assistant.hasContent}
           showingAssistant={assistant.showingAssistant}

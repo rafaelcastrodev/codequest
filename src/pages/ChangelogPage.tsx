@@ -8,15 +8,32 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
-    version: '1.12.0',
+    version: '0.13.0',
+    date: '2026-06-07',
+    changes: [
+      'Página de Changelog adicionada ao menu lateral',
+      'Playground: itens de menu agrupados num modal abaixo de 640px',
+      'Playground: troca de texto para ícones agora ocorre em 768px',
+      'Exercícios: ícone de prancheta substitui seta de voltar no mobile',
+      'Exercícios: barra de ações (A, i, Sair) movida para linha abaixo do título',
+      'Exercícios: botão Assistente reposicionado na barra de ações',
+      'Lições: barra de navegação (Anterior/Próximo) fixa no rodapé',
+      'Lições: card "Teoria Concluída" centralizado como modal',
+      'Exercícios: barra "Abrir Editor" fixa no rodapé sem cortar conteúdo',
+      'Versão corrigida para 0.x (beta)',
+    ],
+  },
+  {
+    version: '0.12.0',
     date: '2026-06-07',
     changes: [
       'Botão de feedback adicionado à barra superior em telas menores',
+      'Botão de feedback com destaque roxo (estilo FAB)',
       'Dica sobre feedback no modal de informações da página',
     ],
   },
   {
-    version: '1.11.0',
+    version: '0.11.0',
     date: '2026-06-06',
     changes: [
       'Formulário de feedback integrado ao Google Sheets',

@@ -255,57 +255,69 @@ export function LessonPage() {
 		exitToRight: { opacity: 0, x: 60 },
 	};
 
-	return (
-		<div className="max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0">
-			{!completed && (
-				<div className="space-y-2">
-					<div className="flex items-center justify-between">
-						<span className="text-xs text-[#8888AA] font-body truncate">
-							{mod?.title} — Lição {currentIdx + 1} de{" "}
-							{lessons.length}
-						</span>
-						<div className="flex items-center gap-2">
-							<div className="hidden lg:flex items-center gap-2">
-								<FontSizeButton />
-								<PageInfoButton />
-							</div>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={() => navigate("/")}>
-								✕ Sair
-							</Button>
-						</div>
-					</div>
-					<div className="flex items-center justify-between">
-						<span className="text-xs font-semibold text-primary font-body">
-							{lesson.title}
-						</span>
-						<span className="text-xs text-[#8888AA] font-body">
-							Passo {stepIndex + 1} de {totalSteps}
-						</span>
-					</div>
-					<StepNav
-						total={totalSteps}
-						current={stepIndex}
-						maxVisited={maxVisited}
-						onSelect={(i) => {
-							setStepIndex(i);
-							assistant.clearAssistant();
-						}}
-					/>
-				</div>
-			)}
-
-			<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 min-h-48 overflow-hidden">
-				{completed ? (
+	if (completed) {
+		return (
+			<div className="flex flex-col items-center justify-center h-full px-4">
+				<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 w-full max-w-md">
 					<LessonComplete
 						lesson={theoryLesson}
 						onNext={handleNext}
 						onMap={() => navigate("/")}
 					/>
-				) : (
-					<>
+				</div>
+
+				<FakeAssistantModal
+					open={assistant.modalOpen}
+					onClose={assistant.closeModal}
+					onRequest={assistant.request}
+				/>
+			</div>
+		);
+	}
+
+	return (
+		<div className="flex flex-col h-full overflow-hidden">
+			<div className="flex-1 overflow-y-auto scrollbar-thin">
+				<div className="max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0 pb-4">
+					<div className="space-y-2">
+						<div className="flex items-center justify-between">
+							<span className="text-xs text-[#8888AA] font-body truncate">
+								{mod?.title} — Lição {currentIdx + 1} de{" "}
+								{lessons.length}
+							</span>
+							<div className="flex items-center gap-2">
+								<div className="hidden lg:flex items-center gap-2">
+									<FontSizeButton />
+									<PageInfoButton />
+								</div>
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={() => navigate("/")}>
+									✕ Sair
+								</Button>
+							</div>
+						</div>
+						<div className="flex items-center justify-between">
+							<span className="text-xs font-semibold text-primary font-body">
+								{lesson.title}
+							</span>
+							<span className="text-xs text-[#8888AA] font-body">
+								Passo {stepIndex + 1} de {totalSteps}
+							</span>
+						</div>
+						<StepNav
+							total={totalSteps}
+							current={stepIndex}
+							maxVisited={maxVisited}
+							onSelect={(i) => {
+								setStepIndex(i);
+								assistant.clearAssistant();
+							}}
+						/>
+					</div>
+
+					<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 min-h-48 overflow-hidden">
 						<AssistantContentNav
 							showingAssistant={assistant.showingAssistant}
 							hasAssistantContent={assistant.activeContent !== null}
@@ -336,12 +348,12 @@ export function LessonPage() {
 								</motion.div>
 							)}
 						</AnimatePresence>
-					</>
-				)}
+					</div>
+				</div>
 			</div>
 
-			{!completed && (
-				<div className="flex items-center justify-between">
+			<div className="flex-shrink-0 border-t border-bg-elevated bg-bg-surface px-4 py-3">
+				<div className="max-w-2xl mx-auto flex items-center justify-between">
 					<Button
 						variant="ghost"
 						size="md"
@@ -363,7 +375,7 @@ export function LessonPage() {
 							: "Concluir ✓"}
 					</Button>
 				</div>
-			)}
+			</div>
 
 			<FakeAssistantModal
 				open={assistant.modalOpen}
