@@ -65,6 +65,13 @@ body {
 	}
 }
 
+code,
+pre,
+.font-mono,
+[class*="font-mono"] {
+	font-variant-ligatures: none;
+}
+
 .cq-code-block .hljs {
 	background: transparent;
 }
