@@ -198,12 +198,44 @@ function TemplateModal({ open, onClose, templates, onSelect }: TemplateModalProp
   );
 }
 
+interface ToolbarMenuItem {
+  icon: string;
+  label: string;
+  onClick: () => void;
+}
+
+interface ToolbarMenuModalProps {
+  open: boolean;
+  onClose: () => void;
+  items: ToolbarMenuItem[];
+}
+
+function ToolbarMenuModal({ open, onClose, items }: ToolbarMenuModalProps) {
+  return (
+    <Modal open={open} onClose={onClose} title="Ações">
+      <div className="space-y-2">
+        {items.map((item) => (
+          <button
+            key={item.label}
+            onClick={() => { item.onClick(); onClose(); }}
+            className="w-full flex items-center gap-3 p-3 rounded-xl border border-bg-elevated hover:border-primary/30 hover:bg-bg-elevated transition-colors text-left"
+          >
+            <span className="text-xl flex-shrink-0">{item.icon}</span>
+            <span className="font-body text-sm font-semibold text-[#E8E8F0]">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </Modal>
+  );
+}
+
 export function PlaygroundPage() {
   const [code, setCode] = useState(DEFAULT_CODE);
   const [currentSnippetId, setCurrentSnippetId] = useState<string | null>(null);
   const [showSnippets, setShowSnippets] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showToolbarMenu, setShowToolbarMenu] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState(false);
 
   const { snippets, saveSnippet, updateSnippetCode, renameSnippet, deleteSnippet } = usePlaygroundStore();
@@ -317,55 +349,67 @@ export function PlaygroundPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={handleNew} className="text-xs">
-            <span className="hidden sm:inline">Novo</span>
-            <span className="sm:hidden">+</span>
-          </Button>
-          {PLAYGROUND_TEMPLATES.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowTemplates(true)}
-              className="text-xs"
-            >
-              <span className="hidden sm:inline">Modelos</span>
-              <span className="sm:hidden">📐</span>
-            </Button>
-          )}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setShowSnippets(true)}
-            className="text-xs"
+            onClick={() => setShowToolbarMenu(true)}
+            className="text-xs sm:hidden"
           >
-            <span className="hidden sm:inline">Projetos{snippets.length > 0 ? ` (${snippets.length})` : ''}</span>
-            <span className="sm:hidden">📁</span>
+            ⋯
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleSave} className="text-xs min-w-16">
-            <AnimatePresence mode="wait">
-              {savedFeedback ? (
-                <motion.span
-                  key="saved"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-primary"
-                >
-                  Salvo
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="save"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <span className="hidden sm:inline">Salvar</span>
-                  <span className="sm:hidden">💾</span>
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </Button>
+
+          <div className="hidden sm:flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={handleNew} className="text-xs">
+              <span className="hidden md:inline">Novo</span>
+              <span className="md:hidden">+</span>
+            </Button>
+            {PLAYGROUND_TEMPLATES.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTemplates(true)}
+                className="text-xs"
+              >
+                <span className="hidden md:inline">Modelos</span>
+                <span className="md:hidden">📐</span>
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowSnippets(true)}
+              className="text-xs"
+            >
+              <span className="hidden md:inline">Projetos{snippets.length > 0 ? ` (${snippets.length})` : ''}</span>
+              <span className="md:hidden">📁</span>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleSave} className="text-xs min-w-16">
+              <AnimatePresence mode="wait">
+                {savedFeedback ? (
+                  <motion.span
+                    key="saved"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="text-primary"
+                  >
+                    Salvo
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="save"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <span className="hidden md:inline">Salvar</span>
+                    <span className="md:hidden">💾</span>
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Button>
+          </div>
+
           <Button
             variant="primary"
             size="sm"
@@ -437,6 +481,19 @@ export function PlaygroundPage() {
           status={runner.status}
         />
       </div>
+
+      <ToolbarMenuModal
+        open={showToolbarMenu}
+        onClose={() => setShowToolbarMenu(false)}
+        items={[
+          { icon: '📄', label: 'Novo', onClick: handleNew },
+          ...(PLAYGROUND_TEMPLATES.length > 0
+            ? [{ icon: '📐', label: 'Modelos', onClick: () => setShowTemplates(true) }]
+            : []),
+          { icon: '📁', label: `Projetos${snippets.length > 0 ? ` (${snippets.length})` : ''}`, onClick: () => setShowSnippets(true) },
+          { icon: '💾', label: 'Salvar', onClick: handleSave },
+        ]}
+      />
 
       <SnippetListModal
         open={showSnippets}
