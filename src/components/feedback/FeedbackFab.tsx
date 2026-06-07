@@ -22,7 +22,7 @@ export function FeedbackFab() {
               shadow-[0_0_16px_rgba(124,92,252,0.4)] hover:shadow-[0_0_24px_rgba(124,92,252,0.6)]
               flex items-center justify-center transition-shadow duration-200
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary
-              max-lg:bottom-20"
+              max-lg:hidden"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
