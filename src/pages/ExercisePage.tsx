@@ -26,18 +26,9 @@ import { defineCodeQuestTheme } from '@/engine/monaco-theme';
 import { triggerConfetti } from '@/utils/confetti';
 import { playSound } from '@/utils/sounds';
 import { lessonPath } from '@/utils/lesson-path';
+import { isCodeContent } from '@/utils/is-code-content';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then((m) => ({ default: m.Editor })));
-
-function isCodeContent(content: string): boolean {
-  return content.includes('\n') && (
-    content.includes('let ') ||
-    content.includes('const ') ||
-    content.includes('function ') ||
-    content.includes('console.log') ||
-    content.includes('=>')
-  );
-}
 
 export function ExercisePage() {
   const { moduleId, lessonId } = useParams<{ moduleId: string; lessonId: string }>();

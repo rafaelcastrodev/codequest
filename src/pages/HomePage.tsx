@@ -204,6 +204,7 @@ export function HomePage() {
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Erro ao carregar conteúdo'))
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- load once on mount; reactive unlock is handled by the effect below
   }, []);
 
   // Auto-unlock modules when prerequisites are completed

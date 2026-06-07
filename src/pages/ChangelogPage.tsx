@@ -8,6 +8,17 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.13.1',
+    date: '2026-06-07',
+    changes: [
+      'Removido componente BottomNav (não utilizado)',
+      'Removido hook useProgress (não utilizado)',
+      'Session store simplificada: removidos campos e métodos órfãos',
+      'Função isCodeContent extraída para utilitário compartilhado',
+      'Corrigido warning de ESLint no useEffect da HomePage',
+    ],
+  },
+  {
     version: '0.13.0',
     date: '2026-06-07',
     changes: [

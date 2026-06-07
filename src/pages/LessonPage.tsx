@@ -15,6 +15,7 @@ import { RichText } from "@/components/ui/RichText";
 import { FontSizeButton } from "@/components/layout/FontSizeButton";
 import { PageInfoButton } from "@/components/layout/PageInfoButton";
 import { lessonPath } from "@/utils/lesson-path";
+import { isCodeContent } from "@/utils/is-code-content";
 import type {
 	Module,
 	TheoryLesson,
@@ -74,17 +75,6 @@ function StepView({ step }: StepViewProps) {
 				{step.explanation}
 			</p>
 		</div>
-	);
-}
-
-function isCodeContent(content: string): boolean {
-	return (
-		content.includes("\n") &&
-		(content.includes("let ") ||
-			content.includes("const ") ||
-			content.includes("function ") ||
-			content.includes("console.log") ||
-			content.includes("=>"))
 	);
 }
 
