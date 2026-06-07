@@ -81,6 +81,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         <NavItem to="/playground" icon="🧪" label="Playground" active={location.pathname === '/playground'} onClick={onNavigate} />
         <NavItem to="/profile" icon="👤" label="Perfil" active={location.pathname === '/profile'} onClick={onNavigate} />
         <NavItem to="/about" icon="ℹ️" label="Sobre" active={location.pathname === '/about'} onClick={onNavigate} />
+        <NavItem to="/changelog" icon="📋" label="Changelog" active={location.pathname === '/changelog'} onClick={onNavigate} />
         <NavItem to="/settings" icon="⚙️" label="Configurações" active={location.pathname === '/settings'} onClick={onNavigate} />
       </nav>
 

@@ -134,6 +134,16 @@ function getPageInfo(pathname: string): PageInfo | null {
 		};
 	}
 
+	if (pathname === "/changelog") {
+		return {
+			title: "Sobre o Changelog",
+			tips: [
+				{ icon: "📋", label: "Versoes", detail: "Cada entrada mostra o que mudou em uma versao" },
+				{ icon: "🔢", label: "Numeracao", detail: "Seguimos versionamento semantico (major.minor.patch)" },
+			],
+		};
+	}
+
 	if (pathname === "/settings") {
 		return {
 			title: "Sobre as Configuracoes",
