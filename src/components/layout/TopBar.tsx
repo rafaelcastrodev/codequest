@@ -16,7 +16,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   return (
-    <header className="h-14 bg-bg-surface border-b border-bg-elevated flex items-center px-4 gap-3 flex-shrink-0 lg:hidden">
+    <header className="h-14 bg-bg-surface border-b border-bg-elevated flex items-center px-4 gap-3 flex-shrink-0">
       <motion.button
         whileTap={{ scale: 0.9 }}
         aria-label="Menu"

@@ -8,6 +8,20 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.14.0',
+    date: '2026-06-07',
+    changes: [
+      'Header com nome "CodeQuest" visível em todas as resoluções',
+      'Sidebar controlada pelo botão Menu (show/hide) em desktop',
+      'Sidebar se esconde automaticamente ao entrar em exercícios (>1024px)',
+      'Removido texto "Passo X de Y" da tela de lição',
+      'Removido botão "Sair" das telas de lição e exercício',
+      'Removido rótulo "student.ts" da barra do editor',
+      'Removida barra de ações (Assistente, A, i) da tela de exercício',
+      'Botão Assistente visível na barra do editor em desktop',
+    ],
+  },
+  {
     version: '0.13.1',
     date: '2026-06-07',
     changes: [

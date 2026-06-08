@@ -280,20 +280,11 @@ export function LessonPage() {
 									<FontSizeButton />
 									<PageInfoButton />
 								</div>
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={() => navigate("/")}>
-									✕ Sair
-								</Button>
 							</div>
 						</div>
 						<div className="flex items-center justify-between">
 							<span className="text-xs font-semibold text-primary font-body">
 								{lesson.title}
-							</span>
-							<span className="text-xs text-[#8888AA] font-body">
-								Passo {stepIndex + 1} de {totalSteps}
 							</span>
 						</div>
 						<StepNav

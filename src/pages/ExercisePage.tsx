@@ -17,8 +17,6 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { RichText } from '@/components/ui/RichText';
-import { FontSizeButton } from '@/components/layout/FontSizeButton';
-import { PageInfoButton } from '@/components/layout/PageInfoButton';
 import { HintPanel } from '@/components/exercise/HintPanel';
 import { OutputPanel } from '@/components/exercise/OutputPanel';
 import { SuccessOverlay } from '@/components/exercise/SuccessOverlay';
@@ -153,20 +151,6 @@ export function ExercisePage() {
             {mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
           </span>
         </div>
-        <div className="flex items-center justify-end gap-2 mt-2">
-          <div className="hidden lg:flex items-center gap-2">
-            <FakeAssistantButton
-              hasContent={assistant.hasContent}
-              showingAssistant={assistant.showingAssistant}
-              onClick={assistant.openModal}
-            />
-            <FontSizeButton />
-            <PageInfoButton />
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-            ✕ Sair
-          </Button>
-        </div>
       </div>
       <div className="p-5 border-b border-bg-elevated">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -264,7 +248,13 @@ export function ExercisePage() {
           >
             <span aria-hidden="true">📋</span>
           </button>
-          <span className="font-mono text-xs text-[#8888AA]">student.ts</span>
+          <div className="hidden lg:flex">
+            <FakeAssistantButton
+              hasContent={assistant.hasContent}
+              showingAssistant={assistant.showingAssistant}
+              onClick={assistant.openModal}
+            />
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button
