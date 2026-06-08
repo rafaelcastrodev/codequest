@@ -144,7 +144,7 @@ export function ExercisePage() {
   };
 
   const instructionsPanel = (
-    <div className="flex-1 lg:flex-initial lg:w-80 xl:w-96 flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
+    <div className="flex-1 lg:flex-initial lg:w-96 xl:w-[28rem] flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
       <div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50">
         <div className="flex items-center justify-between">
           <span className="text-xs text-[#8888AA] font-body truncate">
@@ -215,13 +215,13 @@ export function ExercisePage() {
         )}
       </div>
 
-      <div className="lg:hidden p-3 border-t border-bg-elevated flex items-center gap-2 flex-shrink-0">
+      <div className="p-3 border-t border-bg-elevated flex items-center gap-2 flex-shrink-0">
         <FakeAssistantButton
           hasContent={assistant.hasContent}
           showingAssistant={assistant.showingAssistant}
           onClick={assistant.openModal}
         />
-        <Button variant="primary" size="md" className="flex-1" onClick={() => setMobileTab('code')}>
+        <Button variant="primary" size="md" className="flex-1 lg:hidden" onClick={() => setMobileTab('code')}>
           Abrir Editor →
         </Button>
       </div>
@@ -248,13 +248,6 @@ export function ExercisePage() {
           >
             <span aria-hidden="true">📋</span>
           </button>
-          <div className="hidden lg:flex">
-            <FakeAssistantButton
-              hasContent={assistant.hasContent}
-              showingAssistant={assistant.showingAssistant}
-              onClick={assistant.openModal}
-            />
-          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button

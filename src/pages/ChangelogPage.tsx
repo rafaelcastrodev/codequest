@@ -8,6 +8,21 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.15.0',
+    date: '2026-06-07',
+    changes: [
+      'Sidebar aberta por padrão em desktop (>1024px), fechável via Menu',
+      'Sidebar sem delay ao esconder — conteúdo preenche imediatamente',
+      'Sidebar fecha automaticamente ao entrar em exercícios',
+      'Removidos botões A e i da barra de título nas lições',
+      'Removido FAB de feedback (já acessível via header)',
+      'Modal informativo: ícone de fonte corrigido para "A"',
+      'Modal informativo: descrição do feedback atualizada',
+      'Exercícios: botão Assistente visível em todas as resoluções',
+      'Exercícios: coluna de instruções mais larga em desktop',
+    ],
+  },
+  {
     version: '0.14.0',
     date: '2026-06-07',
     changes: [
