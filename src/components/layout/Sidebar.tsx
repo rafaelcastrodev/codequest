@@ -2,11 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Avatar } from '@/components/ui/Avatar';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { icons } from '@/components/ui/Icon';
 import { useProgressStore, getLevelTitle, getLevelProgress } from '@/store/progress.store';
+import type { ReactNode } from 'react';
 
 interface NavItemProps {
   to: string;
-  icon: string;
+  icon: ReactNode;
   label: string;
   active: boolean;
   onClick?: () => void;
@@ -70,19 +72,19 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
       <div className="px-5 py-3 border-b border-bg-elevated flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <span className="text-lg">🔥</span>
+          <icons.fire className="text-lg" />
           <span className="font-heading font-bold text-warning">{streak.current}</span>
           <span className="text-xs text-[#8888AA] font-body">ofensiva</span>
         </div>
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin">
-        <NavItem to="/" icon="🗺️" label="Jornada" active={location.pathname === '/'} onClick={onNavigate} />
-        <NavItem to="/playground" icon="🧪" label="Playground" active={location.pathname === '/playground'} onClick={onNavigate} />
-        <NavItem to="/profile" icon="👤" label="Perfil" active={location.pathname === '/profile'} onClick={onNavigate} />
-        <NavItem to="/about" icon="ℹ️" label="Sobre" active={location.pathname === '/about'} onClick={onNavigate} />
-        <NavItem to="/changelog" icon="📋" label="Changelog" active={location.pathname === '/changelog'} onClick={onNavigate} />
-        <NavItem to="/settings" icon="⚙️" label="Configurações" active={location.pathname === '/settings'} onClick={onNavigate} />
+        <NavItem to="/" icon={<icons.map />} label="Jornada" active={location.pathname === '/'} onClick={onNavigate} />
+        <NavItem to="/playground" icon={<icons.flask />} label="Playground" active={location.pathname === '/playground'} onClick={onNavigate} />
+        <NavItem to="/profile" icon={<icons.person />} label="Perfil" active={location.pathname === '/profile'} onClick={onNavigate} />
+        <NavItem to="/about" icon={<icons.info />} label="Sobre" active={location.pathname === '/about'} onClick={onNavigate} />
+        <NavItem to="/changelog" icon={<icons.changelog />} label="Changelog" active={location.pathname === '/changelog'} onClick={onNavigate} />
+        <NavItem to="/settings" icon={<icons.gear />} label="Configurações" active={location.pathname === '/settings'} onClick={onNavigate} />
       </nav>
 
       <div className="p-4 border-t border-bg-elevated">

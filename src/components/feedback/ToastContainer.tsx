@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useToastStore } from '@/store/toast.store';
+import { resolveIcon } from '@/components/ui/Icon';
 
 const VARIANT_STYLES = {
   achievement: 'border-secondary/50 bg-secondary/15 shadow-[0_0_20px_rgba(124,92,252,0.25)]',
@@ -45,7 +46,7 @@ function ToastItem({ id, variant, icon, title, message, onDismiss }: ToastItemPr
         ${VARIANT_STYLES[variant]}
       `}
     >
-      <span className="text-2xl flex-shrink-0">{icon}</span>
+      <span className="text-2xl flex-shrink-0">{resolveIcon(icon)({})}</span>
       <div className="min-w-0">
         <p className={`font-heading font-bold text-sm ${TITLE_COLOR[variant]}`}>{title}</p>
         <p className="font-body text-xs text-[#E8E8F0] truncate">{message}</p>

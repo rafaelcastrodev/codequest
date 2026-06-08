@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Modal } from "@/components/ui/Modal";
+import { icons } from "@/components/ui/Icon";
+import type { ReactNode } from "react";
 
 interface PageTip {
-	icon: string;
+	icon: ReactNode;
 	label: string;
 	detail: string;
 }
@@ -21,15 +23,15 @@ function getPageInfo(pathname: string): PageInfo | null {
 		return {
 			title: "Dicas do Playground",
 			tips: [
-				{ icon: "▶", label: "Ctrl+Enter", detail: "Executar o codigo" },
-				{ icon: "💾", label: "Ctrl+S", detail: "Salvar o projeto" },
+				{ icon: <icons.play />, label: "Ctrl+Enter", detail: "Executar o codigo" },
+				{ icon: <icons.save />, label: "Ctrl+S", detail: "Salvar o projeto" },
 				{
-					icon: "📁",
+					icon: <icons.folderClosed />,
 					label: "Projetos",
 					detail: "Gerencie seus codigos salvos",
 				},
 				{
-					icon: "🧹",
+					icon: <icons.broom />,
 					label: "Limpar",
 					detail: "Limpe o console de saida",
 				},
@@ -42,17 +44,17 @@ function getPageInfo(pathname: string): PageInfo | null {
 			title: "Dicas da Lição",
 			tips: [
 				{
-					icon: "🤖",
+					icon: <icons.robot />,
 					label: "Assistente",
 					detail: "Peca explicacoes alternativas, exemplos ou resumos",
 				},
 				{
-					icon: "◀▶",
+					icon: <><icons.playBack /><icons.play /></>,
 					label: "Navegacao",
 					detail: "Use os botoes para avancar entre os passos",
 				},
 				{
-					icon: "📋",
+					icon: <icons.changelog />,
 					label: "Codigo",
 					detail: "Blocos de codigo podem ser copiados",
 				},
@@ -65,22 +67,22 @@ function getPageInfo(pathname: string): PageInfo | null {
 			title: "Dicas do Exercicio",
 			tips: [
 				{
-					icon: "▶",
+					icon: <icons.play />,
 					label: "Ctrl+Enter",
 					detail: "Executar seu codigo",
 				},
 				{
-					icon: "💡",
+					icon: <icons.bulb />,
 					label: "Dicas",
 					detail: "Peca dicas se precisar — cada dica reduz suas estrelas",
 				},
 				{
-					icon: "🤖",
+					icon: <icons.robot />,
 					label: "Assistente",
 					detail: "Explicacoes alternativas disponiveis",
 				},
 				{
-					icon: "🔄",
+					icon: <icons.refresh />,
 					label: "Resetar",
 					detail: "Voltar ao codigo inicial",
 				},
@@ -93,17 +95,17 @@ function getPageInfo(pathname: string): PageInfo | null {
 			title: "Dicas do Quiz",
 			tips: [
 				{
-					icon: "✅",
+					icon: <icons.checkCircle />,
 					label: "Responder",
 					detail: "Selecione uma opcao e confirme",
 				},
 				{
-					icon: "📖",
+					icon: <icons.book />,
 					label: "Explicacao",
 					detail: "Veja a explicacao apos cada resposta",
 				},
 				{
-					icon: "⭐",
+					icon: <icons.star />,
 					label: "Estrelas",
 					detail: "Acerte sem errar para ganhar mais estrelas",
 				},
@@ -116,17 +118,17 @@ function getPageInfo(pathname: string): PageInfo | null {
 			title: "Sobre o Perfil",
 			tips: [
 				{
-					icon: "🏆",
+					icon: <icons.trophy />,
 					label: "Badges",
 					detail: "Desbloqueie completando desafios especificos",
 				},
 				{
-					icon: "⭐",
+					icon: <icons.star />,
 					label: "Estrelas",
 					detail: "Complete exercicios sem dicas para ganhar 3 estrelas",
 				},
 				{
-					icon: "🔥",
+					icon: <icons.fire />,
 					label: "Ofensiva",
 					detail: "Pratique todos os dias para manter sua sequencia",
 				},
@@ -138,8 +140,8 @@ function getPageInfo(pathname: string): PageInfo | null {
 		return {
 			title: "Sobre o Changelog",
 			tips: [
-				{ icon: "📋", label: "Versoes", detail: "Cada entrada mostra o que mudou em uma versao" },
-				{ icon: "🔢", label: "Numeracao", detail: "Seguimos versionamento semantico (major.minor.patch)" },
+				{ icon: <icons.changelog />, label: "Versoes", detail: "Cada entrada mostra o que mudou em uma versao" },
+				{ icon: <icons.changelog />, label: "Numeracao", detail: "Seguimos versionamento semantico (major.minor.patch)" },
 			],
 		};
 	}
@@ -149,12 +151,12 @@ function getPageInfo(pathname: string): PageInfo | null {
 			title: "Sobre as Configuracoes",
 			tips: [
 				{
-					icon: "🔊",
+					icon: <icons.sound />,
 					label: "Sons",
 					detail: "Feedback sonoro para acertos e erros",
 				},
 				{
-					icon: "🔄",
+					icon: <icons.refresh />,
 					label: "Resetar",
 					detail: "Apaga todos os dados de progresso permanentemente",
 				},
@@ -166,12 +168,12 @@ function getPageInfo(pathname: string): PageInfo | null {
 		title: "Informacoes",
 		tips: [
 			{
-				icon: "📚",
+				icon: <icons.books />,
 				label: "CodeQuest",
 				detail: "Plataforma para aprender logica de programacao",
 			},
 			{
-				icon: "🎮",
+				icon: <icons.gamepad />,
 				label: "Gamificacao",
 				detail: "Ganhe XP, suba de nivel e colecione badges",
 			},
@@ -193,7 +195,7 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 	const allTips = [
 		...info.tips,
 		{ icon: "A", label: "Tamanho da fonte", detail: "Use o botao A ao lado para alternar entre 3 tamanhos de texto" },
-		{ icon: "💬", label: "Feedback", detail: "Encontrou um bug ou tem uma sugestao? Use o botao de balao de fala na barra superior" },
+		{ icon: <icons.speech />, label: "Feedback", detail: "Encontrou um bug ou tem uma sugestao? Use o botao de balao de fala na barra superior" },
 	];
 
 	return (

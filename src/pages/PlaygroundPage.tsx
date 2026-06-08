@@ -10,11 +10,13 @@ import {
 import { Button } from '@/components/ui/Button';
 import { OutputPanel } from '@/components/exercise/OutputPanel';
 import { Modal } from '@/components/ui/Modal';
+import { icons } from '@/components/ui/Icon';
 import { defineCodeQuestTheme } from '@/engine/monaco-theme';
+import type { ReactNode } from 'react';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react').then((m) => ({ default: m.Editor })));
 
-const DEFAULT_CODE = `// Escreva seu código TypeScript aqui e clique em ▶ Executar
+const DEFAULT_CODE = `// Escreva seu código TypeScript aqui e clique em Executar
 
 console.log("Olá, mundo!");
 `;
@@ -59,7 +61,7 @@ function SnippetListModal({ open, onClose, snippets, currentId, onLoad, onDelete
     <Modal open={open} onClose={onClose} title="Meus Projetos">
       {snippets.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-4xl mb-3">📂</p>
+          <icons.folder className="text-4xl mb-3" />
           <p className="text-[#8888AA] font-body text-sm">Nenhum projeto salvo ainda.</p>
           <p className="text-[#8888AA] font-body text-xs mt-1">Use o botao Salvar para guardar seu codigo.</p>
         </div>
@@ -103,14 +105,14 @@ function SnippetListModal({ open, onClose, snippets, currentId, onLoad, onDelete
                   className="w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-primary transition-colors text-xs"
                   title="Renomear"
                 >
-                  ✏️
+                  <icons.pencil />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onDelete(snippet.id); }}
                   className="w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-accent hover:bg-accent/10 transition-colors text-xs"
                   title="Excluir"
                 >
-                  🗑️
+                  <icons.trash />
                 </button>
               </div>
             </div>
@@ -186,7 +188,7 @@ function TemplateModal({ open, onClose, templates, onSelect }: TemplateModalProp
             onClick={() => { onSelect(t); onClose(); }}
             className="w-full flex items-center gap-3 p-3 rounded-xl border border-bg-elevated hover:border-secondary/30 hover:bg-bg-elevated transition-colors text-left"
           >
-            <span className="text-2xl flex-shrink-0">{t.icon}</span>
+            <span className="text-2xl flex-shrink-0">{icons[t.icon]({})}</span>
             <div className="min-w-0">
               <p className="font-body text-sm font-semibold text-[#E8E8F0]">{t.name}</p>
               <p className="font-body text-xs text-[#8888AA]">{t.description}</p>
@@ -199,7 +201,7 @@ function TemplateModal({ open, onClose, templates, onSelect }: TemplateModalProp
 }
 
 interface ToolbarMenuItem {
-  icon: string;
+  icon: ReactNode;
   label: string;
   onClick: () => void;
 }
@@ -371,7 +373,7 @@ export function PlaygroundPage() {
                 className="text-xs"
               >
                 <span className="hidden md:inline">Modelos</span>
-                <span className="md:hidden">📐</span>
+                <span className="md:hidden"><icons.document /></span>
               </Button>
             )}
             <Button
@@ -381,7 +383,7 @@ export function PlaygroundPage() {
               className="text-xs"
             >
               <span className="hidden md:inline">Projetos{snippets.length > 0 ? ` (${snippets.length})` : ''}</span>
-              <span className="md:hidden">📁</span>
+              <span className="md:hidden"><icons.folderClosed /></span>
             </Button>
             <Button variant="ghost" size="sm" onClick={handleSave} className="text-xs min-w-16">
               <AnimatePresence mode="wait">
@@ -403,7 +405,7 @@ export function PlaygroundPage() {
                     exit={{ opacity: 0 }}
                   >
                     <span className="hidden md:inline">Salvar</span>
-                    <span className="md:hidden">💾</span>
+                    <span className="md:hidden"><icons.save /></span>
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -417,7 +419,7 @@ export function PlaygroundPage() {
             onClick={handleRun}
             className="min-w-28"
           >
-            {runner.status === 'running' ? 'Executando...' : '▶ Executar'}
+            {runner.status === 'running' ? 'Executando...' : <><icons.play /> Executar</>}
           </Button>
         </div>
       </div>
@@ -486,12 +488,12 @@ export function PlaygroundPage() {
         open={showToolbarMenu}
         onClose={() => setShowToolbarMenu(false)}
         items={[
-          { icon: '📄', label: 'Novo', onClick: handleNew },
+          { icon: <icons.document />, label: 'Novo', onClick: handleNew },
           ...(PLAYGROUND_TEMPLATES.length > 0
-            ? [{ icon: '📐', label: 'Modelos', onClick: () => setShowTemplates(true) }]
+            ? [{ icon: <icons.document />, label: 'Modelos', onClick: () => setShowTemplates(true) }]
             : []),
-          { icon: '📁', label: `Projetos${snippets.length > 0 ? ` (${snippets.length})` : ''}`, onClick: () => setShowSnippets(true) },
-          { icon: '💾', label: 'Salvar', onClick: handleSave },
+          { icon: <icons.folderClosed />, label: `Projetos${snippets.length > 0 ? ` (${snippets.length})` : ''}`, onClick: () => setShowSnippets(true) },
+          { icon: <icons.save />, label: 'Salvar', onClick: handleSave },
         ]}
       />
 

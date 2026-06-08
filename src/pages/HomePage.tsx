@@ -5,14 +5,16 @@ import { loadCurriculum, loadModule } from '@/content/loader';
 import { useProgressStore } from '@/store/progress.store';
 import { useSettingsStore } from '@/store/settings.store';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { icons } from '@/components/ui/Icon';
 import { lessonPath } from '@/utils/lesson-path';
+import type { ReactNode } from 'react';
 import type { Curriculum, Module, Lesson } from '@/content/curriculum.types';
 
-const lessonTypeLabel: Record<string, string> = {
-  theory: '📖 Teoria',
-  exercise: '💻 Exercício',
-  challenge: '🏆 Desafio',
-  quiz: '❓ Quiz',
+const lessonTypeLabel: Record<string, ReactNode> = {
+  theory: <><icons.book /> Teoria</>,
+  exercise: <><icons.laptop /> Exercício</>,
+  challenge: <><icons.trophy /> Desafio</>,
+  quiz: <>❓ Quiz</>,
 };
 
 interface LessonItemProps {
@@ -40,7 +42,7 @@ function LessonItem({ lesson, index, total, completed, isNext, onGo }: LessonIte
         w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0
         ${completed ? 'bg-primary/20 text-primary' : isNext ? 'bg-primary text-bg-primary' : 'bg-bg-elevated text-[#8888AA]'}
       `}>
-        {completed ? '✓' : index + 1}
+        {completed ? <icons.check /> : index + 1}
       </span>
       <div className="flex-1 min-w-0">
         <p className={`text-sm font-body truncate ${completed ? 'text-[#8888AA]' : 'text-[#E8E8F0]'}`}>
@@ -51,7 +53,7 @@ function LessonItem({ lesson, index, total, completed, isNext, onGo }: LessonIte
         </p>
       </div>
       {isNext && (
-        <span className="text-xs text-primary font-body font-semibold flex-shrink-0">Continuar →</span>
+        <span className="text-xs text-primary font-body font-semibold flex-shrink-0 flex items-center gap-1">Continuar <icons.arrowRight /></span>
       )}
     </motion.button>
   );
@@ -106,17 +108,17 @@ function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, c
               borderWidth: 1,
             }}
           >
-            {unlocked ? moduleData.icon : '🔒'}
+            {unlocked ? moduleData.icon : <icons.lock />}
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-heading font-semibold text-[#E8E8F0] truncate">{moduleData.title}</h3>
             <p className="text-xs text-[#8888AA] font-body mt-0.5 line-clamp-2">{moduleData.description}</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {unlocked && percent === 100 && <span className="text-xl">✅</span>}
+            {unlocked && percent === 100 && <span className="text-xl"><icons.checkCircle /></span>}
             {unlocked && (
               <span className={`text-[#8888AA] text-sm transition-transform ${expanded ? 'rotate-180' : ''}`}>
-                ▾
+                <icons.chevronSmDown />
               </span>
             )}
           </div>
@@ -239,7 +241,7 @@ export function HomePage() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center space-y-2">
-          <span className="text-4xl">⚠️</span>
+          <icons.warning className="text-4xl" />
           <p className="text-accent font-body">{error}</p>
         </div>
       </div>
@@ -254,7 +256,7 @@ export function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           className="font-heading font-bold text-3xl text-[#E8E8F0] mb-2"
         >
-          ⚡ Sua Jornada
+          <icons.bolt /> Sua Jornada
         </motion.h1>
         <p className="text-[#8888AA] font-body text-sm">
           Complete as missões para dominar o TypeScript!
@@ -264,7 +266,7 @@ export function HomePage() {
       {failedModules.length > 0 && (
         <div className="bg-accent/10 border border-accent/30 rounded-xl p-4 mb-6 text-center">
           <p className="text-accent font-body text-sm">
-            ⚠️ Não foi possível carregar: {failedModules.join(', ')}
+            <icons.warning /> Não foi possível carregar: {failedModules.join(', ')}
           </p>
         </div>
       )}

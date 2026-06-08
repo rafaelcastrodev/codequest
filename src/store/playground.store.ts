@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { IconName } from '@/components/ui/Icon';
 
 export interface PlaygroundSnippet {
   id: string;
@@ -13,7 +14,7 @@ export interface PlaygroundTemplate {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon: IconName;
   code: string;
 }
 
@@ -22,7 +23,7 @@ export const PLAYGROUND_TEMPLATES: PlaygroundTemplate[] = [
     id: 'tpl-calculadora',
     name: 'Calculadora',
     description: 'Variaveis, tipos e condicionais',
-    icon: '🧮',
+    icon: 'abacus',
     code: `// Calculadora simples
 
 let numero1: number = 10;
@@ -48,7 +49,7 @@ console.log(\`\${numero1} \${operacao} \${numero2} = \${resultado}\`);
     id: 'tpl-historia',
     name: 'Gerador de Historia',
     description: 'Arrays e template literals',
-    icon: '📖',
+    icon: 'book',
     code: `// Gerador de Historia Aleatoria
 
 let herois = ["Luna", "Max", "Pixel", "Nova"];
@@ -71,7 +72,7 @@ console.log("E assim comecou uma grande aventura...");
     id: 'tpl-adivinhacao',
     name: 'Jogo de Adivinhacao',
     description: 'Loops e condicionais',
-    icon: '🎯',
+    icon: 'target',
     code: `// Jogo de Adivinhacao
 
 let segredo: number = Math.floor(Math.random() * 20) + 1;
@@ -104,7 +105,7 @@ if (!acertou) {
     id: 'tpl-tarefas',
     name: 'Lista de Tarefas',
     description: 'Arrays e objetos',
-    icon: '📋',
+    icon: 'changelog',
     code: `// Lista de Tarefas
 
 let tarefas = [
@@ -136,7 +137,7 @@ console.log(\`Progresso: \${feitas}/\${tarefas.length} concluidas\`);
     id: 'tpl-conversor',
     name: 'Conversor de Unidades',
     description: 'Funcoes com parametros e retorno',
-    icon: '📐',
+    icon: 'document',
     code: `// Conversor de Unidades
 
 function celsiusParaFahrenheit(celsius: number): number {

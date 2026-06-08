@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { PageInfoButton } from '@/components/layout/PageInfoButton';
 import { FontSizeButton } from '@/components/layout/FontSizeButton';
 import { FeedbackModal } from '@/components/feedback/FeedbackModal';
+import { icons } from '@/components/ui/Icon';
 import { useProgressStore } from '@/store/progress.store';
 
 interface TopBarProps {
@@ -31,7 +32,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
       </motion.button>
 
       <Link to="/" className="flex items-center gap-2">
-        <span className="text-lg">⚡</span>
+        <icons.bolt className="text-lg" />
         <span className="font-heading font-bold text-primary text-lg">CodeQuest</span>
       </Link>
 
@@ -52,7 +53,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
         <FontSizeButton />
         {pathname === '/' ? (
           <div className="flex items-center gap-1">
-            <span className="text-sm">🔥</span>
+            <icons.fire className="text-sm" />
             <span className="font-heading font-bold text-warning text-sm">{streak.current}</span>
           </div>
         ) : (

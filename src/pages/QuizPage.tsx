@@ -8,6 +8,7 @@ import { useAchievements } from "@/hooks/useAchievements";
 import { useSettingsStore } from "@/store/settings.store";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { icons } from "@/components/ui/Icon";
 import { FontSizeButton } from "@/components/layout/FontSizeButton";
 import { PageInfoButton } from "@/components/layout/PageInfoButton";
 import { triggerConfetti } from "@/utils/confetti";
@@ -128,7 +129,7 @@ function QuestionCard({
 								: "bg-accent/10 border-accent/30"
 						}`}>
 						<p className="font-body text-sm font-semibold mb-1">
-							{isCorrect ? "✅ Correto!" : "❌ Quase lá!"}
+							{isCorrect ? <><icons.checkCircle /> Correto!</> : <><icons.cross /> Quase lá!</>}
 						</p>
 						<p className="font-body text-sm text-[#E8E8F0] leading-relaxed">
 							{question.explanation}
@@ -157,7 +158,7 @@ function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
 			animate={{ opacity: 1, scale: 1 }}
 			transition={{ type: "spring", stiffness: 280, damping: 22 }}
 			className="text-center space-y-6">
-			<div className="text-6xl">🎉</div>
+			<div className="text-6xl"><icons.party /></div>
 
 			<div>
 				<h2 className="font-heading font-bold text-2xl text-primary mb-1">
@@ -178,7 +179,7 @@ function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
 							stiffness: 400,
 						}}
 						className="text-3xl">
-						{s <= stars ? "⭐" : "☆"}
+						{s <= stars ? <icons.star /> : <icons.starEmpty />}
 					</motion.span>
 				))}
 			</div>
@@ -345,7 +346,7 @@ export function QuizPage() {
 							variant="ghost"
 							size="sm"
 							onClick={() => navigate("/")}>
-							✕ Sair
+							<icons.close /> Sair
 						</Button>
 					</div>
 				</div>
@@ -385,8 +386,8 @@ export function QuizPage() {
 									onClick={handleAdvance}>
 									{currentQuestionIndex <
 									quiz.questions.length - 1
-										? "Próxima Pergunta →"
-										: "Ver Resultado →"}
+										? <>Próxima Pergunta <icons.arrowRight /></>
+										: <>Ver Resultado <icons.arrowRight /></>}
 								</Button>
 							</motion.div>
 						)}

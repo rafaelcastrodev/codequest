@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { RichText } from '@/components/ui/RichText';
+import { icons } from '@/components/ui/Icon';
 import { HintPanel } from '@/components/exercise/HintPanel';
 import { OutputPanel } from '@/components/exercise/OutputPanel';
 import { SuccessOverlay } from '@/components/exercise/SuccessOverlay';
@@ -155,10 +156,10 @@ export function ExercisePage() {
       <div className="p-5 border-b border-bg-elevated">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
           <Badge variant={exercise.type === 'challenge' ? 'accent' : 'primary'} size="sm">
-            {exercise.type === 'challenge' ? '🏆 Desafio' : '💻 Exercício'}
+            {exercise.type === 'challenge' ? <><icons.trophy /> Desafio</> : <><icons.laptop /> Exercício</>}
           </Badge>
           <Badge variant="secondary" size="sm">+{exercise.xpReward} XP</Badge>
-          <Badge variant="muted" size="sm">{'⭐'.repeat(exercise.difficulty)}</Badge>
+          <Badge variant="muted" size="sm">{Array.from({ length: exercise.difficulty }, (_, i) => <icons.star key={i} />)}</Badge>
         </div>
         <h1 className="font-heading font-bold text-[#E8E8F0] text-lg leading-snug">{exercise.title}</h1>
       </div>
@@ -222,7 +223,7 @@ export function ExercisePage() {
           onClick={assistant.openModal}
         />
         <Button variant="primary" size="md" className="flex-1 lg:hidden" onClick={() => setMobileTab('code')}>
-          Abrir Editor →
+          Abrir Editor <icons.arrowRight />
         </Button>
       </div>
     </div>
@@ -246,7 +247,7 @@ export function ExercisePage() {
             onClick={() => setMobileTab('instructions')}
             className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated transition-colors"
           >
-            <span aria-hidden="true">📋</span>
+            <icons.changelog aria-hidden={true} />
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -269,11 +270,11 @@ export function ExercisePage() {
             onClick={handleRun}
             className="min-w-28"
           >
-            {runner.status === 'running' ? 'Executando...' : '▶ Executar'}
+            {runner.status === 'running' ? 'Executando...' : <><icons.play /> Executar</>}
           </Button>
           {debugMode && (
             <Button variant="ghost" size="sm" onClick={handleSkip} className="text-xs text-warning">
-              Pular ⏭
+              Pular <icons.skipForward />
             </Button>
           )}
         </div>

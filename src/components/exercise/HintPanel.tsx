@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import { icons } from '@/components/ui/Icon';
 
 export interface HintPanelProps {
   hints: string[];
@@ -17,10 +18,10 @@ export function HintPanel({ hints, hintsUsed, onUseHint }: HintPanelProps) {
         onClick={() => setExpanded((e) => !e)}
         className="w-full flex items-center justify-between px-4 py-2.5 bg-warning/10 text-warning hover:bg-warning/20 transition-colors"
       >
-        <span className="font-body font-semibold text-sm">
-          💡 Dica {hintsUsed}/{hints.length}
+        <span className="font-body font-semibold text-sm flex items-center gap-1">
+          <icons.bulb /> Dica {hintsUsed}/{hints.length}
         </span>
-        <span className="text-xs opacity-70">{expanded ? '▲' : '▼'}</span>
+        <span className="text-xs opacity-70">{expanded ? <icons.chevronUp /> : <icons.chevronDown />}</span>
       </button>
 
       <AnimatePresence>
@@ -40,7 +41,7 @@ export function HintPanel({ hints, hintsUsed, onUseHint }: HintPanelProps) {
               ))}
               {hintsUsed < hints.length && (
                 <Button variant="warning" size="sm" onClick={onUseHint} className="mt-1 text-xs">
-                  Revelar próxima dica {hintsUsed < 2 ? '(−1★)' : '(já 1★)'}
+                  Revelar próxima dica {hintsUsed < 2 ? <>(−1<icons.starFilled />)</> : <>(já 1<icons.starFilled />)</>}
                 </Button>
               )}
               {hintsUsed >= hints.length && (

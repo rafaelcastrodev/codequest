@@ -1,3 +1,5 @@
+import { icons, type IconName } from '@/components/ui/Icon';
+
 interface AvatarProps {
   id: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -5,18 +7,18 @@ interface AvatarProps {
   onClick?: () => void;
 }
 
-const AVATAR_EMOJIS: Record<string, string> = {
-  'robot-1': '🤖',
-  'robot-2': '🦾',
-  'wizard': '🧙',
-  'ninja': '🥷',
-  'astronaut': '👨‍🚀',
-  'scientist': '🧪',
-  'hacker': '💻',
-  'dragon': '🐉',
+const AVATAR_ICONS: Record<string, IconName> = {
+  'robot-1': 'avatarRobot1',
+  'robot-2': 'avatarRobot2',
+  'wizard': 'avatarWizard',
+  'ninja': 'avatarNinja',
+  'astronaut': 'avatarAstronaut',
+  'scientist': 'avatarScientist',
+  'hacker': 'avatarHacker',
+  'dragon': 'avatarDragon',
 };
 
-export const AVATAR_IDS = Object.keys(AVATAR_EMOJIS);
+export const AVATAR_IDS = Object.keys(AVATAR_ICONS);
 
 const sizeClasses = {
   sm: 'w-8 h-8 text-lg',
@@ -26,7 +28,8 @@ const sizeClasses = {
 };
 
 export function Avatar({ id, size = 'md', className = '', onClick }: AvatarProps) {
-  const emoji = AVATAR_EMOJIS[id] ?? '🤖';
+  const iconName = AVATAR_ICONS[id] ?? 'avatarRobot1';
+  const IconComponent = icons[iconName];
   return (
     <div
       role={onClick ? 'button' : undefined}
@@ -40,7 +43,7 @@ export function Avatar({ id, size = 'md', className = '', onClick }: AvatarProps
         ${className}
       `}
     >
-      {emoji}
+      <IconComponent />
     </div>
   );
 }

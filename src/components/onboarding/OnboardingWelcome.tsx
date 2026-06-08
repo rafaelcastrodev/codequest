@@ -5,6 +5,7 @@ import { useProgressStore } from '@/store/progress.store';
 import { useSettingsStore } from '@/store/settings.store';
 import { Avatar, AVATAR_IDS } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
+import { icons } from '@/components/ui/Icon';
 
 const spring = { type: 'spring' as const, stiffness: 300, damping: 25 };
 
@@ -42,7 +43,7 @@ export function OnboardingWelcome() {
             className="relative z-10 w-full max-w-sm bg-bg-surface border border-bg-elevated rounded-2xl shadow-2xl p-6"
           >
             <div className="text-center mb-6">
-              <span className="text-5xl block mb-3">⚡</span>
+              <icons.bolt className="text-5xl block mb-3" />
               <h1 className="font-heading text-2xl font-bold text-[#E8E8F0] mb-2">
                 Bem-vindo ao CodeQuest!
               </h1>
@@ -68,7 +69,7 @@ export function OnboardingWelcome() {
 
             <div className="flex justify-end">
               <Button variant="primary" size="md" onClick={goToAvatar}>
-                Continuar →
+                Continuar <icons.arrowRight />
               </Button>
             </div>
           </motion.div>
@@ -106,10 +107,10 @@ export function OnboardingWelcome() {
 
             <div className="flex items-center justify-between">
               <Button variant="ghost" size="sm" onClick={() => setStep('welcome')}>
-                ← Voltar
+                <icons.arrowLeft /> Voltar
               </Button>
               <Button variant="primary" size="md" onClick={finish}>
-                Começar! 🚀
+                Começar! <icons.rocket />
               </Button>
             </div>
           </motion.div>

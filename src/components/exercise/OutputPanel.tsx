@@ -1,3 +1,5 @@
+import { icons } from '@/components/ui/Icon';
+
 export interface OutputPanelProps {
   output: string;
   errorMessage: string | null;
@@ -23,19 +25,19 @@ export function OutputPanel({ output, errorMessage, mistakeMessage, status }: Ou
       </div>
       <div className="flex-1 p-3 overflow-y-auto scrollbar-thin">
         {isEmpty && (
-          <p className="text-[#8888AA] font-mono text-xs opacity-50">
-            Clique em ▶ Executar para ver a saída aqui
+          <p className="text-[#8888AA] font-mono text-xs opacity-50 flex items-center gap-1">
+            Clique em <icons.play /> Executar para ver a saída aqui
           </p>
         )}
         {mistakeMessage && (
-          <p className="text-warning font-mono text-xs leading-relaxed">⚠️ {mistakeMessage}</p>
+          <p className="text-warning font-mono text-xs leading-relaxed flex items-start gap-1"><icons.warning className="flex-shrink-0" /> {mistakeMessage}</p>
         )}
         {errorMessage && !mistakeMessage && (
-          <pre className="text-accent font-mono text-xs leading-relaxed whitespace-pre-wrap">❌ {errorMessage}</pre>
+          <pre className="text-accent font-mono text-xs leading-relaxed whitespace-pre-wrap flex items-start gap-1"><icons.cross className="flex-shrink-0" /> {errorMessage}</pre>
         )}
         {output && (
           <pre className={`font-mono text-xs leading-relaxed whitespace-pre-wrap ${status === 'passed' ? 'text-primary' : 'text-[#E8E8F0]'}`}>
-            {status === 'passed' ? '✅ ' : '📋 '}{output}
+            {status === 'passed' ? <><icons.checkCircle /> </> : <><icons.changelog /> </>}{output}
           </pre>
         )}
       </div>

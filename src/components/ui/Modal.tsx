@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { icons } from '@/components/ui/Icon';
 import type { ReactNode } from 'react';
 
 interface ModalProps {
@@ -50,7 +51,7 @@ export function Modal({ open, onClose, title, children, className = '' }: ModalP
                   onClick={onClose}
                   className="text-[#8888AA] hover:text-[#E8E8F0] transition-colors text-xl leading-none"
                 >
-                  <span aria-hidden="true">✕</span>
+                  <icons.close aria-hidden={true} />
                 </button>
               </div>
             )}

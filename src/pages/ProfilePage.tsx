@@ -5,7 +5,9 @@ import { Avatar, AVATAR_IDS } from '@/components/ui/Avatar';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { icons, resolveIcon } from '@/components/ui/Icon';
 import { loadAchievements } from '@/content/loader';
+import type { ReactNode } from 'react';
 import type { Achievement, AchievementRarity } from '@/content/curriculum.types';
 
 const RARITY_STYLES: Record<AchievementRarity, string> = {
@@ -31,14 +33,14 @@ function BadgeCard({ achievement, unlocked }: BadgeCardProps) {
       `}
     >
       <div className={`text-2xl mb-1 ${!unlocked ? 'grayscale' : ''}`}>
-        {unlocked ? achievement.icon : '🔒'}
+        {unlocked ? resolveIcon(achievement.icon)({}) : <icons.lock />}
       </div>
       <p className={`font-body text-xs truncate ${unlocked ? 'text-[#E8E8F0]' : 'text-[#8888AA]'}`}>
         {unlocked ? achievement.title : '???'}
       </p>
       {unlocked && achievement.rarity !== 'common' && (
         <span className="absolute top-1.5 right-1.5 text-[9px] font-heading font-bold text-warning opacity-70 uppercase tracking-wide">
-          {achievement.rarity === 'legendary' ? '★' : achievement.rarity === 'rare' ? '◆' : '●'}
+          {achievement.rarity === 'legendary' ? <icons.starFilled /> : achievement.rarity === 'rare' ? <icons.diamond /> : <icons.circle />}
         </span>
       )}
     </motion.div>
@@ -97,7 +99,7 @@ export function ProfilePage() {
               className="group flex items-center gap-2 text-left"
             >
               <h2 className="font-heading text-xl font-bold text-[#E8E8F0]">{profile.name}</h2>
-              <span className="text-[#8888AA] opacity-0 group-hover:opacity-100 transition-opacity text-sm">✏️</span>
+              <span className="text-[#8888AA] opacity-0 group-hover:opacity-100 transition-opacity text-sm"><icons.pencil /></span>
             </button>
           )}
           <p className="text-[#8888AA] font-body text-sm">Nível {level} · {title}</p>
@@ -113,12 +115,12 @@ export function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { icon: '🔥', label: 'Ofensiva', value: `${streak.current} dias` },
-          { icon: '⭐', label: 'Estrelas', value: totalStars },
-          { icon: '✅', label: 'Lições', value: completedCount },
-          { icon: '🏆', label: 'Troféus', value: `${achievements.length}/${allAchievements.length}` },
-        ].map((stat) => (
+        {([
+          { icon: <icons.fire />, label: 'Ofensiva', value: `${streak.current} dias` },
+          { icon: <icons.star />, label: 'Estrelas', value: totalStars },
+          { icon: <icons.checkCircle />, label: 'Lições', value: completedCount },
+          { icon: <icons.trophy />, label: 'Troféus', value: `${achievements.length}/${allAchievements.length}` },
+        ] as { icon: ReactNode; label: string; value: string | number }[]).map((stat) => (
           <motion.div
             key={stat.label}
             whileHover={{ scale: 1.03 }}

@@ -5,3 +5,5 @@ export { Modal } from './Modal';
 export { Avatar, AVATAR_IDS } from './Avatar';
 export { CodeBlock } from './CodeBlock';
 export { RichText } from './RichText';
+export { icons, resolveIcon } from './Icon';
+export type { IconName, IconProps, IconComponent } from './Icon';

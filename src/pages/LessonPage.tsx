@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { loadModule } from "@/content/loader";
 import { useProgressStore } from "@/store/progress.store";
 import { useAssistant } from "@/hooks/useAssistant";
+import { icons } from "@/components/ui/Icon";
 import {
 	FakeAssistantButton,
 	FakeAssistantModal,
@@ -105,7 +106,7 @@ function LessonComplete({ lesson, onNext, onMap }: LessonCompleteProps) {
 			animate={{ opacity: 1, scale: 1 }}
 			transition={{ type: "spring", stiffness: 300, damping: 22 }}
 			className="text-center space-y-6 py-4">
-			<div className="text-5xl">✅</div>
+			<div className="text-5xl"><icons.checkCircle /></div>
 			<div>
 				<h2 className="font-heading font-bold text-2xl text-primary mb-1">
 					Teoria concluída!
@@ -332,7 +333,7 @@ export function LessonPage() {
 						size="md"
 						disabled={stepIndex === 0}
 						onClick={handlePrevStep}>
-						← Anterior
+						<icons.arrowLeft /> Anterior
 					</Button>
 					<FakeAssistantButton
 						hasContent={assistant.hasContent}
@@ -344,8 +345,8 @@ export function LessonPage() {
 						size="md"
 						onClick={handleNextStep}>
 						{stepIndex < totalSteps - 1
-							? "Próximo →"
-							: "Concluir ✓"}
+							? <>Próximo <icons.arrowRight /></>
+							: <>Concluir <icons.check /></>}
 					</Button>
 				</div>
 			</div>

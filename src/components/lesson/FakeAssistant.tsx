@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { Modal } from "@/components/ui/Modal";
+import { icons } from "@/components/ui/Icon";
+import type { ReactNode } from "react";
 import type { AssistantAction } from "@/hooks/useAssistant";
 
 interface FakeAssistantButtonProps {
@@ -30,7 +32,7 @@ export function FakeAssistantButton({
 		}
       `}
 			aria-label="Assistente de aprendizado">
-			🤖
+			<icons.robot />
 		</motion.button>
 	);
 }
@@ -41,11 +43,11 @@ interface FakeAssistantModalProps {
 	onRequest: (action: AssistantAction) => void;
 }
 
-const ACTION_LABELS: Record<AssistantAction, { label: string; icon: string }> =
+const ACTION_LABELS: Record<AssistantAction, { label: string; icon: ReactNode }> =
 	{
-		explain: { label: "Explique de outro jeito", icon: "🔄" },
-		examples: { label: "Dê mais exemplos", icon: "💡" },
-		summary: { label: "Resuma em uma frase", icon: "📝" },
+		explain: { label: "Explique de outro jeito", icon: <icons.refresh /> },
+		examples: { label: "Dê mais exemplos", icon: <icons.bulb /> },
+		summary: { label: "Resuma em uma frase", icon: <icons.memo /> },
 	};
 
 export function FakeAssistantModal({
@@ -57,7 +59,7 @@ export function FakeAssistantModal({
 		<Modal open={open} onClose={onClose} className="!p-0 max-w-sm">
 			<div className="flex flex-col items-center pt-6 pb-2">
 				<div className="w-16 h-16 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center text-3xl mb-3">
-					🤖
+					<icons.robot />
 				</div>
 				<h2 className="font-heading font-bold text-lg text-[#E8E8F0]">
 					Assistente
@@ -125,13 +127,13 @@ export function AssistantContentNav({
 					: "text-[#8888AA]/30 cursor-default"
 			}`}
 				aria-label="Ver conteúdo original">
-				←
+				<icons.arrowLeft />
 			</button>
 			<div className="text-center">
 				{showingAssistant ? (
 					<>
 						<span className="text-xs font-body text-[#8888AA] block">
-							🤖 Assistente
+							<icons.robot /> Assistente
 						</span>
 						{activeAction && (
 							<span className="text-[12px] font-body text-secondary">
@@ -155,7 +157,7 @@ export function AssistantContentNav({
 					: "text-[#8888AA]/30 cursor-default"
 			}`}
 				aria-label="Ver conteúdo do assistente">
-				→
+				<icons.arrowRight />
 			</button>
 		</div>
 	);

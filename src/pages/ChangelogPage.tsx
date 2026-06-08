@@ -8,6 +8,19 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.16.0',
+    date: '2026-06-08',
+    changes: [
+      'Novo sistema centralizado de ícones (Icon registry) em src/components/ui/Icon.tsx',
+      'Todos os emojis e símbolos da UI migrados para o registry (60+ ícones)',
+      'Função resolveIcon() para resolver emojis externos (ex: achievements.json) via registry',
+      'Avatar.tsx migrado para usar IconName do registry',
+      'Playground templates migrados para usar IconName do registry',
+      'Toast de achievements, level-up e streak renderizados via resolveIcon',
+      'Preparação para futura troca de emojis por SVG/Lucide sem alterar componentes consumidores',
+    ],
+  },
+  {
     version: '0.15.0',
     date: '2026-06-07',
     changes: [
