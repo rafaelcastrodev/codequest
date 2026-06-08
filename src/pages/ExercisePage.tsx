@@ -52,15 +52,21 @@ export function ExercisePage() {
 
   const resetRunner = runner.reset;
 
+  const buildStarterCode = useCallback((starterCode: string, instructions: string) => {
+    if (window.innerWidth >= 1024) return starterCode;
+    const lines = instructions.split('\n').map((l) => ` * ${l}`).join('\n');
+    return `/* Enunciado:\n${lines}\n */\n\n${starterCode}`;
+  }, []);
+
   useEffect(() => {
     if (exercise) {
-      setCode(exercise.starterCode);
+      setCode(buildStarterCode(exercise.starterCode, exercise.instructions));
       setSuccessStars(null);
       setEditorBorderStatus('idle');
       resetRunner();
       if (moduleId && lessonId) setCurrentLesson(moduleId, lessonId);
     }
-  }, [exercise, moduleId, lessonId, setCurrentLesson, resetRunner]);
+  }, [exercise, moduleId, lessonId, setCurrentLesson, resetRunner, buildStarterCode]);
 
   useEffect(() => {
     if (pendingAchievementCheck.current) {
@@ -255,7 +261,7 @@ export function ExercisePage() {
             variant="ghost"
             size="sm"
             onClick={() => {
-              setCode(exercise.starterCode);
+              setCode(buildStarterCode(exercise.starterCode, exercise.instructions));
               runner.reset();
               setEditorBorderStatus('idle');
             }}

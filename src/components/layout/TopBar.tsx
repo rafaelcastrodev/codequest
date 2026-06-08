@@ -46,9 +46,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
             shadow-[0_0_10px_rgba(124,92,252,0.4)] hover:shadow-[0_0_16px_rgba(124,92,252,0.6)]
             transition-shadow duration-200"
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
+          <icons.speech size={13} aria-hidden={true} />
         </motion.button>
         <FontSizeButton />
         {pathname === '/' ? (

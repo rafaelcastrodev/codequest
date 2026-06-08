@@ -75,3 +75,34 @@ pre,
 .cq-code-block .hljs {
 	background: transparent;
 }
+
+.cq-code-inner {
+	display: flex;
+}
+
+.cq-line-gutter {
+	position: sticky;
+	left: 0;
+	z-index: 1;
+	flex-shrink: 0;
+	text-align: right;
+	user-select: none;
+	padding: 1rem 0.75rem 1rem 1rem;
+	border-right: 1px solid var(--bg-elevated);
+	background: #0A0A15;
+	color: var(--color-text-muted);
+	font-family: 'JetBrains Mono', monospace;
+	font-size: 0.75rem;
+	line-height: 1.5rem;
+	opacity: 0.5;
+}
+
+.cq-code-content {
+	display: block;
+	flex: 1;
+	padding: 1rem;
+	font-family: 'JetBrains Mono', monospace;
+	font-size: 0.875rem;
+	line-height: 1.5rem;
+	background: transparent !important;
+}

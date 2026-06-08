@@ -8,6 +8,18 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.17.0',
+    date: '2026-06-08',
+    changes: [
+      'Ícones migrados de emoji/símbolo para Lucide React SVGs em toda a UI',
+      'Adicionada dependência lucide-react com 60+ ícones vetoriais',
+      'Blocos de código com numeração de linhas (gutter) e highlight via useMemo',
+      'Instruções do exercício embutidas como comentário no editor em telas mobile',
+      'Botão de feedback no TopBar usa ícone SVG (icons.speech)',
+      '21 arquivos SVG customizados adicionados em src/assets/icons/',
+    ],
+  },
+  {
     version: '0.16.0',
     date: '2026-06-08',
     changes: [
