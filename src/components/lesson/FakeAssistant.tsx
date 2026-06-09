@@ -31,8 +31,8 @@ export function FakeAssistantButton({
 				: "bg-bg-elevated text-[#8888AA] hover:text-secondary hover:bg-bg-surface border border-bg-elevated hover:border-secondary/40"
 		}
       `}
-			aria-label="Assistente de aprendizado">
-			<icons.robot />
+			aria-label="Cody — assistente de aprendizado">
+			<icons.cody />
 		</motion.button>
 	);
 }
@@ -58,11 +58,11 @@ export function FakeAssistantModal({
 	return (
 		<Modal open={open} onClose={onClose} className="!p-0 max-w-sm">
 			<div className="flex flex-col items-center pt-6 pb-2">
-				<div className="w-16 h-16 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center text-3xl mb-3">
-					<icons.robot />
+				<div className="w-16 h-16 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center mb-3">
+					<icons.cody size={40} />
 				</div>
 				<h2 className="font-heading font-bold text-lg text-[#E8E8F0]">
-					Assistente
+					Cody
 				</h2>
 				<p className="text-xs text-[#8888AA] font-body mt-0.5">
 					Como posso te ajudar?
@@ -132,8 +132,8 @@ export function AssistantContentNav({
 			<div className="text-center">
 				{showingAssistant ? (
 					<>
-						<span className="text-xs font-body text-[#8888AA] block">
-							<icons.robot /> Assistente
+						<span className="text-xs font-body text-[#8888AA] flex items-center justify-center gap-1">
+							<icons.cody size={14} /> Cody
 						</span>
 						{activeAction && (
 							<span className="text-[12px] font-body text-secondary">

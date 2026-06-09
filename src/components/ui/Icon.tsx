@@ -217,7 +217,7 @@ export const icons = {
 	minus: lucide(Minus),
 
 	// -- Avatars -------------------------------------------------------------
-	avatarRobot1: svg(CodySvg),
+	avatarRobot1: emoji("🤖"),
 	avatarRobot2: svg(Robot2Svg),
 	avatarWizard: emoji("🧙"),
 	avatarWizard2: emoji("🧙"),

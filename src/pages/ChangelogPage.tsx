@@ -8,11 +8,11 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
-    version: '0.18.0',
+    version: '0.18.1',
     date: '2026-06-09',
     changes: [
       'Ícones mais bonitos e detalhados em toda a interface — raio, foguete, fogo, estrela, troféu, festa, cadeado e som',
-      'O mascote Cody agora tem um visual próprio',
+      'O assistente agora se chama Cody e tem um rosto próprio em toda a interface',
       'Avatares de robô com ilustrações exclusivas',
       'Estrela vazia agora aparece corretamente no modo escuro',
     ],

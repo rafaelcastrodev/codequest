@@ -44,8 +44,8 @@ function getPageInfo(pathname: string): PageInfo | null {
 			title: "Dicas da Lição",
 			tips: [
 				{
-					icon: <icons.robot />,
-					label: "Assistente",
+					icon: <icons.cody />,
+					label: "Cody",
 					detail: "Peca explicacoes alternativas, exemplos ou resumos",
 				},
 				{
@@ -77,8 +77,8 @@ function getPageInfo(pathname: string): PageInfo | null {
 					detail: "Peca dicas se precisar — cada dica reduz suas estrelas",
 				},
 				{
-					icon: <icons.robot />,
-					label: "Assistente",
+					icon: <icons.cody />,
+					label: "Cody",
 					detail: "Explicacoes alternativas disponiveis",
 				},
 				{
