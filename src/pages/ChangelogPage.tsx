@@ -8,6 +8,14 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.20.0',
+    date: '2026-06-09',
+    changes: [
+      'Botão "Copiar" no editor — copie seu código com um clique no Playground e nos exercícios',
+      'Feedback visual "Copiado!" confirma que o código foi para a área de transferência',
+    ],
+  },
+  {
     version: '0.19.0',
     date: '2026-06-09',
     changes: [
