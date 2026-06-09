@@ -490,7 +490,7 @@ export function PlaygroundPage() {
         items={[
           { icon: <icons.document />, label: 'Novo', onClick: handleNew },
           ...(PLAYGROUND_TEMPLATES.length > 0
-            ? [{ icon: <icons.document />, label: 'Modelos', onClick: () => setShowTemplates(true) }]
+            ? [{ icon: <icons.files />, label: 'Modelos', onClick: () => setShowTemplates(true) }]
             : []),
           { icon: <icons.folderClosed />, label: `Projetos${snippets.length > 0 ? ` (${snippets.length})` : ''}`, onClick: () => setShowSnippets(true) },
           { icon: <icons.save />, label: 'Salvar', onClick: handleSave },

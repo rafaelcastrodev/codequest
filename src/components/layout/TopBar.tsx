@@ -46,12 +46,12 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
             shadow-[0_0_10px_rgba(124,92,252,0.4)] hover:shadow-[0_0_16px_rgba(124,92,252,0.6)]
             transition-shadow duration-200"
         >
-          <icons.speech size={13} aria-hidden={true} />
+          <icons.speech size={15} aria-hidden={true} />
         </motion.button>
         <FontSizeButton />
         {pathname === '/' ? (
           <div className="flex items-center gap-1">
-            <icons.fire className="text-sm" />
+            <icons.fire className="text-lg" />
             <span className="font-heading font-bold text-warning text-sm">{streak.current}</span>
           </div>
         ) : (

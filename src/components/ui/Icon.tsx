@@ -1,6 +1,7 @@
 import type { CSSProperties, FunctionComponent, ReactNode, SVGProps } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
+	ALargeSmall,
 	AlertTriangle,
 	ArrowLeft,
 	ArrowRight,
@@ -15,12 +16,14 @@ import {
 	ChevronLeft,
 	ChevronUp,
 	Circle,
+	CircleHelp,
 	ClipboardList,
 	Crown,
 	Diamond,
 	Dumbbell,
 	Eraser,
 	FilePlus,
+	Files,
 	FileText,
 	FlaskConical,
 	Folder,
@@ -56,7 +59,6 @@ import CodySvg from "@/assets/icons/cody.svg?react";
 import FireSvg from "@/assets/icons/fire.svg?react";
 import LockSvg from "@/assets/icons/lock.svg?react";
 import PartySvg from "@/assets/icons/party.svg?react";
-import Robot2Svg from "@/assets/icons/robot2.svg?react";
 import RocketSvg from "@/assets/icons/rocket.svg?react";
 import SoundSvg from "@/assets/icons/sound.svg?react";
 import StarSvg from "@/assets/icons/star.svg?react";
@@ -197,6 +199,7 @@ export const icons = {
 	// -- Files / Playground --------------------------------------------------
 	folder: lucide(FolderOpen),
 	folderClosed: lucide(Folder),
+	files: lucide(Files),
 	document: lucide(FilePlus),
 	save: lucide(Save),
 	trash: lucide(Trash2),
@@ -215,10 +218,12 @@ export const icons = {
 
 	// -- Misc ----------------------------------------------------------------
 	minus: lucide(Minus),
+	help: lucide(CircleHelp),
+	fontSize: lucide(ALargeSmall),
 
 	// -- Avatars -------------------------------------------------------------
 	avatarRobot1: emoji("🤖"),
-	avatarRobot2: svg(Robot2Svg),
+	avatarCoffee: emoji("☕"),
 	avatarWizard: emoji("🧙"),
 	avatarWizard2: emoji("🧙"),
 	avatarWizard3: emoji("🧙"),
@@ -282,7 +287,7 @@ const EMOJI_TO_ICON: Record<string, IconName> = {
 	"🎓": "graduation",
 	"👑": "crown",
 	"🐉": "avatarDragon",
-	"🦾": "avatarRobot2",
+	"☕": "avatarCoffee",
 	"🧙": "avatarWizard",
 	"🥷": "avatarNinja",
 	"👨‍🚀": "avatarAstronaut",

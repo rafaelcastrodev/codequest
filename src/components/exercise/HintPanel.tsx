@@ -21,7 +21,7 @@ export function HintPanel({ hints, hintsUsed, onUseHint }: HintPanelProps) {
         <span className="font-body font-semibold text-sm flex items-center gap-1">
           <icons.bulb /> Dica {hintsUsed}/{hints.length}
         </span>
-        <span className="text-xs opacity-70">{expanded ? <icons.chevronUp /> : <icons.chevronDown />}</span>
+        <span className="opacity-70">{expanded ? <icons.chevronUp /> : <icons.chevronDown />}</span>
       </button>
 
       <AnimatePresence>

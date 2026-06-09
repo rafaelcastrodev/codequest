@@ -194,7 +194,7 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 
 	const allTips = [
 		...info.tips,
-		{ icon: "A", label: "Tamanho da fonte", detail: "Use o botao A ao lado para alternar entre 3 tamanhos de texto" },
+		{ icon: <icons.fontSize />, label: "Tamanho da fonte", detail: "Use o botao ao lado para alternar entre 3 tamanhos de texto" },
 		{ icon: <icons.speech />, label: "Feedback", detail: "Encontrou um bug ou tem uma sugestao? Use o botao de balao de fala na barra superior" },
 	];
 
@@ -205,8 +205,8 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 				onClick={() => setOpen(true)}
 				className="flex items-center gap-2 group"
 				title="Informacoes">
-				<span className="w-7 h-7 flex items-center justify-center rounded-full border border-[#8888AA]/30 text-[#8888AA] group-hover:border-secondary/50 group-hover:text-secondary group-hover:bg-secondary/10 transition-colors font-heading font-bold text-sm">
-					i
+				<span className="w-7 h-7 flex items-center justify-center rounded-full border border-[#8888AA]/30 text-[#8888AA] group-hover:border-secondary/50 group-hover:text-secondary group-hover:bg-secondary/10 transition-colors">
+					<icons.help size={16} />
 				</span>
 				{showLabel && (
 					<span className="text-xs text-[#8888AA] group-hover:text-[#E8E8F0] transition-colors font-body">
@@ -224,7 +224,7 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 						<div
 							key={idx}
 							className="flex items-start gap-3 p-2 rounded-lg">
-							<span className="text-base flex-shrink-0 mt-0.5">
+							<span className="text-lg flex-shrink-0 mt-0.5">
 								{tip.icon}
 							</span>
 							<div>

@@ -9,7 +9,7 @@ interface AvatarProps {
 
 const AVATAR_ICONS: Record<string, IconName> = {
   'robot-1': 'avatarRobot1',
-  'robot-2': 'avatarRobot2',
+  'coffee': 'avatarCoffee',
   'wizard': 'avatarWizard',
   'ninja': 'avatarNinja',
   'astronaut': 'avatarAstronaut',

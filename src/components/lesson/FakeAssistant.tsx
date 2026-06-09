@@ -133,7 +133,7 @@ export function AssistantContentNav({
 				{showingAssistant ? (
 					<>
 						<span className="text-xs font-body text-[#8888AA] flex items-center justify-center gap-1">
-							<icons.cody size={14} /> Cody
+							<icons.cody size={16} /> Cody
 						</span>
 						{activeAction && (
 							<span className="text-[12px] font-body text-secondary">

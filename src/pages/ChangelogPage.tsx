@@ -8,12 +8,22 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
-    version: '0.18.1',
+    version: '0.19.0',
+    date: '2026-06-09',
+    changes: [
+      'Ícones maiores e mais legíveis em toda a interface',
+      'Botão de ajuda agora usa ícone de interrogação em vez de "i"',
+      'Botão de tamanho de fonte com ícone visual em vez de "A"',
+      'Novo avatar de café disponível na seleção de perfil',
+      'Modelos no Playground com ícone de múltiplas folhas no menu mobile',
+    ],
+  },
+  {
+    version: '0.18.0',
     date: '2026-06-09',
     changes: [
       'Ícones mais bonitos e detalhados em toda a interface — raio, foguete, fogo, estrela, troféu, festa, cadeado e som',
       'O assistente agora se chama Cody e tem um rosto próprio em toda a interface',
-      'Avatares de robô com ilustrações exclusivas',
       'Estrela vazia agora aparece corretamente no modo escuro',
     ],
   },
