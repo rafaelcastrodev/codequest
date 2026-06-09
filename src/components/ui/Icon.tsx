@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, FunctionComponent, ReactNode, SVGProps } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
 	AlertTriangle,
@@ -22,7 +22,6 @@ import {
 	Eraser,
 	FilePlus,
 	FileText,
-	Flame,
 	FlaskConical,
 	Folder,
 	FolderOpen,
@@ -32,32 +31,37 @@ import {
 	Laptop,
 	Library,
 	Lightbulb,
-	Lock,
 	Map,
 	MessageCircle,
 	Minus,
 	Package,
-	PartyPopper,
 	Pencil,
 	Play,
 	Puzzle,
 	RefreshCw,
-	Rocket,
 	Save,
 	Settings,
 	Shuffle,
 	SkipForward,
-	Star,
 	Target,
 	Trash2,
 	TrendingUp,
-	Trophy,
 	User,
-	Volume2,
 	X,
 	XCircle,
-	Zap,
 } from "lucide-react";
+
+import BoltSvg from "@/assets/icons/bolt.svg?react";
+import CodySvg from "@/assets/icons/cody.svg?react";
+import FireSvg from "@/assets/icons/fire.svg?react";
+import LockSvg from "@/assets/icons/lock.svg?react";
+import PartySvg from "@/assets/icons/party.svg?react";
+import Robot2Svg from "@/assets/icons/robot2.svg?react";
+import RocketSvg from "@/assets/icons/rocket.svg?react";
+import SoundSvg from "@/assets/icons/sound.svg?react";
+import StarSvg from "@/assets/icons/star.svg?react";
+import StarEmptySvg from "@/assets/icons/star_empty.svg?react";
+import TrophySvg from "@/assets/icons/trophy.svg?react";
 
 interface IconProps {
 	className?: string;
@@ -111,22 +115,35 @@ function emoji(char: string): IconComponent {
 	};
 }
 
+function svg(Comp: FunctionComponent<SVGProps<SVGSVGElement>>): IconComponent {
+	return function SvgWrapper({
+		className = "",
+		size,
+		style,
+		...aria
+	}: IconProps) {
+		const s = size ? `${size}px` : "1em";
+		return (
+			<Comp
+				className={`inline-block shrink-0 ${className}`}
+				width={s}
+				height={s}
+				style={style}
+				{...aria}
+			/>
+		);
+	};
+}
+
 // ---------------------------------------------------------------------------
 // Icon Registry
-//
-// Lucide SVG icons for all UI elements.
-// Avatars remain as emoji — best candidates for custom SVG later.
-//
-// SVG CANDIDATES (high-impact replacements for custom art):
-//   bolt, fire, star/starFilled/starEmpty, trophy, party, rocket
-//   + all 8 avatars
 // ---------------------------------------------------------------------------
 
 export const icons = {
 	// -- Brand / App ---------------------------------------------------------
-	bolt: lucide(Zap),
-	rocket: lucide(Rocket),
-	cody: emoji("🤖"),
+	bolt: svg(BoltSvg),
+	rocket: svg(RocketSvg),
+	cody: svg(CodySvg),
 
 	// -- Navigation ----------------------------------------------------------
 	map: lucide(Map),
@@ -152,14 +169,14 @@ export const icons = {
 	warning: lucide(AlertTriangle),
 
 	// -- Gamification --------------------------------------------------------
-	fire: lucide(Flame),
-	star: lucide(Star, true),
-	starEmpty: lucide(Star),
-	starFilled: lucide(Star, true),
+	fire: svg(FireSvg),
+	star: svg(StarSvg),
+	starEmpty: svg(StarEmptySvg),
+	starFilled: svg(StarSvg),
 	diamond: lucide(Diamond, true),
 	circle: lucide(Circle, true),
-	trophy: lucide(Trophy),
-	party: lucide(PartyPopper),
+	trophy: svg(TrophySvg),
+	party: svg(PartySvg),
 	levelUp: lucide(TrendingUp),
 	gamepad: lucide(Gamepad2),
 
@@ -167,7 +184,7 @@ export const icons = {
 	book: lucide(BookOpen),
 	laptop: lucide(Laptop),
 	bulb: lucide(Lightbulb),
-	lock: lucide(Lock),
+	lock: svg(LockSvg),
 	robot: lucide(Bot),
 	memo: lucide(FileText),
 	books: lucide(Library),
@@ -175,7 +192,7 @@ export const icons = {
 	speech: lucide(MessageCircle),
 	target: lucide(Target),
 	abacus: lucide(Calculator),
-	sound: lucide(Volume2),
+	sound: svg(SoundSvg),
 
 	// -- Files / Playground --------------------------------------------------
 	folder: lucide(FolderOpen),
@@ -199,12 +216,12 @@ export const icons = {
 	// -- Misc ----------------------------------------------------------------
 	minus: lucide(Minus),
 
-	// -- Avatars (emoji — replace with custom SVG) ---------------------------
-	avatarRobot1: emoji("🤖"),
-	avatarRobot2: emoji("🦾"),
+	// -- Avatars -------------------------------------------------------------
+	avatarRobot1: svg(CodySvg),
+	avatarRobot2: svg(Robot2Svg),
+	avatarWizard: emoji("🧙"),
 	avatarWizard2: emoji("🧙"),
 	avatarWizard3: emoji("🧙"),
-	avatarWizard: emoji("🧙"),
 	avatarNinja: emoji("🥷"),
 	avatarAstronaut: emoji("👨‍🚀"),
 	avatarScientist: emoji("🧪"),

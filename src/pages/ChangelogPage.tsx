@@ -8,6 +8,19 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.0',
+    date: '2026-06-09',
+    changes: [
+      'Ícones customizados SVG integrados via vite-plugin-svgr (import como componente React)',
+      'Novo wrapper svg() no Icon registry para renderizar SVGs inline com suporte a currentColor',
+      '11 ícones migrados de Lucide/emoji para SVG customizado: bolt, rocket, cody, fire, star, starEmpty, trophy, party, lock, sound, avatarRobot2',
+      'Mascote Cody agora usa SVG próprio em vez de emoji genérico',
+      'Avatares robot-1 e robot-2 com SVGs customizados (cody e robot2)',
+      'Corrigido star_empty.svg: fill alterado de #000000 para currentColor (visível em dark mode)',
+      'Novo ícone sound.svg adicionado',
+    ],
+  },
+  {
     version: '0.17.0',
     date: '2026-06-08',
     changes: [
