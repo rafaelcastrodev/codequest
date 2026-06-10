@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useProgressStore, getLevelTitle, getLevelProgress } from '@/store/progress.store';
+import { useProgressStore, getLevelTitle, getLevelProgress, getModuleMastery } from '@/store/progress.store';
 import { Avatar, AVATAR_IDS } from '@/components/ui/Avatar';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { MasteryBadge } from '@/components/ui/MasteryBadge';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { icons, resolveIcon } from '@/components/ui/Icon';
-import { loadAchievements } from '@/content/loader';
+import { loadAchievements, loadCurriculum, loadModule } from '@/content/loader';
 import { shareProgressCard } from '@/utils/share-card';
 import type { ReactNode } from 'react';
-import type { Achievement, AchievementRarity } from '@/content/curriculum.types';
+import type { Achievement, AchievementRarity, Curriculum, Module } from '@/content/curriculum.types';
 
 const RARITY_STYLES: Record<AchievementRarity, string> = {
   common: 'border-bg-elevated',
@@ -53,6 +54,8 @@ export function ProfilePage() {
     useProgressStore();
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
+  const [curriculum, setCurriculum] = useState<Curriculum | null>(null);
+  const [modules, setModules] = useState<Map<string, Module>>(new Map());
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(profile.name);
   const levelData = getLevelProgress(xp);
@@ -62,6 +65,20 @@ export function ProfilePage() {
 
   useEffect(() => {
     loadAchievements().then((f) => setAllAchievements(f.achievements));
+    loadCurriculum().then(async (c) => {
+      setCurriculum(c);
+      const loaded = await Promise.allSettled(
+        c.modules.map(async (m) => {
+          const mod = await loadModule(m.file);
+          return [m.id, mod] as [string, Module];
+        }),
+      );
+      const map = new Map<string, Module>();
+      for (const r of loaded) {
+        if (r.status === 'fulfilled') map.set(r.value[0], r.value[1]);
+      }
+      setModules(map);
+    });
   }, []);
 
   function saveName() {
@@ -75,7 +92,7 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+    <div className="w-full max-w-2xl mx-auto px-4 py-8 space-y-6">
       <h1 className="font-heading text-2xl font-bold text-text-main">Perfil</h1>
 
       <div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 flex items-center gap-5">
@@ -105,12 +122,7 @@ export function ProfilePage() {
           )}
           <p className="text-text-muted font-body text-sm">Nível {level} · {title}</p>
           <div className="mt-3">
-            <div className="relative">
-              <ProgressBar value={levelData.percent} max={100} variant="secondary" size="lg" />
-              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-body font-bold text-text-main drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                {xp} / {levelData.next} XP
-              </span>
-            </div>
+              <ProgressBar value={levelData.percent} max={100} variant="secondary" size="lg" overlayLabel={`${xp} / ${levelData.next} XP`} />
           </div>
         </div>
       </div>
@@ -167,6 +179,58 @@ export function ProfilePage() {
             {allAchievements.map((a) => (
               <BadgeCard key={a.id} achievement={a} unlocked={achievements.includes(a.id)} />
             ))}
+          </div>
+        </div>
+      )}
+
+      {curriculum && modules.size > 0 && (
+        <div>
+          <h2 className="font-heading font-semibold text-text-main mb-3">
+            Domínio por Módulo
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {curriculum.modules.map((cm) => {
+              const mod = modules.get(cm.id);
+              const mastery = getModuleMastery(mod?.lessons ?? [], completedExercises);
+              const started = mastery.level > 0;
+              return (
+                <div
+                  key={cm.id}
+                  className={`bg-bg-surface border rounded-xl p-4 flex items-center gap-3 transition-opacity ${
+                    started ? 'border-bg-elevated' : 'border-bg-elevated/50 opacity-40'
+                  }`}
+                >
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+                    style={{
+                      backgroundColor: started ? `${cm.color}22` : '#252542',
+                      borderColor: started ? cm.color : '#252542',
+                      borderWidth: 1,
+                    }}
+                  >
+                    {started ? cm.icon : <icons.lock />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-body text-sm font-semibold text-text-main truncate">{cm.title}</span>
+                      <MasteryBadge mastery={mastery} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ProgressBar
+                        value={mastery.earnedStars}
+                        max={mastery.maxStars}
+                        variant="primary"
+                        size="sm"
+                        className="flex-1"
+                      />
+                      <span className="text-[10px] text-text-muted font-body flex-shrink-0">
+                        <icons.star /> {mastery.earnedStars}/{mastery.maxStars}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

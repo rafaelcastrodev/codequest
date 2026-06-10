@@ -5,13 +5,15 @@ import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { AnimatedOutlet } from './AnimatedOutlet';
 import { ToastContainer } from '@/components/feedback/ToastContainer';
+import { LevelUpOverlay } from '@/components/feedback/LevelUpOverlay';
 import { OnboardingOverlay } from '@/components/onboarding';
 import { useLevelUp } from '@/hooks/useLevelUp';
 import { useFontScale } from '@/hooks/useFontScale';
 
 function LevelUpWatcher() {
-  useLevelUp();
-  return null;
+  const { levelUpData, dismiss } = useLevelUp();
+  if (!levelUpData) return null;
+  return <LevelUpOverlay level={levelUpData.level} title={levelUpData.title} onDismiss={dismiss} />;
 }
 
 function FontScaleWatcher() {

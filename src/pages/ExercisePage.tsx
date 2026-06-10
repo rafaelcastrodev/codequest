@@ -7,10 +7,10 @@ import {
 	useRef,
 } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useExercise } from "@/hooks/useExercise";
 import { useCodeRunner } from "@/hooks/useCodeRunner";
-import { useProgressStore } from "@/store/progress.store";
+import { useProgressStore, getModuleMastery } from "@/store/progress.store";
 import { useSessionStore } from "@/store/session.store";
 import { useSettingsStore } from "@/store/settings.store";
 import { useAchievements } from "@/hooks/useAchievements";
@@ -18,11 +18,13 @@ import { useAssistant } from "@/hooks/useAssistant";
 import {
 	FakeAssistantButton,
 	FakeAssistantModal,
-	AssistantContentNav,
 } from "@/components/lesson/FakeAssistant";
+import { AssistantContentToggle } from "@/components/lesson/AssistantContentToggle";
+import { LessonBreadcrumb } from "@/components/lesson/LessonBreadcrumb";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { CodeBlock } from "@/components/ui/CodeBlock";
 import { RichText } from "@/components/ui/RichText";
 import { icons } from "@/components/ui/Icon";
 import { useClipboard } from "@/hooks/useClipboard";
@@ -36,7 +38,6 @@ import type { OnMount } from "@monaco-editor/react";
 import { triggerConfetti } from "@/utils/confetti";
 import { playSound } from "@/utils/sounds";
 import { lessonPath } from "@/utils/lesson-path";
-import { isCodeContent } from "@/utils/is-code-content";
 
 const MonacoEditor = lazy(() =>
 	import("@monaco-editor/react").then((m) => ({ default: m.Editor })),
@@ -69,6 +70,7 @@ export function ExercisePage() {
 
 	const [code, setCode] = useState("");
 	const [successStars, setSuccessStars] = useState<number | null>(null);
+	const [xpGained, setXpGained] = useState(0);
 	const [editorBorderStatus, setEditorBorderStatus] = useState<
 		"idle" | "ok" | "err"
 	>("idle");
@@ -191,7 +193,9 @@ export function ExercisePage() {
 			setEditorBorderStatus("ok");
 			sessionStorage.removeItem(`codequest-autosave-${exercise.id}`);
 			const isFirstCompletion = !completedExercises[exercise.id];
-			if (isFirstCompletion) addXP(exercise.xpReward);
+			const earned = isFirstCompletion ? exercise.xpReward : Math.round(exercise.xpReward * 0.1);
+			addXP(earned);
+			setXpGained(earned);
 			completeExercise(exercise.id, outcome.stars, hintsUsed);
 			updateStreak();
 			triggerConfetti();
@@ -232,22 +236,10 @@ export function ExercisePage() {
 		handleNext();
 	}, [exercise, completeExercise, handleNext]);
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-			</div>
-		);
-	}
+	if (loading) return <LoadingSpinner />;
 
 	if (error || !exercise) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<p className="text-text-muted font-body">
-					{error ?? "Exercício não encontrado."}
-				</p>
-			</div>
-		);
+		return <EmptyState message={error ?? "Exercício não encontrado."} />;
 	}
 
 	const lessons = mod?.lessons ?? [];
@@ -261,19 +253,15 @@ export function ExercisePage() {
 				? "border-accent/50"
 				: "border-transparent";
 
-	const slideVariants = {
-		enterFromRight: { opacity: 0, x: 40 },
-		enterFromLeft: { opacity: 0, x: -40 },
-		center: { opacity: 1, x: 0 },
-	};
-
 	const instructionsPanel = (
 		<div className="flex-1 md:flex-initial md:w-96 xl:w-[28rem] flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
 			<div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50">
 				<div className="flex items-center justify-between">
-					<span className="text-xs text-text-muted font-body truncate">
-						{mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
-					</span>
+					<LessonBreadcrumb
+						moduleTitle={mod?.title ?? ""}
+						current={lessonIndex + 1}
+						total={totalLessons}
+					/>
 				</div>
 			</div>
 			<div className="p-5 border-b border-bg-elevated">
@@ -296,7 +284,7 @@ export function ExercisePage() {
 					<Badge variant="secondary" size="sm">
 						+{exercise.xpReward} XP
 					</Badge>
-					<Badge variant="muted" size="sm">
+					<Badge variant="muted" size="sm" className="py-1">
 						{Array.from({ length: exercise.difficulty }, (_, i) => (
 							<icons.star key={i} />
 						))}
@@ -308,49 +296,21 @@ export function ExercisePage() {
 			</div>
 
 			<div className="flex-1 p-5 overflow-y-auto scrollbar-thin space-y-4">
-				<AssistantContentNav
+				<AssistantContentToggle
 					showingAssistant={assistant.showingAssistant}
-					hasAssistantContent={assistant.activeContent !== null}
+					activeContent={assistant.activeContent}
 					activeAction={assistant.activeAction}
 					onShowOriginal={assistant.showOriginal}
 					onShowAssistant={assistant.showAssistantView}
-				/>
-
-				<AnimatePresence mode="wait">
-					{assistant.showingAssistant && assistant.activeContent ? (
-						<motion.div
-							key={`assistant-${assistant.activeContent}`}
-							variants={slideVariants}
-							initial="enterFromRight"
-							animate="center"
-							exit={{ opacity: 0, x: 40 }}
-							transition={{ duration: 0.2 }}
-							className="bg-bg-elevated rounded-xl p-4 space-y-2">
-							{isCodeContent(assistant.activeContent) ? (
-								<CodeBlock code={assistant.activeContent} />
-							) : (
-								<RichText
-									content={assistant.activeContent}
-									className="font-body text-sm text-text-main leading-relaxed"
-								/>
-							)}
-						</motion.div>
-					) : (
-						<motion.div
-							key="original-instructions"
-							variants={slideVariants}
-							initial="enterFromLeft"
-							animate="center"
-							exit={{ opacity: 0, x: -40 }}
-							transition={{ duration: 0.2 }}>
-							<div className="bg-bg-elevated rounded-xl p-4">
-								<p className="font-body text-sm text-text-main leading-relaxed whitespace-pre-wrap">
-									{exercise.instructions}
-								</p>
-							</div>
-						</motion.div>
-					)}
-				</AnimatePresence>
+					assistantClassName="font-body text-sm text-text-main leading-relaxed"
+					assistantWrapper="elevated">
+					<div className="bg-bg-elevated rounded-xl p-4">
+						<RichText
+							content={exercise.instructions}
+							className="font-body text-sm text-text-main leading-relaxed"
+						/>
+					</div>
+				</AssistantContentToggle>
 
 				{exercise.hints.length > 0 && (
 					<HintPanel
@@ -359,21 +319,20 @@ export function ExercisePage() {
 						onUseHint={useHint}
 					/>
 				)}
-			</div>
-
-			<div className="p-3 border-t border-bg-elevated flex items-center gap-2 flex-shrink-0">
-				<FakeAssistantButton
-					hasContent={assistant.hasContent}
-					showingAssistant={assistant.showingAssistant}
-					onClick={assistant.openModal}
-				/>
-				<Button
-					variant="primary"
-					size="md"
-					className="flex-1 md:hidden"
-					onClick={() => setMobileTab("code")}>
-					Abrir Editor <icons.arrowRight />
-				</Button>
+				<div className="py-3 flex items-center gap-2">
+					<FakeAssistantButton
+						hasContent={assistant.hasContent}
+						showingAssistant={assistant.showingAssistant}
+						onClick={assistant.openModal}
+					/>
+					<Button
+						variant="primary"
+						size="md"
+						className="flex-1 md:hidden"
+						onClick={() => setMobileTab("code")}>
+						Abrir Editor <icons.arrowRight />
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
@@ -384,6 +343,10 @@ export function ExercisePage() {
 				<SuccessOverlay
 					lesson={exercise}
 					stars={successStars}
+					hintsUsed={hintsUsed}
+					xpGained={xpGained}
+					moduleMastery={getModuleMastery(mod?.lessons ?? [], completedExercises)}
+					moduleTitle={mod?.title}
 					onNext={handleNext}
 					onMap={() => navigate("/")}
 				/>

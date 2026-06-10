@@ -24,6 +24,62 @@ interface StreakData {
 const LEVEL_THRESHOLDS = [0, 50, 120, 220, 350, 500, 700, 950, 1250, 1600, 2000];
 const LEVEL_TITLES = ['', 'Aprendiz', 'Aprendiz', 'Explorador', 'Explorador', 'Hacker', 'Hacker', 'Arquiteto', 'Arquiteto', 'Mestre do Código', 'Mestre do Código'];
 
+import type { MasteryLevel } from '@/content/curriculum.types';
+import { loadMasteryLevels } from '@/content/loader';
+
+export type MasteryLevelDef = MasteryLevel;
+
+const DEFAULT_MASTERY_LEVELS: MasteryLevel[] = [
+  { minPercent: 0, title: '', color: 'muted', icon: 'star' },
+];
+
+let masteryLevels: MasteryLevel[] = DEFAULT_MASTERY_LEVELS;
+
+loadMasteryLevels().then((data) => { masteryLevels = data; }).catch(() => {});
+
+export interface ModuleMastery {
+  level: number;
+  title: string;
+  color: string;
+  icon: string;
+  earnedStars: number;
+  maxStars: number;
+  percent: number;
+}
+
+export function getModuleMastery(
+  lessons: { id: string }[],
+  completedExercises: Record<string, { stars: number }>,
+): ModuleMastery {
+  const maxStars = lessons.length * 3;
+  const earnedStars = lessons.reduce(
+    (sum, l) => sum + (completedExercises[l.id]?.stars ?? 0),
+    0,
+  );
+  const percent = maxStars === 0 ? 0 : Math.round((earnedStars / maxStars) * 100);
+  const effective = earnedStars > 0 ? Math.max(1, percent) : 0;
+
+  let matched: MasteryLevelDef = masteryLevels[0]!;
+  let level = 0;
+  for (let i = masteryLevels.length - 1; i >= 0; i--) {
+    if (effective >= masteryLevels[i]!.minPercent) {
+      matched = masteryLevels[i]!;
+      level = i;
+      break;
+    }
+  }
+
+  return {
+    level,
+    title: matched.title,
+    color: matched.color,
+    icon: matched.icon,
+    earnedStars,
+    maxStars,
+    percent,
+  };
+}
+
 function toLocalDateString(date: Date): string {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -104,6 +160,7 @@ export const useProgressStore = create<ProgressState>()(
           const existing = s.completedExercises[id];
           const attempts = (existing?.attempts ?? 0) + 1;
           const bestStars = Math.max(existing?.stars ?? 0, stars);
+          const bestHints = existing ? Math.min(existing.hintsUsed, hintsUsed) : hintsUsed;
           return {
             completedExercises: {
               ...s.completedExercises,
@@ -111,7 +168,7 @@ export const useProgressStore = create<ProgressState>()(
                 stars: bestStars,
                 attempts,
                 completedAt: new Date().toISOString(),
-                hintsUsed,
+                hintsUsed: bestHints,
               },
             },
           };

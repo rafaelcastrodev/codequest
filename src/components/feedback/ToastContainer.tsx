@@ -5,13 +5,11 @@ import { resolveIcon } from '@/components/ui/Icon';
 
 const VARIANT_STYLES = {
   achievement: 'border-secondary/50 bg-secondary/15 shadow-[0_0_20px_rgba(124,92,252,0.25)]',
-  levelup: 'border-primary/50 bg-primary/15 shadow-[0_0_20px_rgba(0,212,170,0.25)]',
   streak: 'border-warning/50 bg-warning/15 shadow-[0_0_20px_rgba(255,184,77,0.25)]',
 } as const;
 
 const TITLE_COLOR = {
   achievement: 'text-secondary',
-  levelup: 'text-primary',
   streak: 'text-warning',
 } as const;
 

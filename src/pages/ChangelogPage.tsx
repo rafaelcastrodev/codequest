@@ -8,6 +8,19 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.23.0',
+    date: '2026-06-10',
+    changes: [
+      'No quiz, a resposta só é avaliada quando você clica em "Conferir" — pode mudar de ideia antes',
+      'Tela de conclusão repaginada em lições, exercícios e quizzes — mostra XP ganho, estrelas e domínio do módulo',
+      'Novo indicador de domínio por módulo no mapa e no perfil — veja quantas estrelas conquistou em cada módulo',
+      'Painel de dicas mostra suas estrelas atuais e avisa quando usar uma dica vai custar uma estrela',
+      'Textos de lições e exercícios agora suportam formatação rica (negrito, código, listas)',
+      'Animação de level-up em tela cheia com efeito de confete',
+      'Repetir exercícios ou quizzes agora dá 10% do XP original',
+    ],
+  },
+  {
     version: '0.22.0',
     date: '2026-06-10',
     changes: [
@@ -130,7 +143,7 @@ const CHANGELOG: ChangelogEntry[] = [
 
 export function ChangelogPage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+    <div className="w-full max-w-2xl mx-auto px-4 py-8 space-y-6">
       <h1 className="font-heading text-2xl font-bold text-text-main">
         Changelog
       </h1>

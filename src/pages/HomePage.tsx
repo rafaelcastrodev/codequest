@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { loadCurriculum, loadModule } from '@/content/loader';
-import { useProgressStore } from '@/store/progress.store';
+import { useProgressStore, getModuleMastery } from '@/store/progress.store';
+import type { ModuleMastery } from '@/store/progress.store';
 import { useSettingsStore } from '@/store/settings.store';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { MasteryBadge } from '@/components/ui/MasteryBadge';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { icons } from '@/components/ui/Icon';
 import { lessonPath } from '@/utils/lesson-path';
 import type { ReactNode } from 'react';
@@ -72,13 +75,14 @@ interface ModuleNodeProps {
   unlocked: boolean;
   completedCount: number;
   totalLessons: number;
+  mastery: ModuleMastery;
   completedExercises: Record<string, unknown>;
   expanded: boolean;
   onToggle: () => void;
   onGoLesson: (lesson: Lesson) => void;
 }
 
-function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, completedExercises, expanded, onToggle, onGoLesson }: ModuleNodeProps) {
+function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, mastery, completedExercises, expanded, onToggle, onGoLesson }: ModuleNodeProps) {
   const percent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
   const firstUncompleted = mod?.lessons.find((l) => !completedExercises[l.id]);
 
@@ -99,6 +103,7 @@ function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, c
         onClick={unlocked ? onToggle : undefined}
         className={`p-5 ${unlocked ? 'cursor-pointer hover:bg-bg-elevated/30' : 'cursor-not-allowed'} transition-colors`}
       >
+        {mastery.level > 0 && <div className="mb-3"><MasteryBadge mastery={mastery} /></div>}
         <div className="flex items-center gap-4">
           <div
             className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
@@ -128,9 +133,11 @@ function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, c
           <div className="mt-4">
             <div className="flex justify-between mb-1">
               <span className="text-xs text-text-muted font-body">{completedCount}/{totalLessons} lições</span>
-              <span className="text-xs font-semibold font-body" style={{ color: moduleData.color }}>{percent}%</span>
+              <span className="text-xs font-semibold font-body" style={{ color: moduleData.color }}>
+                <icons.star /> {mastery.earnedStars}/{mastery.maxStars}
+              </span>
             </div>
-            <ProgressBar value={percent} max={100} variant="primary" size="sm" />
+            <ProgressBar value={mastery.earnedStars} max={mastery.maxStars} variant="primary" size="sm" />
           </div>
         )}
       </div>
@@ -227,14 +234,7 @@ export function HomePage() {
   }, [curriculum, modules, completedExercises, unlockedModules, unlockModule]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-text-muted font-body">Carregando missões...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner size="lg" message="Carregando missões..." />;
   }
 
   if (error) {
@@ -249,7 +249,7 @@ export function HomePage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-8">
+    <div className="w-full max-w-lg mx-auto px-4 py-8">
       <div className="text-center mb-10">
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
@@ -279,6 +279,7 @@ export function HomePage() {
           const completedCount = mod
             ? mod.lessons.filter((l) => completedExercises[l.id]).length
             : 0;
+          const mastery = getModuleMastery(mod?.lessons ?? [], completedExercises);
 
           return (
             <div key={m.id} className="relative">
@@ -291,6 +292,7 @@ export function HomePage() {
                 unlocked={unlocked}
                 completedCount={completedCount}
                 totalLessons={totalLessons}
+                mastery={mastery}
                 completedExercises={completedExercises}
                 expanded={expandedModule === m.id}
                 onToggle={() => setExpandedModule(expandedModule === m.id ? null : m.id)}

@@ -1,58 +1,83 @@
-import type { ReactNode } from 'react';
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
+import { CodeBlock } from "./CodeBlock";
 
 interface RichTextProps {
-  content: string;
-  className?: string;
+	content: string;
+	className?: string;
 }
 
-function parseInline(text: string): ReactNode[] {
-  const parts: ReactNode[] = [];
-  const regex = /(\*\*(.+?)\*\*|`(.+?)`)/g;
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
+const components: Components = {
+	code({ children, className }) {
+		const match = /language-(\w+)/.exec(className || "");
+		const text = String(children).replace(/\n$/, "");
 
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
-    }
+		if (match || text.includes("\n")) {
+			return <CodeBlock code={text} language={match?.[1] ?? "typescript"} />;
+		}
 
-    if (match[2]) {
-      parts.push(
-        <strong key={match.index} className="font-bold text-text-main">
-          {match[2]}
-        </strong>,
-      );
-    } else if (match[3]) {
-      parts.push(
-        <code
-          key={match.index}
-          className="bg-bg-elevated text-primary px-1.5 py-0.5 rounded font-mono text-[0.9em]"
-        >
-          {match[3]}
-        </code>,
-      );
-    }
+		return (
+			<code className="bg-bg-elevated text-primary px-1.5 py-0.5 rounded font-mono text-[0.9em]">
+				{children}
+			</code>
+		);
+	},
+	pre({ children }) {
+		return <>{children}</>;
+	},
+	strong({ children }) {
+		return <strong className="font-bold text-text-main">{children}</strong>;
+	},
+	ul({ children }) {
+		return <ul className="list-disc list-inside space-y-1 my-2">{children}</ul>;
+	},
+	ol({ children }) {
+		return <ol className="list-decimal list-inside space-y-1 my-2">{children}</ol>;
+	},
+	li({ children }) {
+		return <li className="text-text-main">{children}</li>;
+	},
+	p({ children }) {
+		return <p className="my-1.5">{children}</p>;
+	},
+	h1({ children }) {
+		return <h1 className="font-heading font-bold text-xl text-text-main mt-4 mb-2">{children}</h1>;
+	},
+	h2({ children }) {
+		return <h2 className="font-heading font-bold text-lg text-text-main mt-3 mb-1.5">{children}</h2>;
+	},
+	h3({ children }) {
+		return <h3 className="font-heading font-bold text-base text-text-main mt-2 mb-1">{children}</h3>;
+	},
+	blockquote({ children }) {
+		return (
+			<blockquote className="border-l-3 border-primary/50 pl-3 my-2 text-text-muted italic">
+				{children}
+			</blockquote>
+		);
+	},
+	table({ children }) {
+		return (
+			<div className="overflow-x-auto my-2">
+				<table className="w-full text-sm border-collapse">{children}</table>
+			</div>
+		);
+	},
+	th({ children }) {
+		return <th className="border border-bg-elevated px-3 py-1.5 text-left font-bold bg-bg-elevated">{children}</th>;
+	},
+	td({ children }) {
+		return <td className="border border-bg-elevated px-3 py-1.5">{children}</td>;
+	},
+};
 
-    lastIndex = match.index + match[0].length;
-  }
-
-  if (lastIndex < text.length) {
-    parts.push(text.slice(lastIndex));
-  }
-
-  return parts.length > 0 ? parts : [text];
-}
-
-export function RichText({ content, className = '' }: RichTextProps) {
-  const lines = content.split('\n');
-
-  return (
-    <div className={className}>
-      {lines.map((line, i) => (
-        <p key={`${i}-${line.slice(0, 20)}`} className={line.trim() === '' ? 'h-3' : ''}>
-          {parseInline(line)}
-        </p>
-      ))}
-    </div>
-  );
+export function RichText({ content, className = "" }: RichTextProps) {
+	return (
+		<div className={className}>
+			<Markdown remarkPlugins={[remarkGfm]} components={components}>
+				{content}
+			</Markdown>
+		</div>
+	);
 }

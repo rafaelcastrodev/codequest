@@ -97,12 +97,15 @@ describe('useProgressStore', () => {
       const ex = useProgressStore.getState().completedExercises['ex1'];
       expect(ex.stars).toBe(3);
       expect(ex.attempts).toBe(2);
+      expect(ex.hintsUsed).toBe(0);
     });
 
     it('upgrades stars if new attempt is better', () => {
       act(() => useProgressStore.getState().completeExercise('ex1', 1, 2));
       act(() => useProgressStore.getState().completeExercise('ex1', 3, 0));
-      expect(useProgressStore.getState().completedExercises['ex1'].stars).toBe(3);
+      const ex = useProgressStore.getState().completedExercises['ex1']!;
+      expect(ex.stars).toBe(3);
+      expect(ex.hintsUsed).toBe(0);
     });
   });
 

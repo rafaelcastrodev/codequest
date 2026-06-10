@@ -1,20 +1,25 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { loadModule } from "@/content/loader";
-import { useProgressStore } from "@/store/progress.store";
+import { useProgressStore, getModuleMastery } from "@/store/progress.store";
+import { useSettingsStore } from "@/store/settings.store";
 import { useAssistant } from "@/hooks/useAssistant";
 import { icons } from "@/components/ui/Icon";
 import {
 	FakeAssistantButton,
 	FakeAssistantModal,
-	AssistantContentNav,
 } from "@/components/lesson/FakeAssistant";
-import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LessonBreadcrumb } from "@/components/lesson/LessonBreadcrumb";
+import { LessonNavBar } from "@/components/lesson/LessonNavBar";
+import { CompletionCard } from "@/components/lesson/CompletionCard";
+import { AssistantContentToggle } from "@/components/lesson/AssistantContentToggle";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { RichText } from "@/components/ui/RichText";
 import { lessonPath } from "@/utils/lesson-path";
-import { isCodeContent } from "@/utils/is-code-content";
+import { playSound } from "@/utils/sounds";
 import type {
 	Module,
 	TheoryLesson,
@@ -70,73 +75,11 @@ function StepView({ step }: StepViewProps) {
 	return (
 		<div className="space-y-3">
 			<CodeBlock code={step.code} />
-			<p className="text-text-muted font-body text-sm leading-relaxed">
-				{step.explanation}
-			</p>
+			<RichText
+				content={step.explanation}
+				className="text-text-muted font-body text-sm leading-relaxed"
+			/>
 		</div>
-	);
-}
-
-interface AssistantContentViewProps {
-	content: string;
-}
-
-function AssistantContentView({ content }: AssistantContentViewProps) {
-	if (isCodeContent(content)) {
-		return <CodeBlock code={content} />;
-	}
-	return (
-		<RichText
-			content={content}
-			className="text-text-main font-body leading-relaxed text-base"
-		/>
-	);
-}
-
-interface LessonCompleteProps {
-	lesson: TheoryLesson;
-	onNext: () => void;
-	onMap: () => void;
-}
-
-function LessonComplete({ lesson, onNext, onMap }: LessonCompleteProps) {
-	return (
-		<motion.div
-			initial={{ opacity: 0, scale: 0.95 }}
-			animate={{ opacity: 1, scale: 1 }}
-			transition={{ type: "spring", stiffness: 300, damping: 22 }}
-			className="text-center space-y-6 py-4">
-			<div className="text-5xl"><icons.checkCircle /></div>
-			<div>
-				<h2 className="font-heading font-bold text-2xl text-primary mb-1">
-					Teoria concluída!
-				</h2>
-				<p className="text-text-muted font-body text-sm">
-					{lesson.title}
-				</p>
-			</div>
-			<div className="inline-block bg-secondary/20 border border-secondary/30 rounded-xl px-6 py-2.5">
-				<span className="font-heading font-bold text-secondary text-xl">
-					+{lesson.xpReward} XP
-				</span>
-			</div>
-			<div className="flex gap-3 justify-center">
-				<Button
-					variant="ghost"
-					size="md"
-					className="w-35"
-					onClick={onMap}>
-					Jornada
-				</Button>
-				<Button
-					variant="primary"
-					size="md"
-					className="w-40"
-					onClick={onNext}>
-					Continuar
-				</Button>
-			</div>
-		</motion.div>
 	);
 }
 
@@ -148,6 +91,7 @@ export function LessonPage() {
 	const navigate = useNavigate();
 	const { addXP, completeExercise, updateStreak, completedExercises } =
 		useProgressStore();
+	const { soundEnabled } = useSettingsStore();
 
 	const assistant = useAssistant(moduleId, lessonId);
 
@@ -156,6 +100,7 @@ export function LessonPage() {
 	const [maxVisited, setMaxVisited] = useState(0);
 	const [completed, setCompleted] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [xpGained, setXpGained] = useState(0);
 	const xpAwarded = useRef(false);
 
 	useEffect(() => {
@@ -174,24 +119,12 @@ export function LessonPage() {
 		setMaxVisited((prev) => Math.max(prev, stepIndex));
 	}, [stepIndex]);
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-			</div>
-		);
-	}
+	if (loading) return <LoadingSpinner />;
 
 	const lesson = mod?.lessons.find((l) => l.id === lessonId);
 
 	if (!lesson || lesson.type !== "theory") {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<p className="text-text-muted font-body">
-					Lição não encontrada.
-				</p>
-			</div>
-		);
+		return <EmptyState message="Lição não encontrada." />;
 	}
 
 	const theoryLesson = lesson as TheoryLesson;
@@ -206,10 +139,13 @@ export function LessonPage() {
 	function handleComplete() {
 		if (!xpAwarded.current && theoryLesson) {
 			const isFirstCompletion = !completedExercises[theoryLesson.id];
-			if (isFirstCompletion) addXP(theoryLesson.xpReward);
+			const earned = isFirstCompletion ? theoryLesson.xpReward : Math.round(theoryLesson.xpReward * 0.1);
+			addXP(earned);
+			setXpGained(earned);
 			completeExercise(theoryLesson.id, 3, 0);
 			updateStreak();
 			xpAwarded.current = true;
+			if (soundEnabled) playSound("success");
 		}
 		setCompleted(true);
 	}
@@ -236,24 +172,20 @@ export function LessonPage() {
 		assistant.clearAssistant();
 	}
 
-	const slideVariants = {
-		enterFromRight: { opacity: 0, x: 60 },
-		enterFromLeft: { opacity: 0, x: -60 },
-		center: { opacity: 1, x: 0 },
-		exitToLeft: { opacity: 0, x: -60 },
-		exitToRight: { opacity: 0, x: 60 },
-	};
-
 	if (completed) {
 		return (
-			<div className="flex flex-col items-center justify-center h-full px-4">
-				<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 w-full max-w-md">
-					<LessonComplete
-						lesson={theoryLesson}
-						onNext={handleNext}
-						onMap={() => navigate("/")}
-					/>
-				</div>
+			<div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+				<CompletionCard
+					icon={<icons.party />}
+					context="lesson"
+					title="Teoria concluída!"
+					subtitle={theoryLesson.title}
+					xpReward={xpGained}
+					moduleMastery={getModuleMastery(mod?.lessons ?? [], completedExercises)}
+					moduleTitle={mod?.title}
+					onNext={handleNext}
+					onMap={() => navigate("/")}
+				/>
 
 				<FakeAssistantModal
 					open={assistant.modalOpen}
@@ -267,13 +199,14 @@ export function LessonPage() {
 	return (
 		<div className="flex flex-col h-full overflow-hidden">
 			<div className="flex-1 overflow-y-auto scrollbar-thin">
-				<div className="max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0 pb-4">
+				<div className="w-full max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0">
 					<div className="space-y-2">
 						<div className="flex items-center justify-between">
-							<span className="text-xs text-text-muted font-body truncate">
-								{mod?.title} — Lição {currentIdx + 1} de{" "}
-								{lessons.length}
-							</span>
+							<LessonBreadcrumb
+								moduleTitle={mod?.title ?? ""}
+								current={currentIdx + 1}
+								total={lessons.length}
+							/>
 						</div>
 						<div className="flex items-center justify-between">
 							<span className="text-xs font-semibold text-primary font-body">
@@ -292,62 +225,37 @@ export function LessonPage() {
 					</div>
 
 					<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 min-h-48 overflow-hidden">
-						<AssistantContentNav
+						<AssistantContentToggle
 							showingAssistant={assistant.showingAssistant}
-							hasAssistantContent={assistant.activeContent !== null}
+							activeContent={assistant.activeContent}
 							activeAction={assistant.activeAction}
 							onShowOriginal={assistant.showOriginal}
-							onShowAssistant={assistant.showAssistantView}
-						/>
-						<AnimatePresence mode="wait">
-							{assistant.showingAssistant && assistant.activeContent ? (
-								<motion.div
-									key={`assistant-${assistant.activeContent}`}
-									variants={slideVariants}
-									initial="enterFromRight"
-									animate="center"
-									exit="exitToRight"
-									transition={{ duration: 0.25 }}>
-									<AssistantContentView content={assistant.activeContent} />
-								</motion.div>
-							) : (
+							onShowAssistant={assistant.showAssistantView}>
+							{currentStep && (
 								<motion.div
 									key={`step-${stepIndex}`}
-									variants={slideVariants}
-									initial="enterFromLeft"
-									animate="center"
-									exit="exitToLeft"
-									transition={{ duration: 0.25 }}>
-									{currentStep && <StepView step={currentStep} />}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ duration: 0.15 }}>
+									<StepView step={currentStep} />
 								</motion.div>
 							)}
-						</AnimatePresence>
+						</AssistantContentToggle>
 					</div>
-				</div>
-			</div>
 
-			<div className="flex-shrink-0 border-t border-bg-elevated bg-bg-surface px-4 py-3">
-				<div className="max-w-2xl mx-auto flex items-center justify-between">
-					<Button
-						variant="ghost"
-						size="md"
-						disabled={stepIndex === 0}
-						onClick={handlePrevStep}>
-						<icons.arrowLeft /> Anterior
-					</Button>
-					<FakeAssistantButton
-						hasContent={assistant.hasContent}
-						showingAssistant={assistant.showingAssistant}
-						onClick={assistant.openModal}
+					<LessonNavBar
+						onPrev={handlePrevStep}
+						onNext={handleNextStep}
+						prevDisabled={stepIndex === 0}
+						isLast={stepIndex >= totalSteps - 1}
+						center={
+							<FakeAssistantButton
+								hasContent={assistant.hasContent}
+								showingAssistant={assistant.showingAssistant}
+								onClick={assistant.openModal}
+							/>
+						}
 					/>
-					<Button
-						variant="primary"
-						size="md"
-						onClick={handleNextStep}>
-						{stepIndex < totalSteps - 1
-							? <>Próximo <icons.arrowRight /></>
-							: <>Concluir <icons.check /></>}
-					</Button>
 				</div>
 			</div>
 

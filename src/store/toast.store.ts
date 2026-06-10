@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { Achievement } from '@/content/curriculum.types';
 
-export type ToastVariant = 'achievement' | 'levelup' | 'streak';
+export type ToastVariant = 'achievement' | 'streak';
 
 export interface Toast {
   id: string;
@@ -14,7 +14,6 @@ export interface Toast {
 interface ToastState {
   queue: Toast[];
   pushAchievement: (achievement: Achievement) => void;
-  pushLevelUp: (level: number, title: string) => void;
   pushStreak: (days: number) => void;
   dismiss: (id: string) => void;
 }
@@ -34,20 +33,6 @@ export const useToastStore = create<ToastState>((set) => ({
           title: 'Troféu Desbloqueado!',
           message: achievement.title,
           icon: achievement.icon,
-        },
-      ],
-    })),
-
-  pushLevelUp: (level, title) =>
-    set((s) => ({
-      queue: [
-        ...s.queue,
-        {
-          id: `toast-${++nextId}`,
-          variant: 'levelup',
-          title: `Nível ${level}!`,
-          message: title,
-          icon: 'levelUp',
         },
       ],
     })),

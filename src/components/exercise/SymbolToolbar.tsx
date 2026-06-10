@@ -9,7 +9,7 @@ const SYMBOLS = [
 
 export function SymbolToolbar({ onInsert }: SymbolToolbarProps) {
   return (
-    <div className="flex gap-1.5 px-2 py-2 bg-bg-surface border-b border-bg-elevated overflow-x-auto scrollbar-thin md:hidden">
+    <div className="flex flex-wrap justify-center gap-1.5 px-2 py-2 bg-bg-surface border-b border-bg-elevated md:hidden">
       {SYMBOLS.map((s) => (
         <button
           key={s}

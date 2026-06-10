@@ -1,0 +1,78 @@
+{
+  "exercise": {
+    "excellent": [
+      "Código perfeito!",
+      "Nível hacker!",
+      "Genial!",
+      "Mandou demais!",
+      "Impecável!",
+      "Primeira tentativa, sem dicas — respeito!",
+      "Mestre do código!",
+      "Execução perfeita!"
+    ],
+    "good": [
+      "Muito bom!",
+      "Mandou bem!",
+      "Quase perfeito!",
+      "Boa sacada!",
+      "Bom trabalho!",
+      "Tá no caminho certo!",
+      "Show de bola!",
+      "Firme e forte!"
+    ],
+    "okay": [
+      "Conseguiu!",
+      "Missão cumprida!",
+      "O importante é resolver!",
+      "Prática leva à perfeição!",
+      "Um passo de cada vez!",
+      "Errar faz parte — o que importa é aprender!",
+      "Não desista, tá evoluindo!",
+      "Com o tempo fica mais fácil!"
+    ]
+  },
+  "lesson": [
+    "Teoria dominada!",
+    "Conhecimento desbloqueado!",
+    "Aprendizado top!",
+    "Boa leitura!",
+    "Evoluindo!",
+    "Saber é poder!",
+    "Missão cumprida!",
+    "Cabeça afiada!",
+    "Mandou ver!",
+    "Progresso total!"
+  ],
+  "quiz": {
+    "excellent": [
+      "Quiz dominado!",
+      "Respostas certeiras!",
+      "Mente brilhante!",
+      "Nota máxima!",
+      "Gabaritou!",
+      "100% — sem palavras!",
+      "Raciocínio afiado!",
+      "Nenhum erro!"
+    ],
+    "good": [
+      "Muito bem!",
+      "Quase lá!",
+      "Bom raciocínio!",
+      "Pensamento rápido!",
+      "Craque!",
+      "Boa pontuação!",
+      "Tá dominando!",
+      "Continue assim!"
+    ],
+    "okay": [
+      "Conseguiu passar!",
+      "Tenta de novo pra melhorar!",
+      "Revise os conceitos e volta mais forte!",
+      "O importante é não parar!",
+      "Cada tentativa conta!",
+      "Prática leva à perfeição!",
+      "Não desanima — tá aprendendo!",
+      "Um passo de cada vez!"
+    ]
+  }
+}

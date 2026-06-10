@@ -2,15 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLesson } from "@/hooks/useLesson";
-import { useProgressStore } from "@/store/progress.store";
+import { useProgressStore, getModuleMastery } from "@/store/progress.store";
 import { useSessionStore } from "@/store/session.store";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useSettingsStore } from "@/store/settings.store";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { RichText } from "@/components/ui/RichText";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LessonBreadcrumb } from "@/components/lesson/LessonBreadcrumb";
+import { CompletionCard } from "@/components/lesson/CompletionCard";
 import { icons } from "@/components/ui/Icon";
-import { FontSizeButton } from "@/components/layout/FontSizeButton";
-import { PageInfoButton } from "@/components/layout/PageInfoButton";
 import { triggerConfetti } from "@/utils/confetti";
 import { playSound } from "@/utils/sounds";
 import { lessonPath } from "@/utils/lesson-path";
@@ -18,7 +21,9 @@ import type { QuizLesson, QuizQuestion } from "@/content/curriculum.types";
 
 function starsFromScore(correct: number, total: number): number {
 	const ratio = total === 0 ? 1 : correct / total;
-	return Math.max(1, Math.round(ratio * 5));
+	if (ratio >= 1) return 3;
+	if (ratio >= 0.7) return 2;
+	return 1;
 }
 
 interface QuestionCardProps {
@@ -35,13 +40,18 @@ function QuestionCard({
 	onAnswer,
 }: QuestionCardProps) {
 	const [selected, setSelected] = useState<number | null>(null);
-	const revealed = selected !== null;
+	const [revealed, setRevealed] = useState(false);
 	const isCorrect = selected === question.correctIndex;
 
 	function handleSelect(idx: number) {
 		if (revealed) return;
 		setSelected(idx);
-		onAnswer(idx);
+	}
+
+	function handleConfirm() {
+		if (selected === null || revealed) return;
+		setRevealed(true);
+		onAnswer(selected);
 	}
 
 	return (
@@ -67,9 +77,10 @@ function QuestionCard({
 			</div>
 
 			<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6">
-				<p className="font-body text-text-main text-base leading-relaxed whitespace-pre-wrap">
-					{question.question}
-				</p>
+				<RichText
+					content={question.question}
+					className="font-body text-text-main text-base leading-relaxed"
+				/>
 			</div>
 
 			<div className="space-y-2.5">
@@ -93,6 +104,10 @@ function QuestionCard({
 							bgClass = "bg-bg-surface/50";
 							textClass = "text-text-muted";
 						}
+					} else if (idx === selected) {
+						borderClass = "border-secondary/60";
+						bgClass = "bg-secondary/10";
+						textClass = "text-text-main";
 					}
 
 					return (
@@ -111,11 +126,25 @@ function QuestionCard({
 							<span className="font-semibold mr-2 opacity-60">
 								{String.fromCharCode(65 + idx)}.
 							</span>
-							{option}
+							<RichText content={option} className="inline" />
 						</motion.button>
 					);
 				})}
 			</div>
+
+			<AnimatePresence>
+				{!revealed && selected !== null && (
+					<motion.div
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0 }}
+						className="flex justify-end">
+						<Button variant="primary" size="md" onClick={handleConfirm} className="px-12">
+							Conferir
+						</Button>
+					</motion.div>
+				)}
+			</AnimatePresence>
 
 			<AnimatePresence>
 				{revealed && (
@@ -131,94 +160,13 @@ function QuestionCard({
 						<p className="font-body text-sm font-semibold mb-1">
 							{isCorrect ? <><icons.checkCircle /> Correto!</> : <><icons.cross /> Quase lá!</>}
 						</p>
-						<p className="font-body text-sm text-text-main leading-relaxed">
-							{question.explanation}
-						</p>
+						<RichText
+							content={question.explanation}
+							className="font-body text-sm text-text-main leading-relaxed"
+						/>
 					</motion.div>
 				)}
 			</AnimatePresence>
-		</motion.div>
-	);
-}
-
-interface QuizResultProps {
-	quiz: QuizLesson;
-	correct: number;
-	stars: number;
-	onNext: () => void;
-	onMap: () => void;
-}
-
-function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
-	const total = quiz.questions.length;
-
-	return (
-		<motion.div
-			initial={{ opacity: 0, scale: 0.9 }}
-			animate={{ opacity: 1, scale: 1 }}
-			transition={{ type: "spring", stiffness: 280, damping: 22 }}
-			className="text-center space-y-6">
-			<div className="text-6xl"><icons.party /></div>
-
-			<div>
-				<h2 className="font-heading font-bold text-2xl text-primary mb-1">
-					Quiz Concluído!
-				</h2>
-				<p className="text-text-muted font-body text-sm">{quiz.title}</p>
-			</div>
-
-			<div className="flex justify-center gap-2">
-				{[1, 2, 3, 4, 5].map((s) => (
-					<motion.span
-						key={s}
-						initial={{ scale: 0, rotate: -20 }}
-						animate={{ scale: 1, rotate: 0 }}
-						transition={{
-							delay: s * 0.1,
-							type: "spring",
-							stiffness: 400,
-						}}
-						className="text-3xl">
-						{s <= stars ? <icons.star /> : <icons.starEmpty />}
-					</motion.span>
-				))}
-			</div>
-
-			<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-5 space-y-2">
-				<p className="text-text-muted font-body text-sm">
-					Acertou{" "}
-					<span className="text-text-main font-semibold">
-						{correct}
-					</span>{" "}
-					de{" "}
-					<span className="text-text-main font-semibold">
-						{total}
-					</span>{" "}
-					perguntas
-				</p>
-				<div className="inline-block bg-secondary/20 border border-secondary/30 rounded-xl px-5 py-2">
-					<span className="font-heading font-bold text-secondary text-xl">
-						+{quiz.xpReward} XP
-					</span>
-				</div>
-			</div>
-
-			<div className="flex gap-3">
-				<Button
-					variant="ghost"
-					size="md"
-					className="flex-1"
-					onClick={onMap}>
-					Jornada
-				</Button>
-				<Button
-					variant="primary"
-					size="md"
-					className="flex-1"
-					onClick={onNext}>
-					Próximo
-				</Button>
-			</div>
 		</motion.div>
 	);
 }
@@ -246,6 +194,7 @@ export function QuizPage() {
 	const [answeredCorrect, setAnsweredCorrect] = useState<boolean[]>([]);
 	const [showingResult, setShowingResult] = useState(false);
 	const [canAdvance, setCanAdvance] = useState(false);
+	const [xpGained, setXpGained] = useState(0);
 	const xpAwarded = useRef(false);
 	const pendingAchievementCheck = useRef(false);
 
@@ -281,7 +230,9 @@ export function QuizPage() {
 				const correct = answeredCorrect.filter(Boolean).length;
 				const stars = starsFromScore(correct, quiz.questions.length);
 				const isFirstCompletion = !completedExercises[quiz.id];
-				if (isFirstCompletion) addXP(quiz.xpReward);
+				const earned = isFirstCompletion ? quiz.xpReward : Math.round(quiz.xpReward * 0.1);
+				addXP(earned);
+				setXpGained(earned);
 				completeExercise(quiz.id, stars, 0);
 				updateStreak();
 				xpAwarded.current = true;
@@ -305,22 +256,10 @@ export function QuizPage() {
 		navigate(lessonPath(moduleId, next));
 	}
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-			</div>
-		);
-	}
+	if (loading) return <LoadingSpinner />;
 
 	if (error || !quiz) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<p className="text-text-muted font-body">
-					{error ?? "Quiz não encontrado."}
-				</p>
-			</div>
-		);
+		return <EmptyState message={error ?? "Quiz não encontrado."} />;
 	}
 
 	const correctCount = answeredCorrect.filter(Boolean).length;
@@ -330,37 +269,51 @@ export function QuizPage() {
 	const lessonIndex = lessons.findIndex((l) => l.id === lessonId);
 
 	return (
-		<div className="max-w-2xl mx-auto px-4 py-8 min-w-0">
+		<div className="w-full max-w-2xl mx-auto px-4 py-8 min-w-0">
 			{!showingResult && (
-				<div className="flex items-center justify-between mb-4">
-					<span className="text-xs text-text-muted font-body truncate">
-						{mod?.title} — Lição {lessonIndex + 1} de{" "}
-						{lessons.length}
-					</span>
-					<div className="flex items-center gap-2">
-						<div className="hidden lg:flex items-center gap-2">
-							<FontSizeButton />
-							<PageInfoButton />
-						</div>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => navigate("/")}>
-							<icons.close /> Sair
-						</Button>
-					</div>
+				<div className="space-y-2 mb-4">
+					<LessonBreadcrumb
+						moduleTitle={mod?.title ?? ""}
+						current={lessonIndex + 1}
+						total={lessons.length}
+					/>
 				</div>
 			)}
 			<AnimatePresence mode="wait">
 				{showingResult ? (
-					<QuizResult
+					<motion.div
 						key="result"
-						quiz={quiz}
-						correct={correctCount}
-						stars={stars}
-						onNext={handleNext}
-						onMap={() => navigate("/")}
-					/>
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4"
+					>
+						<CompletionCard
+							icon={<icons.party />}
+							context="quiz"
+							title="Quiz Concluído!"
+							subtitle={quiz.title}
+							stars={stars}
+							xpReward={xpGained}
+							moduleMastery={getModuleMastery(mod?.lessons ?? [], completedExercises)}
+							moduleTitle={mod?.title}
+							onNext={handleNext}
+							onMap={() => navigate("/")}
+							nextLabel="Próximo">
+							<div className="bg-bg-elevated/60 rounded-xl p-4">
+								<p className="text-text-muted font-body text-sm">
+									Acertou{" "}
+									<span className="text-text-main font-semibold">
+										{correctCount}
+									</span>{" "}
+									de{" "}
+									<span className="text-text-main font-semibold">
+										{quiz.questions.length}
+									</span>{" "}
+									perguntas
+								</p>
+							</div>
+						</CompletionCard>
+					</motion.div>
 				) : (
 					<motion.div
 						key={`q-${currentQuestionIndex}`}

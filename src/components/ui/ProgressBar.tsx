@@ -3,11 +3,14 @@ import { motion } from 'framer-motion';
 interface ProgressBarProps {
   value: number;
   max?: number;
+  initialValue?: number;
   variant?: 'primary' | 'secondary' | 'accent' | 'warning';
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
   className?: string;
   label?: string;
+  delay?: number;
+  overlayLabel?: string;
 }
 
 const variantClasses = {
@@ -26,13 +29,19 @@ const sizeClasses = {
 export function ProgressBar({
   value,
   max = 100,
+  initialValue,
   variant = 'primary',
   size = 'md',
   showLabel = false,
   className = '',
   label,
+  delay = 0,
+  overlayLabel,
 }: ProgressBarProps) {
   const percent = Math.min(100, Math.max(0, (value / max) * 100));
+  const initialPercent = initialValue !== undefined
+    ? Math.min(100, Math.max(0, (initialValue / max) * 100))
+    : 0;
 
   return (
     <div className={`w-full ${className}`}>
@@ -46,13 +55,18 @@ export function ProgressBar({
           )}
         </div>
       )}
-      <div className={`w-full bg-bg-elevated rounded-full overflow-hidden ${sizeClasses[size]}`}>
+      <div className={`relative w-full bg-bg-elevated rounded-full overflow-hidden ${sizeClasses[size]}`}>
         <motion.div
           className={`h-full rounded-full ${variantClasses[variant]}`}
-          initial={{ width: 0 }}
+          initial={{ width: `${initialPercent}%` }}
           animate={{ width: `${percent}%` }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay }}
         />
+        {overlayLabel && (
+          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-body font-bold text-text-main drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+            {overlayLabel}
+          </span>
+        )}
       </div>
     </div>
   );

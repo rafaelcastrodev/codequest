@@ -1,0 +1,7 @@
+[
+  { "minPercent": 0,   "title": "",             "color": "muted",     "icon": "star" },
+  { "minPercent": 1,   "title": "Iniciante",    "color": "primary",   "icon": "star" },
+  { "minPercent": 50,  "title": "Praticante",   "color": "warning",   "icon": "star" },
+  { "minPercent": 80,  "title": "Proficiente",  "color": "secondary", "icon": "trophy" },
+  { "minPercent": 100, "title": "Mestre",       "color": "gold",      "icon": "crown" }
+]

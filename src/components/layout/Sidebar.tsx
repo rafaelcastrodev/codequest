@@ -64,22 +64,13 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 					</div>
 				</div>
 
-				<div className="space-y-1">
-					<div className="flex justify-between items-center">
-						<span className="text-xs text-text-muted font-body">
-							XP
-						</span>
-						<span className="text-xs text-secondary font-body font-semibold">
-							{xp} XP
-						</span>
-					</div>
-					<ProgressBar
-						value={levelData.percent}
-						max={100}
-						variant="secondary"
-						size="sm"
-					/>
-				</div>
+				<ProgressBar
+					value={levelData.percent}
+					max={100}
+					variant="secondary"
+					size="lg"
+					overlayLabel={`${xp} / ${levelData.next} XP`}
+				/>
 			</div>
 
 			<div className="px-5 py-3 border-b border-bg-elevated flex items-center gap-4">

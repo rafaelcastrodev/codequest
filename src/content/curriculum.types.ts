@@ -134,3 +134,24 @@ export interface Achievement {
 export interface AchievementsFile {
   achievements: Achievement[];
 }
+
+export interface MasteryLevel {
+  minPercent: number;
+  title: string;
+  color: string;
+  icon: string;
+}
+
+export interface PerformanceTieredPhrases {
+  excellent: string[];
+  good: string[];
+  okay: string[];
+}
+
+export type PerformanceTier = keyof PerformanceTieredPhrases;
+
+export interface MotivationalPhrases {
+  exercise: PerformanceTieredPhrases;
+  lesson: string[];
+  quiz: PerformanceTieredPhrases;
+}

@@ -1,93 +1,50 @@
-import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
 import { icons } from '@/components/ui/Icon';
+import { CompletionCard } from '@/components/lesson/CompletionCard';
+import type { ModuleMastery } from '@/store/progress.store';
 import type { ExerciseLesson } from '@/content/curriculum.types';
-
-const MOTIVATIONAL_PHRASES = [
-  'Mandou bem!',
-  'Incrível!',
-  'Código perfeito!',
-  'Arrasou!',
-  'Nível hacker!',
-  'Sensacional!',
-  'Show de bola!',
-  'Mito!',
-  'Muito bom!',
-  'Genial!',
-];
-
-function XPCounter({ xp }: { xp: number }) {
-  return (
-    <motion.div
-      initial={{ scale: 0.5, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
-      className="bg-secondary/20 border border-secondary/30 rounded-xl px-4 py-2 mb-6 inline-block"
-    >
-      <motion.span
-        className="text-secondary font-heading font-bold text-lg"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        +{xp} XP
-      </motion.span>
-    </motion.div>
-  );
-}
 
 export interface SuccessOverlayProps {
   lesson: ExerciseLesson;
   stars: number;
+  hintsUsed: number;
+  xpGained: number;
+  moduleMastery?: ModuleMastery;
+  moduleTitle?: string;
   onNext: () => void;
   onMap: () => void;
 }
 
-export function SuccessOverlay({ lesson, stars, onNext, onMap }: SuccessOverlayProps) {
-  const phrase = useMemo(() => MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)], []);
+function starsExplanation(stars: number, hintsUsed: number): string {
+  if (stars === 3) return 'Sem dicas — perfeito!';
+  if (hintsUsed === 1) return 'Você usou 1 dica';
+  return `Você usou ${hintsUsed} dicas`;
+}
 
+export function SuccessOverlay({ lesson, stars, hintsUsed, xpGained, moduleMastery, moduleTitle, onNext, onMap }: SuccessOverlayProps) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4"
     >
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        className="bg-bg-surface border border-primary/40 rounded-2xl p-8 text-center max-w-sm w-full mx-4 shadow-[0_0_40px_rgba(0,212,170,0.2)]"
+      <CompletionCard
+        icon={<icons.party />}
+        context="exercise"
+        title="Exercício concluído!"
+        subtitle={lesson.title}
+        stars={stars}
+        starSize="md"
+        xpReward={xpGained}
+        moduleMastery={moduleMastery}
+        moduleTitle={moduleTitle}
+        onNext={onNext}
+        onMap={onMap}
       >
-        <div className="text-5xl mb-3"><icons.party /></div>
-        <h2 className="font-heading text-2xl font-bold text-primary mb-1">{phrase}</h2>
-        <p className="text-text-muted font-body text-sm mb-4">{lesson.title}</p>
-
-        <div className="flex justify-center gap-1 mb-4">
-          {[1, 2, 3, 4, 5].map((s) => (
-            <motion.span
-              key={s}
-              initial={{ scale: 0, rotate: -30 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: s * 0.1, type: 'spring', stiffness: 400 }}
-              className="text-2xl"
-            >
-              {s <= stars ? <icons.star /> : <icons.starEmpty />}
-            </motion.span>
-          ))}
-        </div>
-
-        <XPCounter xp={lesson.xpReward} />
-
-        <div className="flex gap-3">
-          <Button variant="ghost" size="md" className="flex-1" onClick={onMap}>
-            <icons.map /> Jornada
-          </Button>
-          <Button variant="primary" size="md" className="flex-1" onClick={onNext}>
-            Próximo <icons.arrowRight />
-          </Button>
-        </div>
-      </motion.div>
+        <p className="text-xs text-text-muted font-body">
+          {starsExplanation(stars, hintsUsed)}
+        </p>
+      </CompletionCard>
     </motion.div>
   );
 }

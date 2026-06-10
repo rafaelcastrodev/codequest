@@ -1,4 +1,4 @@
-import type { Curriculum, Module, AchievementsFile } from './curriculum.types';
+import type { Curriculum, Module, AchievementsFile, MasteryLevel, MotivationalPhrases } from './curriculum.types';
 import { validateCurriculum, validateModule, validateAchievements } from './validators';
 
 const BASE = '/content';
@@ -42,6 +42,14 @@ export async function loadAchievements(): Promise<AchievementsFile> {
 
 export function clearContentCache(): void {
   cache.clear();
+}
+
+export async function loadMasteryLevels(): Promise<MasteryLevel[]> {
+  return fetchJSON<MasteryLevel[]>('ui/mastery-levels.json');
+}
+
+export async function loadMotivationalPhrases(): Promise<MotivationalPhrases> {
+  return fetchJSON<MotivationalPhrases>('ui/motivational-phrases.json');
 }
 
 export async function loadAllModules(curriculum: Curriculum): Promise<Map<string, Module>> {
