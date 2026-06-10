@@ -43,7 +43,6 @@ const CHANGELOG: ChangelogEntry[] = [
       'Seu código é salvo automaticamente enquanto você digita — se sair do exercício, ele estará lá quando voltar',
       'Erros de compilação aparecem sublinhados no editor, na linha exata do problema',
       'Resetar progresso agora pede confirmação digitando "APAGAR" e mostra o que será perdido',
-      'Botão "Compartilhar Progresso" no perfil — gera uma imagem com suas conquistas',
       'Novos avatares: pinguim, arco-íris, olho grego e pedra',
       'Mensagens de erro mais amigáveis para strings não fechadas, constantes, arrays e mais',
     ],
