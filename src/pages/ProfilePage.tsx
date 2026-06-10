@@ -8,7 +8,6 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { icons, resolveIcon } from '@/components/ui/Icon';
 import { loadAchievements, loadCurriculum, loadModule } from '@/content/loader';
-import { shareProgressCard } from '@/utils/share-card';
 import type { ReactNode } from 'react';
 import type { Achievement, AchievementRarity, Curriculum, Module } from '@/content/curriculum.types';
 
@@ -146,27 +145,6 @@ export function ProfilePage() {
         ))}
       </div>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() =>
-          shareProgressCard({
-            name: profile.name,
-            avatar: profile.avatar,
-            level,
-            title,
-            xp,
-            streak: streak.current,
-            stars: totalStars,
-            lessons: completedCount,
-            trophies: achievements.length,
-            trophiesTotal: allAchievements.length,
-          })
-        }
-      >
-        <icons.share /> Compartilhar Progresso
-      </Button>
-
       {allAchievements.length > 0 && (
         <div>
           <h2 className="font-heading font-semibold text-text-main mb-3">
@@ -188,7 +166,7 @@ export function ProfilePage() {
           <h2 className="font-heading font-semibold text-text-main mb-3">
             Domínio por Módulo
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             {curriculum.modules.map((cm) => {
               const mod = modules.get(cm.id);
               const mastery = getModuleMastery(mod?.lessons ?? [], completedExercises);
@@ -213,7 +191,7 @@ export function ProfilePage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-body text-sm font-semibold text-text-main truncate">{cm.title}</span>
-                      <MasteryBadge mastery={mastery} />
+                      <span className="ml-auto flex-shrink-0"><MasteryBadge mastery={mastery} /></span>
                     </div>
                     <div className="flex items-center gap-2">
                       <ProgressBar

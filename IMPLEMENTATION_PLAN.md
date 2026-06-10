@@ -34,9 +34,9 @@ Baseado no relatório de análise UX/UI, organizado por prioridade e impacto.
 
 ## Pendente — Funcionalidades Novas (Fase 5)
 
-### 5.2 Compartilhamento de Progresso (Imagem) ✓
-**Solução:** Canvas API puro (sem dependência). Card 640x340 com avatar, nome, nível, barra de XP, e stats (ofensiva, estrelas, lições, troféus). Usa `navigator.share()` em mobile, fallback para download. Botão no ProfilePage.
-**Arquivos:** `src/utils/share-card.ts`, `src/pages/ProfilePage.tsx`
+### 5.2 Compartilhamento de Progresso (Imagem) — suspenso
+**Status:** Oculto temporariamente. Card gerado não reflete fielmente o visual do perfil na aplicação. Precisa de redesign.
+**Arquivos:** `src/utils/share-card.ts` (mantido, botão removido do ProfilePage)
 
 ### 5.3 Temas de Syntax Highlighting + Modo Claro ✓
 **Solução:** 5 temas de editor gratuitos (CodeQuest, Dracula, Monokai, GitHub Light, Solarized). Modo claro do app com CSS variables RGB + `data-theme`. Selects no Settings para aparência e tema do editor. highlight.js adaptado para light mode.
