@@ -68,7 +68,6 @@ export function ExercisePage() {
 	const clipboard = useClipboard();
 
 	const [code, setCode] = useState("");
-	const [showRecoveryBanner, setShowRecoveryBanner] = useState(false);
 	const [successStars, setSuccessStars] = useState<number | null>(null);
 	const [editorBorderStatus, setEditorBorderStatus] = useState<
 		"idle" | "ok" | "err"
@@ -145,13 +144,7 @@ export function ExercisePage() {
 		if (exercise) {
 			const savedCode = sessionStorage.getItem(`codequest-autosave-${exercise.id}`);
 			const starterCode = buildStarterCode(exercise.starterCode, exercise.instructions);
-			if (savedCode && savedCode !== starterCode) {
-				setCode(savedCode);
-				setShowRecoveryBanner(true);
-			} else {
-				setCode(starterCode);
-				setShowRecoveryBanner(false);
-			}
+			setCode(savedCode && savedCode !== starterCode ? savedCode : starterCode);
 			setSuccessStars(null);
 			setEditorBorderStatus("idle");
 			resetRunner();
@@ -196,7 +189,6 @@ export function ExercisePage() {
 		if (outcome.type === "passed") {
 			setSuccessStars(outcome.stars);
 			setEditorBorderStatus("ok");
-			setShowRecoveryBanner(false);
 			sessionStorage.removeItem(`codequest-autosave-${exercise.id}`);
 			const isFirstCompletion = !completedExercises[exercise.id];
 			if (isFirstCompletion) addXP(exercise.xpReward);
@@ -276,7 +268,7 @@ export function ExercisePage() {
 	};
 
 	const instructionsPanel = (
-		<div className="flex-1 lg:flex-initial lg:w-96 xl:w-[28rem] flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
+		<div className="flex-1 md:flex-initial md:w-96 xl:w-[28rem] flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
 			<div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50">
 				<div className="flex items-center justify-between">
 					<span className="text-xs text-text-muted font-body truncate">
@@ -378,7 +370,7 @@ export function ExercisePage() {
 				<Button
 					variant="primary"
 					size="md"
-					className="flex-1 lg:hidden"
+					className="flex-1 md:hidden"
 					onClick={() => setMobileTab("code")}>
 					Abrir Editor <icons.arrowRight />
 				</Button>
@@ -397,49 +389,35 @@ export function ExercisePage() {
 				/>
 			)}
 
-			{showRecoveryBanner && (
-				<div className="flex items-center justify-between px-4 py-1.5 bg-secondary/10 border-b border-secondary/20 flex-shrink-0">
-					<span className="text-xs font-body text-secondary">
-						Código recuperado da sessão anterior
-					</span>
-					<button
-						onClick={() => {
-							if (exercise) {
-								setCode(buildStarterCode(exercise.starterCode, exercise.instructions));
-								sessionStorage.removeItem(`codequest-autosave-${exercise.id}`);
-							}
-							setShowRecoveryBanner(false);
-						}}
-						className="text-xs font-body text-text-muted hover:text-text-main transition-colors ml-3">
-						Descartar
-					</button>
-				</div>
-			)}
-
 			<div className="flex items-center justify-between px-4 py-2 border-b border-bg-elevated bg-bg-surface flex-shrink-0">
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-1.5">
 					<button
 						aria-label="Ver instruções"
 						onClick={() => setMobileTab("instructions")}
-						className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-main hover:bg-bg-elevated transition-colors">
-						<icons.notepadtext aria-hidden={true} />
+						className="md:hidden flex items-center gap-1.5 px-3 h-10 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated transition-colors"
+						title="Instruções">
+						<icons.notepadtext className="text-xl" aria-hidden={true} />
+						<span className="text-sm font-body">Instruções</span>
 					</button>
 				</div>
-				<div className="flex items-center gap-2">
-					<Button
-						variant="ghost"
-						size="sm"
+				<div className="flex items-center gap-1.5">
+					<button
 						onClick={() => clipboard.copy(code)}
-						className="text-xs min-w-16">
+						title="Copiar"
+						className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
 						{clipboard.copied ? (
-							<><icons.copyCheck /> Copiado!</>
+							<>
+								<icons.copyCheck className="text-lg flex-shrink-0" />
+								<span className="hidden lg:inline text-sm font-body">Copiado!</span>
+							</>
 						) : (
-							<><icons.copy /> Copiar</>
+							<>
+								<icons.copy className="text-lg flex-shrink-0" />
+								<span className="hidden lg:inline text-sm font-body">Copiar</span>
+							</>
 						)}
-					</Button>
-					<Button
-						variant="ghost"
-						size="sm"
+					</button>
+					<button
 						onClick={() => {
 							setCode(
 								buildStarterCode(
@@ -450,9 +428,11 @@ export function ExercisePage() {
 							runner.reset();
 							setEditorBorderStatus("idle");
 						}}
-						className="text-xs">
-						Resetar
-					</Button>
+						title="Resetar"
+						className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
+						<icons.refresh className="text-lg flex-shrink-0" />
+						<span className="hidden lg:inline text-sm font-body">Resetar</span>
+					</button>
 					<Button
 						variant="primary"
 						size="sm"
@@ -478,6 +458,8 @@ export function ExercisePage() {
 					)}
 				</div>
 			</div>
+
+			<SymbolToolbar onInsert={handleInsertSymbol} />
 
 			<motion.div
 				key={shakeKey}
@@ -526,8 +508,6 @@ export function ExercisePage() {
 				</Suspense>
 			</motion.div>
 
-			<SymbolToolbar onInsert={handleInsertSymbol} />
-
 			<div className="p-3 bg-bg-primary border-t border-bg-elevated flex-shrink-0">
 				<OutputPanel
 					output={runner.output}
@@ -541,12 +521,12 @@ export function ExercisePage() {
 
 	return (
 		<>
-			<div className="flex flex-col lg:flex-row h-full overflow-hidden">
-				<div className="hidden lg:flex lg:flex-row flex-1 overflow-hidden">
+			<div className="flex flex-col md:flex-row h-full overflow-hidden">
+				<div className="hidden md:flex md:flex-row flex-1 overflow-hidden">
 					{instructionsPanel}
 					{editorPanel}
 				</div>
-				<div className="flex flex-col flex-1 overflow-hidden lg:hidden">
+				<div className="flex flex-col flex-1 overflow-hidden md:hidden">
 					{mobileTab === "instructions"
 						? instructionsPanel
 						: editorPanel}

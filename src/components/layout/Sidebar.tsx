@@ -84,8 +84,8 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
 			<div className="px-5 py-3 border-b border-bg-elevated flex items-center gap-4">
 				<div className="flex items-center gap-1.5">
-					<icons.fire className="text-lg" />
-					<span className="font-heading font-bold text-warning">
+					<icons.fire className="text-2xl" />
+					<span className="font-heading font-bold text-warning text-lg">
 						{streak.current}
 					</span>
 					<span className="text-text-muted font-heading font-semibold">

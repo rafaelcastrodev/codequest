@@ -458,58 +458,45 @@ export function PlaygroundPage() {
 					</AnimatePresence>
 				</div>
 
-				<div className="flex items-center gap-2">
-					<Button
-						variant="ghost"
-						size="sm"
+				<div className="flex items-center gap-1.5 sm:gap-2">
+					<button
 						onClick={() => setShowToolbarMenu(true)}
-						className="text-xs sm:hidden">
-						<icons.notepadtext />
-					</Button>
+						className="sm:hidden flex items-center gap-1.5 px-3 h-10 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated transition-colors"
+						title="Menu">
+						<icons.notepadtext className="text-xl" />
+						<span className="text-sm font-body">Menu</span>
+					</button>
 
-					<div className="hidden sm:flex items-center gap-2">
-						<Button
-							variant="ghost"
-							size="sm"
+					<div className="hidden sm:flex items-center gap-1.5">
+						<button
 							onClick={handleNew}
-							className="text-xs">
-							<span className="hidden md:inline">Novo</span>
-							<span className="md:hidden">+</span>
-						</Button>
+							title="Novo"
+							className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
+							<icons.document className="text-lg flex-shrink-0" />
+							<span className="hidden lg:inline text-sm font-body">Novo</span>
+						</button>
 						{PLAYGROUND_TEMPLATES.length > 0 && (
-							<Button
-								variant="ghost"
-								size="sm"
+							<button
 								onClick={() => setShowTemplates(true)}
-								className="text-xs">
-								<span className="hidden md:inline">
-									Modelos
-								</span>
-								<span className="md:hidden">
-									<icons.document />
-								</span>
-							</Button>
+								title="Modelos"
+								className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
+								<icons.files className="text-lg flex-shrink-0" />
+								<span className="hidden lg:inline text-sm font-body">Modelos</span>
+							</button>
 						)}
-						<Button
-							variant="ghost"
-							size="sm"
+						<button
 							onClick={() => setShowSnippets(true)}
-							className="text-xs">
-							<span className="hidden md:inline">
-								Projetos
-								{snippets.length > 0
-									? ` (${snippets.length})`
-									: ""}
+							title="Projetos"
+							className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
+							<icons.folderClosed className="text-lg flex-shrink-0" />
+							<span className="hidden lg:inline text-sm font-body">
+								Projetos{snippets.length > 0 ? ` (${snippets.length})` : ""}
 							</span>
-							<span className="md:hidden">
-								<icons.folderClosed />
-							</span>
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
+						</button>
+						<button
 							onClick={handleSave}
-							className="text-xs min-w-16">
+							title="Salvar"
+							className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
 							<AnimatePresence mode="wait">
 								{savedFeedback ? (
 									<motion.span
@@ -517,46 +504,39 @@ export function PlaygroundPage() {
 										initial={{ opacity: 0, scale: 0.8 }}
 										animate={{ opacity: 1, scale: 1 }}
 										exit={{ opacity: 0, scale: 0.8 }}
-										className="text-primary">
-										Salvo
+										className="text-primary flex items-center gap-1.5">
+										<icons.copyCheck className="text-lg flex-shrink-0" />
+										<span className="hidden lg:inline text-sm font-body">Salvo</span>
 									</motion.span>
 								) : (
 									<motion.span
 										key="save"
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}>
-										<span className="hidden md:inline">
-											Salvar
-										</span>
-										<span className="md:hidden">
-											<icons.save />
-										</span>
+										exit={{ opacity: 0 }}
+										className="flex items-center gap-1.5">
+										<icons.save className="text-lg flex-shrink-0" />
+										<span className="hidden lg:inline text-sm font-body">Salvar</span>
 									</motion.span>
 								)}
 							</AnimatePresence>
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
+						</button>
+						<button
 							onClick={() => clipboard.copy(code)}
-							className="text-xs min-w-16">
+							title="Copiar"
+							className="flex items-center justify-center gap-1.5 rounded-lg border border-bg-elevated text-text-main hover:bg-bg-elevated hover:border-secondary transition-colors lg:px-3 lg:py-2 lg:h-auto w-10 h-10 lg:w-auto">
 							{clipboard.copied ? (
 								<>
-									<icons.copyCheck />{" "}
-									<span className="hidden md:inline">
-										Copiado!
-									</span>
+									<icons.copyCheck className="text-lg flex-shrink-0" />
+									<span className="hidden lg:inline text-sm font-body">Copiado!</span>
 								</>
 							) : (
 								<>
-									<icons.copy />{" "}
-									<span className="hidden md:inline">
-										Copiar
-									</span>
+									<icons.copy className="text-lg flex-shrink-0" />
+									<span className="hidden lg:inline text-sm font-body">Copiar</span>
 								</>
 							)}
-						</Button>
+						</button>
 					</div>
 
 					<Button
@@ -575,6 +555,8 @@ export function PlaygroundPage() {
 					</Button>
 				</div>
 			</div>
+
+			<SymbolToolbar onInsert={handleInsertSymbol} />
 
 			<div className="flex-1 min-h-0">
 				<Suspense
@@ -618,8 +600,6 @@ export function PlaygroundPage() {
 					/>
 				</Suspense>
 			</div>
-
-			<SymbolToolbar onInsert={handleInsertSymbol} />
 
 			<div className="p-3 bg-bg-primary border-t border-bg-elevated flex-shrink-0">
 				{runner.status !== "idle" && (

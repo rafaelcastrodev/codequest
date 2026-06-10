@@ -8,6 +8,19 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.22.0',
+    date: '2026-06-10',
+    changes: [
+      'Botões da barra de ações maiores e padronizados no Playground e nos exercícios',
+      'Botões mostram ícone + texto em telas grandes e só ícone em telas menores',
+      'Botões do cabeçalho (menu, feedback, fonte, ajuda, ofensiva) maiores e uniformes',
+      'Ícones do modal informativo com tamanho padronizado e fundo destacado',
+      'Barra de símbolos aparece apenas no celular, posicionada acima do editor',
+      'Editor e instruções lado a lado a partir de 768px em vez de 1024px',
+      'Código recuperado silenciosamente — sem banner, use Resetar para voltar ao original',
+    ],
+  },
+  {
     version: '0.21.0',
     date: '2026-06-10',
     changes: [

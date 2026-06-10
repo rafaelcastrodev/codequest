@@ -205,8 +205,8 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 				onClick={() => setOpen(true)}
 				className="flex items-center gap-2 group"
 				title="Informacoes">
-				<span className="w-7 h-7 flex items-center justify-center rounded-full border border-text-muted/30 text-text-muted group-hover:border-secondary/50 group-hover:text-secondary group-hover:bg-secondary/10 transition-colors">
-					<icons.help size={16} />
+				<span className="w-9 h-9 flex items-center justify-center rounded-full border border-text-muted/30 text-text-muted group-hover:border-secondary/50 group-hover:text-secondary group-hover:bg-secondary/10 transition-colors">
+					<icons.help size={18} />
 				</span>
 				{showLabel && (
 					<span className="text-xs text-text-muted group-hover:text-text-main transition-colors font-body">
@@ -224,7 +224,7 @@ export function PageInfoButton({ showLabel = false }: PageInfoButtonProps) {
 						<div
 							key={idx}
 							className="flex items-start gap-3 p-2 rounded-lg">
-							<span className="text-lg flex-shrink-0 mt-0.5">
+							<span className="w-9 h-9 flex items-center justify-center rounded-lg bg-bg-elevated text-xl flex-shrink-0">
 								{tip.icon}
 							</span>
 							<div>
