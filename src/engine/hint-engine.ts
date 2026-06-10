@@ -24,6 +24,15 @@ const ERROR_PATTERNS: Array<[RegExp, string]> = [
   [/';' expected/, "Parece que falta um ponto-e-vírgula ';' em algum lugar."],
   [/'}' expected/, "Parece que falta fechar uma chave '}'."],
   [/'\)' expected/, "Parece que falta fechar um parêntese ')'."],
+  [/Unterminated string literal/, "Você abriu uma string com aspas mas não fechou. Verifique as aspas!"],
+  [/'\{' expected/, "Parece que falta abrir uma chave '{'."],
+  [/'\[' expected/, "Parece que falta abrir um colchete '['."],
+  [/Duplicate identifier '(.+?)'/, "O nome '$1' já foi usado. Escolha outro nome."],
+  [/An element access expression should take an argument/, "Falta o índice dentro dos colchetes []."],
+  [/The left-hand side of an assignment expression must be a variable/, "O lado esquerdo do '=' precisa ser uma variável."],
+  [/A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value/, "A função precisa retornar um valor com 'return'."],
+  [/Not all code paths return a value/, "Nem todos os caminhos da função retornam um valor. Verifique seus 'if/else'."],
+  [/Operator '(.+?)' cannot be applied to types '(.+?)' and '(.+?)'/, "Não pode usar '$1' entre '$2' e '$3'. Verifique os tipos."],
   // Runtime errors
   [/(.+?) is not defined/, "'$1' não está definida. Verifique se você criou a variável/função."],
   [/(.+?) is not a function/, "'$1' não é uma função. Verifique como você a definiu."],
@@ -32,6 +41,11 @@ const ERROR_PATTERNS: Array<[RegExp, string]> = [
   [/Maximum call stack size exceeded/, "Estouro de pilha! Provavelmente uma recursão infinita."],
   [/Invalid left-hand side/, "Você não pode atribuir um valor aqui. Verifique o lado esquerdo do '='."],
   [/SyntaxError: Unexpected token '(.+?)'/, "Erro de sintaxe: '$1' inesperado. Verifique parênteses e chaves."],
+  [/SyntaxError: Unexpected end of input/, "Código incompleto. Verifique se fechou todas as chaves e parênteses."],
+  [/SyntaxError: (.+)/, "Erro de sintaxe: $1"],
+  [/TypeError: Assignment to constant variable/, "Você tentou mudar o valor de uma constante (const). Use 'let' se quiser alterar."],
+  [/TypeError: (.+)/, "Erro de tipo: $1"],
+  [/RangeError: Invalid array length/, "O tamanho do array é inválido. Use um número positivo."],
   [/RangeError: (.+)/, "Erro de limite: $1"],
 ];
 

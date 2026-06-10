@@ -52,6 +52,7 @@ import {
 	RefreshCw,
 	Save,
 	Settings,
+	Share2,
 	Shuffle,
 	SkipForward,
 	Target,
@@ -231,11 +232,13 @@ export const icons = {
 	fontSize: lucide(ALargeSmall),
 	copy: lucide(Copy),
 	copyCheck: lucide(CopyCheck),
+	share: lucide(Share2),
 
 	// -- Avatars -------------------------------------------------------------
 	avatarRobot1: emoji("🤖"),
 	avatarCoffee: emoji("☕"),
 	avatarPenguin: emoji("🐧"),
+	avatarRock: emoji("🗿"),
 	avatarWizard: emoji("🧙"),
 	avatarWizard2: emoji("🧙"),
 	avatarWizard3: emoji("🧙"),
@@ -244,6 +247,8 @@ export const icons = {
 	avatarScientist: emoji("🧪"),
 	avatarHacker: emoji("💻"),
 	avatarDragon: emoji("🐉"),
+	avatarRainbow: emoji("🌈"),
+	avatarGreekEye: emoji("🧿"),
 } as const satisfies Record<string, IconComponent>;
 
 export type IconName = keyof typeof icons;
@@ -301,6 +306,8 @@ const EMOJI_TO_ICON: Record<string, IconName> = {
 	"🐉": "avatarDragon",
 	"☕": "avatarCoffee",
 	"🐧": "avatarPenguin",
+	"🗿": "avatarRock",
+	"🧿": "avatarGreekEye",
 	"🧙": "avatarWizard",
 	"🥷": "avatarNinja",
 	"👨‍🚀": "avatarAstronaut",

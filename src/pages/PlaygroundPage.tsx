@@ -19,7 +19,10 @@ import { OutputPanel } from "@/components/exercise/OutputPanel";
 import { Modal } from "@/components/ui/Modal";
 import { icons } from "@/components/ui/Icon";
 import { useClipboard } from "@/hooks/useClipboard";
-import { defineCodeQuestTheme } from "@/engine/monaco-theme";
+import { SymbolToolbar } from "@/components/exercise/SymbolToolbar";
+import { defineAllThemes } from "@/engine/monaco-theme";
+import { useSettingsStore } from "@/store/settings.store";
+import type { OnMount } from "@monaco-editor/react";
 import type { ReactNode } from "react";
 
 const MonacoEditor = lazy(() =>
@@ -85,10 +88,10 @@ function SnippetListModal({
 			{snippets.length === 0 ? (
 				<div className="text-center py-8">
 					<icons.folder className="text-4xl mb-3" />
-					<p className="text-[#8888AA] font-body text-sm">
+					<p className="text-text-muted font-body text-sm">
 						Nenhum projeto salvo ainda.
 					</p>
-					<p className="text-[#8888AA] font-body text-xs mt-1">
+					<p className="text-text-muted font-body text-xs mt-1">
 						Use o botao Salvar para guardar seu codigo.
 					</p>
 				</div>
@@ -125,14 +128,14 @@ function SnippetListModal({
 												setRenamingId(null);
 										}}
 										onClick={(e) => e.stopPropagation()}
-										className="w-full bg-bg-primary border border-primary/40 rounded-lg px-2 py-1 text-sm text-[#E8E8F0] font-body outline-none"
+										className="w-full bg-bg-primary border border-primary/40 rounded-lg px-2 py-1 text-sm text-text-main font-body outline-none"
 									/>
 								) : (
 									<>
-										<p className="font-body font-semibold text-sm text-[#E8E8F0] truncate">
+										<p className="font-body font-semibold text-sm text-text-main truncate">
 											{snippet.name}
 										</p>
-										<p className="font-body text-xs text-[#8888AA]">
+										<p className="font-body text-xs text-text-muted">
 											{formatDate(snippet.updatedAt)}
 										</p>
 									</>
@@ -144,7 +147,7 @@ function SnippetListModal({
 										e.stopPropagation();
 										startRename(snippet);
 									}}
-									className="w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-primary transition-colors text-xs"
+									className="w-7 h-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-main hover:bg-bg-primary transition-colors text-xs"
 									title="Renomear">
 									<icons.pencil />
 								</button>
@@ -153,7 +156,7 @@ function SnippetListModal({
 										e.stopPropagation();
 										onDelete(snippet.id);
 									}}
-									className="w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-accent hover:bg-accent/10 transition-colors text-xs"
+									className="w-7 h-7 flex items-center justify-center rounded-lg text-text-muted hover:text-accent hover:bg-accent/10 transition-colors text-xs"
 									title="Excluir">
 									<icons.trash />
 								</button>
@@ -192,7 +195,7 @@ function SaveModal({ open, onClose, onSave }: SaveModalProps) {
 		<Modal open={open} onClose={onClose} title="Salvar Projeto">
 			<div className="space-y-4">
 				<div>
-					<label className="block font-body text-sm text-[#8888AA] mb-1.5">
+					<label className="block font-body text-sm text-text-muted mb-1.5">
 						Nome do projeto
 					</label>
 					<input
@@ -203,7 +206,7 @@ function SaveModal({ open, onClose, onSave }: SaveModalProps) {
 							if (e.key === "Enter") handleSubmit();
 						}}
 						placeholder="Meu programa"
-						className="w-full bg-bg-primary border border-bg-elevated rounded-xl px-4 py-2.5 text-[#E8E8F0] font-body text-sm outline-none focus:border-primary/50 transition-colors"
+						className="w-full bg-bg-primary border border-bg-elevated rounded-xl px-4 py-2.5 text-text-main font-body text-sm outline-none focus:border-primary/50 transition-colors"
 					/>
 				</div>
 				<div className="flex justify-end gap-2">
@@ -234,7 +237,7 @@ function TemplateModal({
 }: TemplateModalProps) {
 	return (
 		<Modal open={open} onClose={onClose} title="Modelos">
-			<p className="text-[#8888AA] font-body text-xs mb-4">
+			<p className="text-text-muted font-body text-xs mb-4">
 				Escolha um modelo como ponto de partida para experimentar.
 			</p>
 			<div className="space-y-2 max-h-80 overflow-y-auto scrollbar-thin">
@@ -250,10 +253,10 @@ function TemplateModal({
 							{icons[t.icon]({})}
 						</span>
 						<div className="min-w-0">
-							<p className="font-body text-sm font-semibold text-[#E8E8F0]">
+							<p className="font-body text-sm font-semibold text-text-main">
 								{t.name}
 							</p>
-							<p className="font-body text-xs text-[#8888AA]">
+							<p className="font-body text-xs text-text-muted">
 								{t.description}
 							</p>
 						</div>
@@ -291,7 +294,7 @@ function ToolbarMenuModal({ open, onClose, items }: ToolbarMenuModalProps) {
 						<span className="text-xl flex-shrink-0">
 							{item.icon}
 						</span>
-						<span className="font-body text-sm font-semibold text-[#E8E8F0]">
+						<span className="font-body text-sm font-semibold text-text-main">
 							{item.label}
 						</span>
 					</button>
@@ -312,6 +315,7 @@ export function PlaygroundPage() {
 	const [showToolbarMenu, setShowToolbarMenu] = useState(false);
 	const [savedFeedback, setSavedFeedback] = useState(false);
 	const clipboard = useClipboard();
+	const editorTheme = useSettingsStore((s) => s.editorTheme);
 
 	const {
 		snippets,
@@ -326,8 +330,27 @@ export function PlaygroundPage() {
 		? snippets.find((s) => s.id === currentSnippetId)
 		: null;
 
+	const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
 	const handleRunRef = useRef<() => void>(() => {});
 	const handleSaveRef = useRef<() => void>(() => {});
+
+	const handleEditorMount: OnMount = useCallback((editor) => {
+		editorRef.current = editor;
+	}, []);
+
+	const handleInsertSymbol = useCallback((symbol: string) => {
+		const editor = editorRef.current;
+		if (!editor) return;
+		editor.focus();
+		const selection = editor.getSelection();
+		if (selection) {
+			editor.executeEdits('symbol-toolbar', [{
+				range: selection,
+				text: symbol,
+				forceMoveMarkers: true,
+			}]);
+		}
+	}, []);
 
 	const handleRun = useCallback(() => {
 		if (runner.status === "running") return;
@@ -415,7 +438,7 @@ export function PlaygroundPage() {
 		<div className="flex flex-col h-full overflow-hidden">
 			<div className="flex items-center justify-between px-4 py-2 border-b border-bg-elevated bg-bg-surface flex-shrink-0">
 				<div className="flex items-center gap-3 min-w-0">
-					<h1 className="font-heading font-bold text-[#E8E8F0] text-base whitespace-nowrap">
+					<h1 className="font-heading font-bold text-text-main text-base whitespace-nowrap">
 						<span className="hidden sm:inline">Playground</span>
 						<span className="sm:hidden">Play</span>
 					</h1>
@@ -430,13 +453,7 @@ export function PlaygroundPage() {
 								{currentSnippet.name}
 							</motion.span>
 						) : (
-							<motion.span
-								key="new"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								className="font-mono text-xs text-[#8888AA]">
-								novo
-							</motion.span>
+							""
 						)}
 					</AnimatePresence>
 				</div>
@@ -525,9 +542,19 @@ export function PlaygroundPage() {
 							onClick={() => clipboard.copy(code)}
 							className="text-xs min-w-16">
 							{clipboard.copied ? (
-								<><icons.copyCheck /> <span className="hidden md:inline">Copiado!</span></>
+								<>
+									<icons.copyCheck />{" "}
+									<span className="hidden md:inline">
+										Copiado!
+									</span>
+								</>
 							) : (
-								<><icons.copy /> <span className="hidden md:inline">Copiar</span></>
+								<>
+									<icons.copy />{" "}
+									<span className="hidden md:inline">
+										Copiar
+									</span>
+								</>
 							)}
 						</Button>
 					</div>
@@ -552,10 +579,10 @@ export function PlaygroundPage() {
 			<div className="flex-1 min-h-0">
 				<Suspense
 					fallback={
-						<div className="flex items-center justify-center h-full bg-[#0A0A15]">
+						<div className="flex items-center justify-center h-full bg-bg-terminal">
 							<div className="text-center space-y-2">
 								<div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-								<p className="text-xs text-[#8888AA] font-mono">
+								<p className="text-xs text-text-muted font-mono">
 									Carregando editor...
 								</p>
 							</div>
@@ -566,8 +593,9 @@ export function PlaygroundPage() {
 						language="typescript"
 						value={code}
 						onChange={(v) => setCode(v ?? "")}
-						beforeMount={defineCodeQuestTheme}
-						theme="codequest-dark"
+						onMount={handleEditorMount}
+						beforeMount={defineAllThemes}
+						theme={editorTheme}
 						options={{
 							minimap: { enabled: false },
 							fontSize: 14,
@@ -591,12 +619,14 @@ export function PlaygroundPage() {
 				</Suspense>
 			</div>
 
+			<SymbolToolbar onInsert={handleInsertSymbol} />
+
 			<div className="p-3 bg-bg-primary border-t border-bg-elevated flex-shrink-0">
 				{runner.status !== "idle" && (
 					<div className="flex justify-end mb-1">
 						<button
 							onClick={runner.reset}
-							className="text-xs text-[#8888AA] hover:text-[#E8E8F0] font-body transition-colors">
+							className="text-xs text-text-muted hover:text-text-main font-body transition-colors">
 							Limpar
 						</button>
 					</div>
@@ -629,7 +659,11 @@ export function PlaygroundPage() {
 						onClick: () => setShowSnippets(true),
 					},
 					{
-						icon: clipboard.copied ? <icons.copyCheck /> : <icons.copy />,
+						icon: clipboard.copied ? (
+							<icons.copyCheck />
+						) : (
+							<icons.copy />
+						),
 						label: clipboard.copied ? "Copiado!" : "Copiar código",
 						onClick: () => clipboard.copy(code),
 					},

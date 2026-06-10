@@ -29,7 +29,7 @@ function NavItem({ to, icon, label, active, onClick }: NavItemProps) {
           ${
 				active
 					? "bg-primary/20 text-primary border border-primary/30"
-					: "text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated"
+					: "text-text-muted hover:text-text-main hover:bg-bg-elevated"
 			}
         `}>
 				<span className="text-xl">{icon}</span>
@@ -55,10 +55,10 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 				<div className="flex items-center gap-3 mb-4">
 					<Avatar id={profile.avatar} size="md" />
 					<div className="min-w-0">
-						<p className="font-heading font-semibold text-[#E8E8F0] truncate">
+						<p className="font-heading font-semibold text-text-main truncate">
 							{profile.name}
 						</p>
-						<p className="text-xs text-[#8888AA] font-body">
+						<p className="text-xs text-text-muted font-body">
 							Nível {level} · {title}
 						</p>
 					</div>
@@ -66,7 +66,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
 				<div className="space-y-1">
 					<div className="flex justify-between items-center">
-						<span className="text-xs text-[#8888AA] font-body">
+						<span className="text-xs text-text-muted font-body">
 							XP
 						</span>
 						<span className="text-xs text-secondary font-body font-semibold">
@@ -88,7 +88,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 					<span className="font-heading font-bold text-warning">
 						{streak.current}
 					</span>
-					<span className="text-xs text-[#8888AA] font-body">
+					<span className="text-text-muted font-heading font-semibold">
 						Ofensiva
 					</span>
 				</div>
@@ -140,7 +140,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 			</nav>
 
 			<div className="p-4 border-t border-bg-elevated">
-				<p className="text-xs text-[#8888AA] font-body text-center">
+				<p className="text-xs text-text-muted font-body text-center">
 					CodeQuest v{__APP_VERSION__}
 				</p>
 			</div>

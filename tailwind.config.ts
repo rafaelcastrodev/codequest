@@ -1,5 +1,9 @@
 import type { Config } from 'tailwindcss';
 
+function cssVar(name: string) {
+  return `rgb(var(--${name}) / <alpha-value>)`;
+}
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -14,9 +18,12 @@ export default {
         '3xl':  ['2rem',      { lineHeight: '2.375rem' }],
       },
       colors: {
-        'bg-primary': '#0F0F1A',
-        'bg-surface': '#1A1A2E',
-        'bg-elevated': '#252542',
+        'bg-primary': cssVar('bg-primary'),
+        'bg-surface': cssVar('bg-surface'),
+        'bg-elevated': cssVar('bg-elevated'),
+        'bg-terminal': cssVar('bg-terminal'),
+        'text-main': cssVar('color-text'),
+        'text-muted': cssVar('color-text-muted'),
         primary: {
           DEFAULT: '#00D4AA',
           dark: '#00A882',

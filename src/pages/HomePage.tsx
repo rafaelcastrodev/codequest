@@ -40,15 +40,15 @@ function LessonItem({ lesson, index, total, completed, isNext, onGo }: LessonIte
     >
       <span className={`
         w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0
-        ${completed ? 'bg-primary/20 text-primary' : isNext ? 'bg-primary text-bg-primary' : 'bg-bg-elevated text-[#8888AA]'}
+        ${completed ? 'bg-primary/20 text-primary' : isNext ? 'bg-primary text-bg-primary' : 'bg-bg-elevated text-text-muted'}
       `}>
         {completed ? <icons.check /> : index + 1}
       </span>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-body truncate ${completed ? 'text-[#8888AA]' : 'text-[#E8E8F0]'}`}>
+        <p className={`text-sm font-body truncate ${completed ? 'text-text-muted' : 'text-text-main'}`}>
           {lesson.title}
         </p>
-        <p className="text-xs text-[#8888AA]/70 font-body">
+        <p className="text-xs text-text-muted/70 font-body">
           {lessonTypeLabel[lesson.type] ?? lesson.type} · {index + 1}/{total}
         </p>
       </div>
@@ -111,13 +111,13 @@ function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, c
             {unlocked ? moduleData.icon : <icons.lock />}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-heading font-semibold text-[#E8E8F0] truncate">{moduleData.title}</h3>
-            <p className="text-xs text-[#8888AA] font-body mt-0.5 line-clamp-2">{moduleData.description}</p>
+            <h3 className="font-heading font-semibold text-text-main truncate">{moduleData.title}</h3>
+            <p className="text-xs text-text-muted font-body mt-0.5 line-clamp-2">{moduleData.description}</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {unlocked && percent === 100 && <span className="text-xl"><icons.checkCircle /></span>}
             {unlocked && (
-              <span className={`text-[#8888AA] text-sm transition-transform ${expanded ? 'rotate-180' : ''}`}>
+              <span className={`text-text-muted text-sm transition-transform ${expanded ? 'rotate-180' : ''}`}>
                 <icons.chevronSmDown />
               </span>
             )}
@@ -127,7 +127,7 @@ function ModuleNode({ moduleData, mod, unlocked, completedCount, totalLessons, c
         {unlocked && totalLessons > 0 && (
           <div className="mt-4">
             <div className="flex justify-between mb-1">
-              <span className="text-xs text-[#8888AA] font-body">{completedCount}/{totalLessons} lições</span>
+              <span className="text-xs text-text-muted font-body">{completedCount}/{totalLessons} lições</span>
               <span className="text-xs font-semibold font-body" style={{ color: moduleData.color }}>{percent}%</span>
             </div>
             <ProgressBar value={percent} max={100} variant="primary" size="sm" />
@@ -231,7 +231,7 @@ export function HomePage() {
       <div className="flex items-center justify-center h-full">
         <div className="text-center space-y-4">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-[#8888AA] font-body">Carregando missões...</p>
+          <p className="text-text-muted font-body">Carregando missões...</p>
         </div>
       </div>
     );
@@ -254,11 +254,11 @@ export function HomePage() {
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-heading font-bold text-3xl text-[#E8E8F0] mb-2"
+          className="font-heading font-bold text-3xl text-text-main mb-2"
         >
           <icons.bolt /> Sua Jornada
         </motion.h1>
-        <p className="text-[#8888AA] font-body text-sm">
+        <p className="text-text-muted font-body text-sm">
           Complete as missões para dominar o TypeScript!
         </p>
       </div>

@@ -15,7 +15,7 @@ export function FontSizeButton() {
 			className="flex items-center gap-[3px] group"
 			title={`Fonte: ${LABELS[fontScale]}`}
 		>
-			<span className="w-7 h-7 flex items-center justify-center rounded-full border border-[#8888AA]/30 text-[#8888AA] group-hover:border-secondary/50 group-hover:text-secondary group-hover:bg-secondary/10 transition-colors">
+			<span className="w-7 h-7 flex items-center justify-center rounded-full border border-text-muted/30 text-text-muted group-hover:border-secondary/50 group-hover:text-secondary group-hover:bg-secondary/10 transition-colors">
 				<icons.fontSize size={16} />
 			</span>
 		</motion.button>

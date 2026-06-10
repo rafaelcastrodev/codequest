@@ -8,6 +8,21 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.21.0',
+    date: '2026-06-10',
+    changes: [
+      'Tema claro disponível — escolha entre Escuro e Claro nas Configurações',
+      '5 temas de editor para escolher: CodeQuest, Dracula, Monokai, GitHub Light e Solarized',
+      'Barra de símbolos no celular — toque para inserir {, (, ;, = e outros direto no editor',
+      'Seu código é salvo automaticamente enquanto você digita — se sair do exercício, ele estará lá quando voltar',
+      'Erros de compilação aparecem sublinhados no editor, na linha exata do problema',
+      'Resetar progresso agora pede confirmação digitando "APAGAR" e mostra o que será perdido',
+      'Botão "Compartilhar Progresso" no perfil — gera uma imagem com suas conquistas',
+      'Novos avatares: pinguim, arco-íris, olho grego e pedra',
+      'Mensagens de erro mais amigáveis para strings não fechadas, constantes, arrays e mais',
+    ],
+  },
+  {
     version: '0.20.0',
     date: '2026-06-09',
     changes: [
@@ -103,7 +118,7 @@ const CHANGELOG: ChangelogEntry[] = [
 export function ChangelogPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="font-heading text-2xl font-bold text-[#E8E8F0]">
+      <h1 className="font-heading text-2xl font-bold text-text-main">
         Changelog
       </h1>
 
@@ -119,7 +134,7 @@ export function ChangelogPage() {
             <span className="font-heading font-bold text-primary text-lg">
               v{entry.version}
             </span>
-            <span className="text-xs text-[#8888AA] font-body">
+            <span className="text-xs text-text-muted font-body">
               {entry.date}
             </span>
           </div>
@@ -128,7 +143,7 @@ export function ChangelogPage() {
             {entry.changes.map((change) => (
               <li
                 key={change}
-                className="flex items-start gap-2 font-body text-sm text-[#E8E8F0] leading-relaxed"
+                className="flex items-start gap-2 font-body text-sm text-text-main leading-relaxed"
               >
                 <span className="text-primary mt-1 flex-shrink-0">•</span>
                 <span>{change}</span>

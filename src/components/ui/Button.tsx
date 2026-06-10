@@ -21,7 +21,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   warning:
     'bg-warning/20 text-warning border border-warning/40 hover:bg-warning/30 font-semibold',
   ghost:
-    'bg-transparent text-[#E8E8F0] border border-[#252542] hover:bg-[#252542] hover:border-[#7C5CFC]',
+    'bg-transparent text-text-main border border-[#252542] hover:bg-[#252542] hover:border-[#7C5CFC]',
   danger:
     'bg-transparent text-accent border border-accent hover:bg-accent hover:text-white',
 };

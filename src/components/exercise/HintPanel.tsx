@@ -35,7 +35,7 @@ export function HintPanel({ hints, hintsUsed, onUseHint }: HintPanelProps) {
           >
             <div className="px-4 py-3 bg-warning/5 space-y-2">
               {hints.slice(0, hintsUsed).map((hint, i) => (
-                <div key={i} className="text-sm text-[#E8E8F0] font-body">
+                <div key={i} className="text-sm text-text-main font-body">
                   <span className="text-warning font-semibold">#{i + 1}</span> {hint}
                 </div>
               ))}
@@ -45,7 +45,7 @@ export function HintPanel({ hints, hintsUsed, onUseHint }: HintPanelProps) {
                 </Button>
               )}
               {hintsUsed >= hints.length && (
-                <p className="text-xs text-[#8888AA] font-body">Todas as dicas foram reveladas.</p>
+                <p className="text-xs text-text-muted font-body">Todas as dicas foram reveladas.</p>
               )}
             </div>
           </motion.div>

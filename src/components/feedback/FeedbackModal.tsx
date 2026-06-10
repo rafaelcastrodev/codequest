@@ -75,10 +75,10 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
           <p className="text-2xl mb-2" aria-hidden="true">
             &#10024;
           </p>
-          <p className="font-body text-[#E8E8F0] font-semibold">
+          <p className="font-body text-text-main font-semibold">
             Obrigado pelo feedback!
           </p>
-          <p className="font-body text-[#8888AA] text-sm mt-1">
+          <p className="font-body text-text-muted text-sm mt-1">
             Sua mensagem foi enviada com sucesso.
           </p>
           <Button
@@ -101,7 +101,7 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
           <div>
             <label
               htmlFor="feedback-type"
-              className="block font-body text-sm text-[#8888AA] mb-1.5"
+              className="block font-body text-sm text-text-muted mb-1.5"
             >
               Reportar
             </label>
@@ -111,7 +111,7 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
               onChange={(e) => setType(e.target.value as FeedbackType)}
               disabled={status === 'loading'}
               className="w-full bg-bg-elevated border border-bg-elevated rounded-lg px-3 py-2
-                font-body text-[#E8E8F0] text-sm
+                font-body text-text-main text-sm
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary
                 disabled:opacity-50"
             >
@@ -123,7 +123,7 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
           <div>
             <label
               htmlFor="feedback-message"
-              className="block font-body text-sm text-[#8888AA] mb-1.5"
+              className="block font-body text-sm text-text-muted mb-1.5"
             >
               Mensagem
             </label>
@@ -135,8 +135,8 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
               rows={4}
               placeholder="Descreva sua sugestão ou o bug que encontrou..."
               className="w-full bg-bg-elevated border border-bg-elevated rounded-lg px-3 py-2
-                font-body text-[#E8E8F0] text-sm resize-none
-                placeholder:text-[#8888AA]/60
+                font-body text-text-main text-sm resize-none
+                placeholder:text-text-muted/60
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary
                 disabled:opacity-50"
             />
@@ -145,7 +145,7 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
                 className={`font-body text-xs ${
                   trimmedMessage.length > 0 && !isValid
                     ? 'text-accent'
-                    : 'text-[#8888AA]'
+                    : 'text-text-muted'
                 }`}
               >
                 {trimmedMessage.length > 0 && !isValid
@@ -154,7 +154,7 @@ export function FeedbackModal({ open, onClose }: FeedbackModalProps) {
               </p>
               <p
                 className={`font-body text-xs ${
-                  charsLeft < 50 ? 'text-warning' : 'text-[#8888AA]'
+                  charsLeft < 50 ? 'text-warning' : 'text-text-muted'
                 }`}
               >
                 {charsLeft}

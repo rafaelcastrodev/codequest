@@ -6,6 +6,14 @@ export interface RunResult {
   error?: string;
 }
 
+export interface CompileError {
+  message: string;
+  line: number;
+  column: number;
+  endLine: number;
+  endColumn: number;
+}
+
 const WORKER_TIMEOUT_MS = 5000;
 
 let tsModule: typeof import('typescript') | null = null;
@@ -15,6 +23,12 @@ async function getTs(): Promise<typeof import('typescript')> {
     tsModule = (await import('typescript')) as typeof import('typescript');
   }
   return tsModule;
+}
+
+let lastCompileErrors: CompileError[] = [];
+
+export function getLastCompileErrors(): CompileError[] {
+  return lastCompileErrors;
 }
 
 export async function transpileCode(tsCode: string): Promise<string> {
@@ -30,14 +44,28 @@ export async function transpileCode(tsCode: string): Promise<string> {
     reportDiagnostics: true,
   });
 
-  const errors = result.diagnostics
-    ?.filter((d) => d.category === 1)
-    .map((d) => ts.flattenDiagnosticMessageText(d.messageText, '\n'));
+  const diagnosticErrors = result.diagnostics?.filter((d) => d.category === 1) ?? [];
 
-  if (errors && errors.length > 0) {
-    throw new Error(errors.join('\n'));
+  if (diagnosticErrors.length > 0) {
+    const sourceFile = ts.createSourceFile('student.ts', tsCode, ts.ScriptTarget.ES2020, true);
+    lastCompileErrors = diagnosticErrors.map((d) => {
+      const pos = d.start ?? 0;
+      const len = d.length ?? 1;
+      const { line, character } = sourceFile.getLineAndCharacterOfPosition(pos);
+      const end = sourceFile.getLineAndCharacterOfPosition(pos + len);
+      return {
+        message: ts.flattenDiagnosticMessageText(d.messageText, '\n'),
+        line: line + 1,
+        column: character + 1,
+        endLine: end.line + 1,
+        endColumn: end.character + 1,
+      };
+    });
+
+    throw new Error(lastCompileErrors.map((e) => e.message).join('\n'));
   }
 
+  lastCompileErrors = [];
   return result.outputText;
 }
 

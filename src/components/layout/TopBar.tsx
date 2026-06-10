@@ -22,7 +22,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
         whileTap={{ scale: 0.9 }}
         aria-label="Menu"
         onClick={onMenuToggle}
-        className="w-8 h-8 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated transition-colors"
+        className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-main hover:bg-bg-elevated transition-colors"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
           <line x1="3" y1="5" x2="17" y2="5" />

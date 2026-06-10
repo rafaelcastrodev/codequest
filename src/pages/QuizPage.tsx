@@ -54,7 +54,7 @@ function QuestionCard({
 			className="space-y-5">
 			<div className="space-y-2">
 				<div className="flex items-center justify-between">
-					<span className="text-xs text-[#8888AA] font-body">
+					<span className="text-xs text-text-muted font-body">
 						Pergunta {questionNumber} de {totalQuestions}
 					</span>
 				</div>
@@ -67,7 +67,7 @@ function QuestionCard({
 			</div>
 
 			<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6">
-				<p className="font-body text-[#E8E8F0] text-base leading-relaxed whitespace-pre-wrap">
+				<p className="font-body text-text-main text-base leading-relaxed whitespace-pre-wrap">
 					{question.question}
 				</p>
 			</div>
@@ -77,7 +77,7 @@ function QuestionCard({
 					let borderClass =
 						"border-bg-elevated hover:border-primary/40";
 					let bgClass = "bg-bg-surface hover:bg-bg-elevated";
-					let textClass = "text-[#E8E8F0]";
+					let textClass = "text-text-main";
 
 					if (revealed) {
 						if (idx === question.correctIndex) {
@@ -91,7 +91,7 @@ function QuestionCard({
 						} else {
 							borderClass = "border-bg-elevated/50";
 							bgClass = "bg-bg-surface/50";
-							textClass = "text-[#8888AA]";
+							textClass = "text-text-muted";
 						}
 					}
 
@@ -131,7 +131,7 @@ function QuestionCard({
 						<p className="font-body text-sm font-semibold mb-1">
 							{isCorrect ? <><icons.checkCircle /> Correto!</> : <><icons.cross /> Quase lá!</>}
 						</p>
-						<p className="font-body text-sm text-[#E8E8F0] leading-relaxed">
+						<p className="font-body text-sm text-text-main leading-relaxed">
 							{question.explanation}
 						</p>
 					</motion.div>
@@ -164,7 +164,7 @@ function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
 				<h2 className="font-heading font-bold text-2xl text-primary mb-1">
 					Quiz Concluído!
 				</h2>
-				<p className="text-[#8888AA] font-body text-sm">{quiz.title}</p>
+				<p className="text-text-muted font-body text-sm">{quiz.title}</p>
 			</div>
 
 			<div className="flex justify-center gap-2">
@@ -185,13 +185,13 @@ function QuizResult({ quiz, correct, stars, onNext, onMap }: QuizResultProps) {
 			</div>
 
 			<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-5 space-y-2">
-				<p className="text-[#8888AA] font-body text-sm">
+				<p className="text-text-muted font-body text-sm">
 					Acertou{" "}
-					<span className="text-[#E8E8F0] font-semibold">
+					<span className="text-text-main font-semibold">
 						{correct}
 					</span>{" "}
 					de{" "}
-					<span className="text-[#E8E8F0] font-semibold">
+					<span className="text-text-main font-semibold">
 						{total}
 					</span>{" "}
 					perguntas
@@ -316,7 +316,7 @@ export function QuizPage() {
 	if (error || !quiz) {
 		return (
 			<div className="flex items-center justify-center h-full">
-				<p className="text-[#8888AA] font-body">
+				<p className="text-text-muted font-body">
 					{error ?? "Quiz não encontrado."}
 				</p>
 			</div>
@@ -333,7 +333,7 @@ export function QuizPage() {
 		<div className="max-w-2xl mx-auto px-4 py-8 min-w-0">
 			{!showingResult && (
 				<div className="flex items-center justify-between mb-4">
-					<span className="text-xs text-[#8888AA] font-body truncate">
+					<span className="text-xs text-text-muted font-body truncate">
 						{mod?.title} — Lição {lessonIndex + 1} de{" "}
 						{lessons.length}
 					</span>

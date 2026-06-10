@@ -7,6 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { icons, resolveIcon } from '@/components/ui/Icon';
 import { loadAchievements } from '@/content/loader';
+import { shareProgressCard } from '@/utils/share-card';
 import type { ReactNode } from 'react';
 import type { Achievement, AchievementRarity } from '@/content/curriculum.types';
 
@@ -35,7 +36,7 @@ function BadgeCard({ achievement, unlocked }: BadgeCardProps) {
       <div className={`text-2xl mb-1 ${!unlocked ? 'grayscale' : ''}`}>
         {unlocked ? resolveIcon(achievement.icon)({}) : <icons.lock />}
       </div>
-      <p className={`font-body text-xs truncate ${unlocked ? 'text-[#E8E8F0]' : 'text-[#8888AA]'}`}>
+      <p className={`font-body text-xs truncate ${unlocked ? 'text-text-main' : 'text-text-muted'}`}>
         {unlocked ? achievement.title : '???'}
       </p>
       {unlocked && achievement.rarity !== 'common' && (
@@ -75,7 +76,7 @@ export function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="font-heading text-2xl font-bold text-[#E8E8F0]">Perfil</h1>
+      <h1 className="font-heading text-2xl font-bold text-text-main">Perfil</h1>
 
       <div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 flex items-center gap-5">
         <Avatar id={profile.avatar} size="xl" onClick={() => setAvatarModalOpen(true)} />
@@ -91,22 +92,22 @@ export function ProfilePage() {
                 if (e.key === 'Escape') { setNameInput(profile.name); setEditingName(false); }
               }}
               maxLength={20}
-              className="font-heading text-xl font-bold text-[#E8E8F0] bg-bg-elevated border border-primary/40 rounded-lg px-2 py-0.5 w-full outline-none focus:ring-2 focus:ring-primary/50"
+              className="font-heading text-xl font-bold text-text-main bg-bg-elevated border border-primary/40 rounded-lg px-2 py-0.5 w-full outline-none focus:ring-2 focus:ring-primary/50"
             />
           ) : (
             <button
               onClick={() => { setNameInput(profile.name); setEditingName(true); }}
               className="group flex items-center gap-2 text-left"
             >
-              <h2 className="font-heading text-xl font-bold text-[#E8E8F0]">{profile.name}</h2>
-              <span className="text-[#8888AA] opacity-0 group-hover:opacity-100 transition-opacity text-sm"><icons.pencil /></span>
+              <h2 className="font-heading text-xl font-bold text-text-main">{profile.name}</h2>
+              <span className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity text-sm"><icons.pencil /></span>
             </button>
           )}
-          <p className="text-[#8888AA] font-body text-sm">Nível {level} · {title}</p>
+          <p className="text-text-muted font-body text-sm">Nível {level} · {title}</p>
           <div className="mt-3">
             <div className="relative">
               <ProgressBar value={levelData.percent} max={100} variant="secondary" size="lg" />
-              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-body font-bold text-[#E8E8F0] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-body font-bold text-text-main drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                 {xp} / {levelData.next} XP
               </span>
             </div>
@@ -127,17 +128,38 @@ export function ProfilePage() {
             className="bg-bg-surface border border-bg-elevated rounded-xl p-4 text-center"
           >
             <div className="text-2xl mb-1">{stat.icon}</div>
-            <div className="font-heading font-bold text-[#E8E8F0] text-lg">{stat.value}</div>
-            <div className="text-xs text-[#8888AA] font-body">{stat.label}</div>
+            <div className="font-heading font-bold text-text-main text-lg">{stat.value}</div>
+            <div className="text-xs text-text-muted font-body">{stat.label}</div>
           </motion.div>
         ))}
       </div>
 
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() =>
+          shareProgressCard({
+            name: profile.name,
+            avatar: profile.avatar,
+            level,
+            title,
+            xp,
+            streak: streak.current,
+            stars: totalStars,
+            lessons: completedCount,
+            trophies: achievements.length,
+            trophiesTotal: allAchievements.length,
+          })
+        }
+      >
+        <icons.share /> Compartilhar Progresso
+      </Button>
+
       {allAchievements.length > 0 && (
         <div>
-          <h2 className="font-heading font-semibold text-[#E8E8F0] mb-3">
+          <h2 className="font-heading font-semibold text-text-main mb-3">
             Troféus{' '}
-            <span className="text-[#8888AA] font-body font-normal text-sm">
+            <span className="text-text-muted font-body font-normal text-sm">
               {achievements.length}/{allAchievements.length}
             </span>
           </h2>

@@ -28,7 +28,7 @@ export function FakeAssistantButton({
         ${
 			showingAssistant
 				? "bg-secondary text-white shadow-[0_0_16px_rgba(124,92,252,0.5)]"
-				: "bg-bg-elevated text-[#8888AA] hover:text-secondary hover:bg-bg-surface border border-bg-elevated hover:border-secondary/40"
+				: "bg-bg-elevated text-text-muted hover:text-secondary hover:bg-bg-surface border border-bg-elevated hover:border-secondary/40"
 		}
       `}
 			aria-label="Cody — assistente de aprendizado">
@@ -61,10 +61,10 @@ export function FakeAssistantModal({
 				<div className="w-16 h-16 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center mb-3">
 					<icons.cody size={40} />
 				</div>
-				<h2 className="font-heading font-bold text-lg text-[#E8E8F0]">
+				<h2 className="font-heading font-bold text-lg text-text-main">
 					Cody
 				</h2>
-				<p className="text-xs text-[#8888AA] font-body mt-0.5">
+				<p className="text-xs text-text-muted font-body mt-0.5">
 					Como posso te ajudar?
 				</p>
 			</div>
@@ -76,7 +76,7 @@ export function FakeAssistantModal({
 							key={action}
 							onClick={() => onRequest(action)}
 							className="w-full px-4 py-3 rounded-xl text-sm font-body
-              text-[#E8E8F0] hover:bg-bg-elevated transition-colors
+              text-text-main hover:bg-bg-elevated transition-colors
               flex items-center justify-center gap-3 group border border-transparent hover:border-secondary/20">
 							<span className="text-lg group-hover:scale-110 transition-transform">
 								{ACTION_LABELS[action].icon}
@@ -123,8 +123,8 @@ export function AssistantContentNav({
 				className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all
           ${
 				showingAssistant
-					? "text-[#E8E8F0] hover:bg-bg-elevated cursor-pointer"
-					: "text-[#8888AA]/30 cursor-default"
+					? "text-text-main hover:bg-bg-elevated cursor-pointer"
+					: "text-text-muted/30 cursor-default"
 			}`}
 				aria-label="Ver conteúdo original">
 				<icons.arrowLeft />
@@ -132,7 +132,7 @@ export function AssistantContentNav({
 			<div className="text-center">
 				{showingAssistant ? (
 					<>
-						<span className="text-xs font-body text-[#8888AA] flex items-center justify-center gap-1">
+						<span className="text-xs font-body text-text-muted flex items-center justify-center gap-1">
 							<icons.cody size={16} /> Cody
 						</span>
 						{activeAction && (
@@ -142,7 +142,7 @@ export function AssistantContentNav({
 						)}
 					</>
 				) : (
-					<span className="text-xs font-body text-[#8888AA]">
+					<span className="text-xs font-body text-text-muted">
 						Conteúdo original
 					</span>
 				)}
@@ -153,8 +153,8 @@ export function AssistantContentNav({
 				className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all
           ${
 				!showingAssistant
-					? "text-[#E8E8F0] hover:bg-bg-elevated cursor-pointer"
-					: "text-[#8888AA]/30 cursor-default"
+					? "text-text-main hover:bg-bg-elevated cursor-pointer"
+					: "text-text-muted/30 cursor-default"
 			}`}
 				aria-label="Ver conteúdo do assistente">
 				<icons.arrowRight />

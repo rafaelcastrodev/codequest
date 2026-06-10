@@ -1,7 +1,21 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { icons } from '@/components/ui/Icon';
 import type { ExerciseLesson } from '@/content/curriculum.types';
+
+const MOTIVATIONAL_PHRASES = [
+  'Mandou bem!',
+  'Incrível!',
+  'Código perfeito!',
+  'Arrasou!',
+  'Nível hacker!',
+  'Sensacional!',
+  'Show de bola!',
+  'Mito!',
+  'Muito bom!',
+  'Genial!',
+];
 
 function XPCounter({ xp }: { xp: number }) {
   return (
@@ -31,6 +45,8 @@ export interface SuccessOverlayProps {
 }
 
 export function SuccessOverlay({ lesson, stars, onNext, onMap }: SuccessOverlayProps) {
+  const phrase = useMemo(() => MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)], []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -44,8 +60,8 @@ export function SuccessOverlay({ lesson, stars, onNext, onMap }: SuccessOverlayP
         className="bg-bg-surface border border-primary/40 rounded-2xl p-8 text-center max-w-sm w-full mx-4 shadow-[0_0_40px_rgba(0,212,170,0.2)]"
       >
         <div className="text-5xl mb-3"><icons.party /></div>
-        <h2 className="font-heading text-2xl font-bold text-primary mb-1">Incrível!</h2>
-        <p className="text-[#8888AA] font-body text-sm mb-4">{lesson.title}</p>
+        <h2 className="font-heading text-2xl font-bold text-primary mb-1">{phrase}</h2>
+        <p className="text-text-muted font-body text-sm mb-4">{lesson.title}</p>
 
         <div className="flex justify-center gap-1 mb-4">
           {[1, 2, 3, 4, 5].map((s) => (

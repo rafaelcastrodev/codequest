@@ -62,7 +62,7 @@ function StepView({ step }: StepViewProps) {
 		return (
 			<RichText
 				content={step.content}
-				className="text-[#E8E8F0] font-body leading-relaxed text-base"
+				className="text-text-main font-body leading-relaxed text-base"
 			/>
 		);
 	}
@@ -70,7 +70,7 @@ function StepView({ step }: StepViewProps) {
 	return (
 		<div className="space-y-3">
 			<CodeBlock code={step.code} />
-			<p className="text-[#8888AA] font-body text-sm leading-relaxed">
+			<p className="text-text-muted font-body text-sm leading-relaxed">
 				{step.explanation}
 			</p>
 		</div>
@@ -88,7 +88,7 @@ function AssistantContentView({ content }: AssistantContentViewProps) {
 	return (
 		<RichText
 			content={content}
-			className="text-[#E8E8F0] font-body leading-relaxed text-base"
+			className="text-text-main font-body leading-relaxed text-base"
 		/>
 	);
 }
@@ -111,7 +111,7 @@ function LessonComplete({ lesson, onNext, onMap }: LessonCompleteProps) {
 				<h2 className="font-heading font-bold text-2xl text-primary mb-1">
 					Teoria concluída!
 				</h2>
-				<p className="text-[#8888AA] font-body text-sm">
+				<p className="text-text-muted font-body text-sm">
 					{lesson.title}
 				</p>
 			</div>
@@ -187,7 +187,7 @@ export function LessonPage() {
 	if (!lesson || lesson.type !== "theory") {
 		return (
 			<div className="flex items-center justify-center h-full">
-				<p className="text-[#8888AA] font-body">
+				<p className="text-text-muted font-body">
 					Lição não encontrada.
 				</p>
 			</div>
@@ -270,7 +270,7 @@ export function LessonPage() {
 				<div className="max-w-2xl mx-auto px-4 py-8 space-y-6 min-w-0 pb-4">
 					<div className="space-y-2">
 						<div className="flex items-center justify-between">
-							<span className="text-xs text-[#8888AA] font-body truncate">
+							<span className="text-xs text-text-muted font-body truncate">
 								{mod?.title} — Lição {currentIdx + 1} de{" "}
 								{lessons.length}
 							</span>

@@ -18,7 +18,7 @@ function parseInline(text: string): ReactNode[] {
 
     if (match[2]) {
       parts.push(
-        <strong key={match.index} className="font-bold text-[#E8E8F0]">
+        <strong key={match.index} className="font-bold text-text-main">
           {match[2]}
         </strong>,
       );

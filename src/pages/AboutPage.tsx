@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 export function AboutPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="font-heading text-2xl font-bold text-[#E8E8F0]">Sobre o CodeQuest</h1>
+      <h1 className="font-heading text-2xl font-bold text-text-main">Sobre o CodeQuest</h1>
 
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -15,10 +15,10 @@ export function AboutPage() {
         <div className="text-center mb-2">
           <icons.bolt className="text-5xl block" />
           <h2 className="font-heading font-bold text-primary text-xl mt-2">CodeQuest</h2>
-          <p className="text-[#8888AA] font-body text-sm">v{__APP_VERSION__}</p>
+          <p className="text-text-muted font-body text-sm">v{__APP_VERSION__}</p>
         </div>
 
-        <div className="space-y-3 font-body text-sm text-[#E8E8F0] leading-relaxed">
+        <div className="space-y-3 font-body text-sm text-text-main leading-relaxed">
           <p>
             CodeQuest é uma plataforma educacional para aprender <strong className="text-primary">lógica de programação com TypeScript</strong> de forma prática e divertida.
           </p>
@@ -34,8 +34,8 @@ export function AboutPage() {
         transition={{ delay: 0.1 }}
         className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 space-y-4"
       >
-        <h2 className="font-heading font-semibold text-[#E8E8F0]">Como usar</h2>
-        <ul className="space-y-3 font-body text-sm text-[#E8E8F0]">
+        <h2 className="font-heading font-semibold text-text-main">Como usar</h2>
+        <ul className="space-y-3 font-body text-sm text-text-main">
           {([
             { icon: <icons.map />, text: 'Siga a trilha de módulos na Jornada, do iniciante ao avançado' },
             { icon: <icons.book />, text: 'Leia as lições de teoria com exemplos interativos' },
@@ -56,9 +56,23 @@ export function AboutPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
+        className="bg-bg-surface border border-warning/20 rounded-2xl p-6 space-y-2"
+      >
+        <h2 className="font-heading font-semibold text-warning text-sm flex items-center gap-2">
+          <icons.warning /> Sobre seus dados
+        </h2>
+        <p className="text-xs text-text-muted font-body leading-relaxed">
+          Seu progresso é salvo <strong className="text-text-main">neste navegador</strong>. Se você limpar os dados do navegador, usar modo anônimo ou trocar de aparelho, o progresso será perdido. Não há como recuperar.
+        </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
         className="bg-bg-surface border border-bg-elevated rounded-2xl p-6"
       >
-        <p className="text-xs text-[#8888AA] font-body text-center">
+        <p className="text-xs text-text-muted font-body text-center">
           100% client-side. Seu código roda no navegador com total privacidade.
         </p>
       </motion.div>

@@ -29,7 +29,10 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { HintPanel } from "@/components/exercise/HintPanel";
 import { OutputPanel } from "@/components/exercise/OutputPanel";
 import { SuccessOverlay } from "@/components/exercise/SuccessOverlay";
-import { defineCodeQuestTheme } from "@/engine/monaco-theme";
+import { SymbolToolbar } from "@/components/exercise/SymbolToolbar";
+import { getLastCompileErrors } from "@/engine/typescript-runner";
+import { defineAllThemes } from "@/engine/monaco-theme";
+import type { OnMount } from "@monaco-editor/react";
 import { triggerConfetti } from "@/utils/confetti";
 import { playSound } from "@/utils/sounds";
 import { lessonPath } from "@/utils/lesson-path";
@@ -57,6 +60,7 @@ export function ExercisePage() {
 		useProgressStore();
 	const soundEnabled = useSettingsStore((s) => s.soundEnabled);
 	const debugMode = useSettingsStore((s) => s.debugMode);
+	const editorTheme = useSettingsStore((s) => s.editorTheme);
 	const { hintsUsed, useHint, setCurrentLesson } = useSessionStore();
 	const { checkAndUnlock } = useAchievements();
 
@@ -64,6 +68,7 @@ export function ExercisePage() {
 	const clipboard = useClipboard();
 
 	const [code, setCode] = useState("");
+	const [showRecoveryBanner, setShowRecoveryBanner] = useState(false);
 	const [successStars, setSuccessStars] = useState<number | null>(null);
 	const [editorBorderStatus, setEditorBorderStatus] = useState<
 		"idle" | "ok" | "err"
@@ -72,7 +77,55 @@ export function ExercisePage() {
 	const [mobileTab, setMobileTab] = useState<"instructions" | "code">(
 		"instructions",
 	);
-	const pendingAchievementCheck = useRef(false);
+	const pendingAchievementCheck = useRef<boolean>(false);
+	const autoSaveTimer = useRef<ReturnType<typeof setTimeout>>();
+	const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+	const monacoRef = useRef<Parameters<OnMount>[1] | null>(null);
+
+	const handleEditorMount: OnMount = useCallback((editor, monaco) => {
+		editorRef.current = editor;
+		monacoRef.current = monaco;
+	}, []);
+
+	const clearEditorMarkers = useCallback(() => {
+		const editor = editorRef.current;
+		const monaco = monacoRef.current;
+		if (!editor || !monaco) return;
+		const model = editor.getModel();
+		if (model) monaco.editor.setModelMarkers(model, 'codequest', []);
+	}, []);
+
+	const showEditorErrors = useCallback(() => {
+		const editor = editorRef.current;
+		const monaco = monacoRef.current;
+		if (!editor || !monaco) return;
+		const model = editor.getModel();
+		if (!model) return;
+		const errors = getLastCompileErrors();
+		if (errors.length === 0) return;
+		monaco.editor.setModelMarkers(model, 'codequest', errors.map((e) => ({
+			severity: monaco.MarkerSeverity.Error,
+			message: e.message,
+			startLineNumber: e.line,
+			startColumn: e.column,
+			endLineNumber: e.endLine,
+			endColumn: e.endColumn,
+		})));
+	}, []);
+
+	const handleInsertSymbol = useCallback((symbol: string) => {
+		const editor = editorRef.current;
+		if (!editor) return;
+		editor.focus();
+		const selection = editor.getSelection();
+		if (selection) {
+			editor.executeEdits('symbol-toolbar', [{
+				range: selection,
+				text: symbol,
+				forceMoveMarkers: true,
+			}]);
+		}
+	}, []);
 
 	const resetRunner = runner.reset;
 
@@ -90,9 +143,15 @@ export function ExercisePage() {
 
 	useEffect(() => {
 		if (exercise) {
-			setCode(
-				buildStarterCode(exercise.starterCode, exercise.instructions),
-			);
+			const savedCode = sessionStorage.getItem(`codequest-autosave-${exercise.id}`);
+			const starterCode = buildStarterCode(exercise.starterCode, exercise.instructions);
+			if (savedCode && savedCode !== starterCode) {
+				setCode(savedCode);
+				setShowRecoveryBanner(true);
+			} else {
+				setCode(starterCode);
+				setShowRecoveryBanner(false);
+			}
 			setSuccessStars(null);
 			setEditorBorderStatus("idle");
 			resetRunner();
@@ -108,6 +167,15 @@ export function ExercisePage() {
 	]);
 
 	useEffect(() => {
+		if (!exercise) return;
+		clearTimeout(autoSaveTimer.current);
+		autoSaveTimer.current = setTimeout(() => {
+			sessionStorage.setItem(`codequest-autosave-${exercise.id}`, code);
+		}, 2000);
+		return () => clearTimeout(autoSaveTimer.current);
+	}, [code, exercise]);
+
+	useEffect(() => {
 		if (pendingAchievementCheck.current) {
 			pendingAchievementCheck.current = false;
 			checkAndUnlock();
@@ -116,6 +184,7 @@ export function ExercisePage() {
 
 	const handleRun = useCallback(async () => {
 		if (!exercise || runner.status === "running") return;
+		clearEditorMarkers();
 
 		const outcome = await runner.run(
 			code,
@@ -127,6 +196,8 @@ export function ExercisePage() {
 		if (outcome.type === "passed") {
 			setSuccessStars(outcome.stars);
 			setEditorBorderStatus("ok");
+			setShowRecoveryBanner(false);
+			sessionStorage.removeItem(`codequest-autosave-${exercise.id}`);
 			const isFirstCompletion = !completedExercises[exercise.id];
 			if (isFirstCompletion) addXP(exercise.xpReward);
 			completeExercise(exercise.id, outcome.stars, hintsUsed);
@@ -137,6 +208,7 @@ export function ExercisePage() {
 		} else if (outcome.type === "failed" || outcome.type === "error") {
 			setEditorBorderStatus("err");
 			setShakeKey((k) => k + 1);
+			showEditorErrors();
 			if (soundEnabled) playSound("error");
 		}
 	}, [
@@ -148,6 +220,8 @@ export function ExercisePage() {
 		completeExercise,
 		completedExercises,
 		updateStreak,
+		clearEditorMarkers,
+		showEditorErrors,
 		soundEnabled,
 	]);
 
@@ -177,7 +251,7 @@ export function ExercisePage() {
 	if (error || !exercise) {
 		return (
 			<div className="flex items-center justify-center h-full">
-				<p className="text-[#8888AA] font-body">
+				<p className="text-text-muted font-body">
 					{error ?? "Exercício não encontrado."}
 				</p>
 			</div>
@@ -205,7 +279,7 @@ export function ExercisePage() {
 		<div className="flex-1 lg:flex-initial lg:w-96 xl:w-[28rem] flex-shrink-0 border-r border-bg-elevated bg-bg-surface flex flex-col overflow-hidden">
 			<div className="px-5 pt-3 pb-2 border-b border-bg-elevated/50">
 				<div className="flex items-center justify-between">
-					<span className="text-xs text-[#8888AA] font-body truncate">
+					<span className="text-xs text-text-muted font-body truncate">
 						{mod?.title} — Lição {lessonIndex + 1} de {totalLessons}
 					</span>
 				</div>
@@ -236,7 +310,7 @@ export function ExercisePage() {
 						))}
 					</Badge>
 				</div>
-				<h1 className="font-heading font-bold text-[#E8E8F0] text-lg leading-snug">
+				<h1 className="font-heading font-bold text-text-main text-lg leading-snug">
 					{exercise.title}
 				</h1>
 			</div>
@@ -265,7 +339,7 @@ export function ExercisePage() {
 							) : (
 								<RichText
 									content={assistant.activeContent}
-									className="font-body text-sm text-[#E8E8F0] leading-relaxed"
+									className="font-body text-sm text-text-main leading-relaxed"
 								/>
 							)}
 						</motion.div>
@@ -278,7 +352,7 @@ export function ExercisePage() {
 							exit={{ opacity: 0, x: -40 }}
 							transition={{ duration: 0.2 }}>
 							<div className="bg-bg-elevated rounded-xl p-4">
-								<p className="font-body text-sm text-[#E8E8F0] leading-relaxed whitespace-pre-wrap">
+								<p className="font-body text-sm text-text-main leading-relaxed whitespace-pre-wrap">
 									{exercise.instructions}
 								</p>
 							</div>
@@ -323,12 +397,31 @@ export function ExercisePage() {
 				/>
 			)}
 
+			{showRecoveryBanner && (
+				<div className="flex items-center justify-between px-4 py-1.5 bg-secondary/10 border-b border-secondary/20 flex-shrink-0">
+					<span className="text-xs font-body text-secondary">
+						Código recuperado da sessão anterior
+					</span>
+					<button
+						onClick={() => {
+							if (exercise) {
+								setCode(buildStarterCode(exercise.starterCode, exercise.instructions));
+								sessionStorage.removeItem(`codequest-autosave-${exercise.id}`);
+							}
+							setShowRecoveryBanner(false);
+						}}
+						className="text-xs font-body text-text-muted hover:text-text-main transition-colors ml-3">
+						Descartar
+					</button>
+				</div>
+			)}
+
 			<div className="flex items-center justify-between px-4 py-2 border-b border-bg-elevated bg-bg-surface flex-shrink-0">
 				<div className="flex items-center gap-2">
 					<button
 						aria-label="Ver instruções"
 						onClick={() => setMobileTab("instructions")}
-						className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-[#8888AA] hover:text-[#E8E8F0] hover:bg-bg-elevated transition-colors">
+						className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-text-muted hover:text-text-main hover:bg-bg-elevated transition-colors">
 						<icons.notepadtext aria-hidden={true} />
 					</button>
 				</div>
@@ -393,10 +486,10 @@ export function ExercisePage() {
 				className={`flex-1 min-h-0 border-b transition-colors ${editorBorderClass}`}>
 				<Suspense
 					fallback={
-						<div className="flex items-center justify-center h-full bg-[#0A0A15]">
+						<div className="flex items-center justify-center h-full bg-bg-terminal">
 							<div className="text-center space-y-2">
 								<div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-								<p className="text-xs text-[#8888AA] font-mono">
+								<p className="text-xs text-text-muted font-mono">
 									Carregando editor...
 								</p>
 							</div>
@@ -407,8 +500,9 @@ export function ExercisePage() {
 						language="typescript"
 						value={code}
 						onChange={(v) => setCode(v ?? "")}
-						beforeMount={defineCodeQuestTheme}
-						theme="codequest-dark"
+						onMount={handleEditorMount}
+						beforeMount={defineAllThemes}
+						theme={editorTheme}
 						options={{
 							minimap: { enabled: false },
 							fontSize: 14,
@@ -431,6 +525,8 @@ export function ExercisePage() {
 					/>
 				</Suspense>
 			</motion.div>
+
+			<SymbolToolbar onInsert={handleInsertSymbol} />
 
 			<div className="p-3 bg-bg-primary border-t border-bg-elevated flex-shrink-0">
 				<OutputPanel

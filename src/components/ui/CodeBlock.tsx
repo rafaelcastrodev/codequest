@@ -21,7 +21,7 @@ export function CodeBlock({ code, language = 'typescript', className = '' }: Cod
   }, [code, language]);
 
   return (
-    <pre className={`cq-code-block bg-[#0A0A15] border border-bg-elevated rounded-xl overflow-x-auto ${className}`}>
+    <pre className={`cq-code-block bg-bg-terminal border border-bg-elevated rounded-xl overflow-x-auto ${className}`}>
       <div className="cq-code-inner">
         <div className="cq-line-gutter" aria-hidden="true">
           {Array.from({ length: lineCount }, (_, i) => (

@@ -49,7 +49,7 @@ function ToastItem({ id, variant, icon, title, message, onDismiss }: ToastItemPr
       <span className="text-2xl flex-shrink-0">{resolveIcon(icon)({})}</span>
       <div className="min-w-0">
         <p className={`font-heading font-bold text-sm ${TITLE_COLOR[variant]}`}>{title}</p>
-        <p className="font-body text-xs text-[#E8E8F0] truncate">{message}</p>
+        <p className="font-body text-xs text-text-main truncate">{message}</p>
       </div>
     </motion.div>
   );

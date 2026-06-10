@@ -38,9 +38,9 @@ export function ProgressBar({
     <div className={`w-full ${className}`}>
       {(showLabel || label) && (
         <div className="flex justify-between items-center mb-1">
-          {label && <span className="text-xs text-[#8888AA] font-body">{label}</span>}
+          {label && <span className="text-xs text-text-muted font-body">{label}</span>}
           {showLabel && (
-            <span className="text-xs text-[#8888AA] font-body ml-auto">
+            <span className="text-xs text-text-muted font-body ml-auto">
               {value}/{max}
             </span>
           )}
