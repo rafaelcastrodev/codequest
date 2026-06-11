@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { icons } from '@/components/ui/Icon';
 import { CompletionCard } from '@/components/lesson/CompletionCard';
-import type { ModuleMastery } from '@/store/progress.store';
 import type { ExerciseLesson } from '@/content/curriculum.types';
 
 export interface SuccessOverlayProps {
@@ -9,8 +8,6 @@ export interface SuccessOverlayProps {
   stars: number;
   hintsUsed: number;
   xpGained: number;
-  moduleMastery?: ModuleMastery;
-  moduleTitle?: string;
   onNext: () => void;
   onMap: () => void;
 }
@@ -21,7 +18,7 @@ function starsExplanation(stars: number, hintsUsed: number): string {
   return `Você usou ${hintsUsed} dicas`;
 }
 
-export function SuccessOverlay({ lesson, stars, hintsUsed, xpGained, moduleMastery, moduleTitle, onNext, onMap }: SuccessOverlayProps) {
+export function SuccessOverlay({ lesson, stars, hintsUsed, xpGained, onNext, onMap }: SuccessOverlayProps) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -36,8 +33,6 @@ export function SuccessOverlay({ lesson, stars, hintsUsed, xpGained, moduleMaste
         stars={stars}
         starSize="md"
         xpReward={xpGained}
-        moduleMastery={moduleMastery}
-        moduleTitle={moduleTitle}
         onNext={onNext}
         onMap={onMap}
       >

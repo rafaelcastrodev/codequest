@@ -7,6 +7,8 @@ import type { AnatomySegment } from '@/content/curriculum.types';
 interface AnatomyBlockProps {
   segments: AnatomySegment[];
   explanation: string;
+  autoplay?: boolean;
+  stepDelay?: number;
 }
 
 const SEGMENT_COLORS: Record<string, string> = {
@@ -27,7 +29,9 @@ function segmentColor(text: string): string {
   return 'text-text-main';
 }
 
-export function AnatomyBlock({ segments, explanation }: AnatomyBlockProps) {
+const DEFAULT_STEP_DELAY = 800;
+
+export function AnatomyBlock({ segments, explanation, autoplay = false, stepDelay = DEFAULT_STEP_DELAY }: AnatomyBlockProps) {
   const [visibleCount, setVisibleCount] = useState(0);
   const isComplete = visibleCount >= segments.length;
 
@@ -36,42 +40,44 @@ export function AnatomyBlock({ segments, explanation }: AnatomyBlockProps) {
   }, [segments.length]);
 
   useEffect(() => {
+    if (!autoplay) return;
     if (visibleCount >= segments.length) return;
-    const timer = setTimeout(advance, 800);
+    const timer = setTimeout(advance, stepDelay);
     return () => clearTimeout(timer);
-  }, [visibleCount, segments.length, advance]);
+  }, [autoplay, stepDelay, visibleCount, segments.length, advance]);
 
   return (
     <div className="space-y-4">
-      <div className="bg-bg-terminal border border-bg-elevated rounded-xl p-6">
-        <div className="font-mono text-lg flex flex-wrap items-baseline gap-0.5 min-h-[2.5rem]">
+      <div className="bg-bg-terminal border border-bg-elevated rounded-xl p-6 overflow-x-auto">
+        <div className="font-mono text-lg flex flex-wrap items-start min-h-[2.5rem]">
           <AnimatePresence>
             {segments.slice(0, visibleCount).map((seg, idx) => (
-              <motion.span
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="relative group"
+                className="inline-flex flex-col items-center"
               >
-                <span className={segmentColor(seg.text)}>{seg.text}</span>
+                <span className={segmentColor(seg.text)} style={{ whiteSpace: 'pre' }}>
+                  {seg.text}
+                </span>
                 <motion.span
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="absolute left-1/2 -translate-x-1/2 top-full mt-1
-                    text-[10px] text-secondary font-body whitespace-nowrap
+                  className="mt-2 text-[10px] text-secondary font-body whitespace-nowrap
                     bg-secondary/10 border border-secondary/20 rounded px-1.5 py-0.5"
                 >
                   {seg.label}
                 </motion.span>
-              </motion.span>
+              </motion.div>
             ))}
           </AnimatePresence>
         </div>
       </div>
 
-      {!isComplete && (
+      {!isComplete && !autoplay && (
         <div className="flex justify-center">
           <Button variant="ghost" size="sm" onClick={advance}>
             Revelar próximo

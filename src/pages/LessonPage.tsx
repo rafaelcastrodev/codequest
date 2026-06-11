@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { loadModule } from "@/content/loader";
-import { useProgressStore, getModuleMastery } from "@/store/progress.store";
+import { useProgressStore } from "@/store/progress.store";
 import { useSettingsStore } from "@/store/settings.store";
 import { useAssistant } from "@/hooks/useAssistant";
 import { icons } from "@/components/ui/Icon";
@@ -86,6 +86,8 @@ function StepView({ step }: StepViewProps) {
 			<AnatomyBlock
 				segments={step.anatomy}
 				explanation={step.explanation}
+				autoplay={step.autoplay}
+				stepDelay={step.stepDelay}
 			/>
 		);
 	}
@@ -214,8 +216,6 @@ export function LessonPage() {
 					title="Teoria concluída!"
 					subtitle={theoryLesson.title}
 					xpReward={xpGained}
-					moduleMastery={getModuleMastery(mod?.lessons ?? [], completedExercises)}
-					moduleTitle={mod?.title}
 					onNext={handleNext}
 					onMap={() => navigate("/")}
 				/>

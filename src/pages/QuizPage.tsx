@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLesson } from "@/hooks/useLesson";
-import { useProgressStore, getModuleMastery } from "@/store/progress.store";
+import { useProgressStore } from "@/store/progress.store";
 import { useSessionStore } from "@/store/session.store";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useSettingsStore } from "@/store/settings.store";
@@ -13,6 +13,10 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LessonBreadcrumb } from "@/components/lesson/LessonBreadcrumb";
 import { CompletionCard } from "@/components/lesson/CompletionCard";
+import { ChoiceList } from "@/components/lesson/ChoiceList";
+import { ConfirmButton } from "@/components/lesson/ConfirmButton";
+import { RevealFeedback } from "@/components/lesson/RevealFeedback";
+import { useRevealableChoice } from "@/hooks/useRevealableChoice";
 import { icons } from "@/components/ui/Icon";
 import { triggerConfetti } from "@/utils/confetti";
 import { playSound } from "@/utils/sounds";
@@ -39,18 +43,12 @@ function QuestionCard({
 	totalQuestions,
 	onAnswer,
 }: QuestionCardProps) {
-	const [selected, setSelected] = useState<number | null>(null);
-	const [revealed, setRevealed] = useState(false);
-	const isCorrect = selected === question.correctIndex;
+	const { selected, revealed, isCorrect, handleSelect, handleConfirm } =
+		useRevealableChoice(question.correctIndex);
 
-	function handleSelect(idx: number) {
-		if (revealed) return;
-		setSelected(idx);
-	}
-
-	function handleConfirm() {
+	function handleConfirmAndNotify() {
 		if (selected === null || revealed) return;
-		setRevealed(true);
+		handleConfirm();
 		onAnswer(selected);
 	}
 
@@ -83,90 +81,37 @@ function QuestionCard({
 				/>
 			</div>
 
-			<div className="space-y-2.5">
-				{question.options.map((option, idx) => {
-					let borderClass =
-						"border-bg-elevated hover:border-primary/40";
-					let bgClass = "bg-bg-surface hover:bg-bg-elevated";
-					let textClass = "text-text-main";
-
-					if (revealed) {
-						if (idx === question.correctIndex) {
-							borderClass = "border-primary/60";
-							bgClass = "bg-primary/10";
-							textClass = "text-primary";
-						} else if (idx === selected && !isCorrect) {
-							borderClass = "border-accent/60";
-							bgClass = "bg-accent/10";
-							textClass = "text-accent";
-						} else {
-							borderClass = "border-bg-elevated/50";
-							bgClass = "bg-bg-surface/50";
-							textClass = "text-text-muted";
-						}
-					} else if (idx === selected) {
-						borderClass = "border-secondary/60";
-						bgClass = "bg-secondary/10";
-						textClass = "text-text-main";
-					}
-
-					return (
-						<motion.button
-							key={idx}
-							whileHover={!revealed ? { scale: 1.01 } : {}}
-							whileTap={!revealed ? { scale: 0.99 } : {}}
-							onClick={() => handleSelect(idx)}
-							disabled={revealed}
-							className={`
-                w-full text-left px-4 py-3 rounded-xl border transition-all
-                ${bgClass} ${borderClass} ${textClass}
-                font-body text-sm
-                ${!revealed ? "cursor-pointer" : "cursor-default"}
-              `}>
-							<span className="font-semibold mr-2 opacity-60">
-								{String.fromCharCode(65 + idx)}.
-							</span>
-							<RichText content={option} className="inline" />
-						</motion.button>
-					);
-				})}
-			</div>
-
-			<AnimatePresence>
-				{!revealed && selected !== null && (
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0 }}
-						className="flex justify-end">
-						<Button variant="primary" size="md" onClick={handleConfirm} className="px-12">
-							Conferir
-						</Button>
-					</motion.div>
+			<ChoiceList
+				options={question.options}
+				selected={selected}
+				correctIndex={question.correctIndex}
+				revealed={revealed}
+				onSelect={handleSelect}
+				fontClass="font-body text-sm"
+				renderLabel={(option, idx) => (
+					<>
+						<span className="font-semibold mr-2 opacity-60">
+							{String.fromCharCode(65 + idx)}.
+						</span>
+						<RichText content={option} className="inline" />
+					</>
 				)}
-			</AnimatePresence>
+			/>
 
-			<AnimatePresence>
-				{revealed && (
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0 }}
-						className={`rounded-xl p-4 border ${
-							isCorrect
-								? "bg-primary/10 border-primary/30"
-								: "bg-accent/10 border-accent/30"
-						}`}>
-						<p className="font-body text-sm font-semibold mb-1">
-							{isCorrect ? <><icons.checkCircle /> Correto!</> : <><icons.cross /> Quase lá!</>}
-						</p>
-						<RichText
-							content={question.explanation}
-							className="font-body text-sm text-text-main leading-relaxed"
-						/>
-					</motion.div>
-				)}
-			</AnimatePresence>
+			<ConfirmButton
+				visible={!revealed && selected !== null}
+				onClick={handleConfirmAndNotify}
+				size="md"
+				className="px-12"
+			/>
+
+			<RevealFeedback
+				revealed={revealed}
+				isCorrect={isCorrect}
+				explanation={question.explanation}
+				successLabel="Correto!"
+				failLabel="Quase lá!"
+			/>
 		</motion.div>
 	);
 }
@@ -294,8 +239,6 @@ export function QuizPage() {
 							subtitle={quiz.title}
 							stars={stars}
 							xpReward={xpGained}
-							moduleMastery={getModuleMastery(mod?.lessons ?? [], completedExercises)}
-							moduleTitle={mod?.title}
 							onNext={handleNext}
 							onMap={() => navigate("/")}
 							nextLabel="Próximo">

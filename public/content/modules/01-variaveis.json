@@ -21,16 +21,37 @@
         {
           "type": "interactive-example",
           "code": "let pontos: number = 100;",
-          "highlightLines": [1],
+          "highlightLines": [
+            1
+          ],
           "explanation": "Aqui criamos uma gaveta chamada `pontos`, que guarda o número `100`. Vamos ver cada parte dessa linha:",
           "anatomy": [
-            { "text": "let ", "label": "cria a variável" },
-            { "text": "pontos", "label": "nome da gaveta" },
-            { "text": ": number", "label": "tipo de dado" },
-            { "text": " = ", "label": "atribui valor" },
-            { "text": "100", "label": "valor guardado" },
-            { "text": ";", "label": "fim da instrução" }
-          ]
+            {
+              "text": "let ",
+              "label": "cria a variável"
+            },
+            {
+              "text": "pontos",
+              "label": "nome da gaveta"
+            },
+            {
+              "text": ": number",
+              "label": "tipo de dado"
+            },
+            {
+              "text": " = ",
+              "label": "atribui valor"
+            },
+            {
+              "text": "100",
+              "label": "valor guardado"
+            },
+            {
+              "text": ";",
+              "label": "fim da instrução"
+            }
+          ],
+          "autoplay": true
         },
         {
           "type": "micro-challenge",
@@ -40,22 +61,40 @@
           "fillBlank": {
             "code": "___BLANK_0___ vida: ___BLANK_1___ = 50;",
             "blanks": [
-              { "id": "keyword", "answer": "let", "alternatives": ["const"] },
-              { "id": "type", "answer": "number" }
+              {
+                "id": "keyword",
+                "answer": "let",
+                "alternatives": [
+                  "const"
+                ]
+              },
+              {
+                "id": "type",
+                "answer": "number"
+              }
             ]
           }
         },
         {
           "type": "interactive-example",
           "code": "let nome: string = \"CodeQuest\";\nconsole.log(nome);\n\nnome = \"MegaQuest\";\nconsole.log(nome);",
-          "highlightLines": [4],
+          "highlightLines": [
+            4
+          ],
           "explanation": "Variáveis criadas com `let` podem **mudar de valor**! Na linha 4, trocamos o conteúdo da gaveta `nome` de `\"CodeQuest\"` para `\"MegaQuest\"`.",
           "predict": {
             "question": "Depois de trocar o valor, o que o segundo console.log vai imprimir?",
-            "choices": ["CodeQuest", "MegaQuest", "nome", "Erro"],
+            "choices": [
+              "CodeQuest",
+              "MegaQuest",
+              "nome",
+              "Erro"
+            ],
             "correctIndex": 1
           },
-          "inspectVars": ["nome"]
+          "inspectVars": [
+            "nome"
+          ]
         }
       ]
     },
@@ -76,19 +115,32 @@
           "explanation": "Use `let` quando o valor precisa mudar depois, e `const` quando o valor é fixo. Na dúvida, comece com `const` — é mais seguro!",
           "matchPairs": {
             "pairs": [
-              { "left": "let", "right": "pode mudar depois" },
-              { "left": "const", "right": "nunca muda" }
+              {
+                "left": "let",
+                "right": "pode mudar depois"
+              },
+              {
+                "left": "const",
+                "right": "nunca muda"
+              }
             ]
           }
         },
         {
           "type": "interactive-example",
           "code": "const PI: number = 3.14159;\nconsole.log(PI);\n\n// Se tentarmos mudar:\n// PI = 3.0; ← ERRO! \n// Não pode mudar um const",
-          "highlightLines": [1],
+          "highlightLines": [
+            1
+          ],
           "explanation": "O valor de PI nunca muda na matemática, então faz sentido usar `const`. Se você tentasse `PI = 3.0`, o TypeScript daria um erro.",
           "predict": {
             "question": "O que console.log(PI) vai imprimir?",
-            "choices": ["PI", "3.14159", "number", "Erro"],
+            "choices": [
+              "PI",
+              "3.14159",
+              "number",
+              "Erro"
+            ],
             "correctIndex": 1
           }
         },
@@ -104,7 +156,10 @@
           "fillBlank": {
             "code": "___BLANK_0___ PI: number = 3.14159;",
             "blanks": [
-              { "id": "keyword", "answer": "const" }
+              {
+                "id": "keyword",
+                "answer": "const"
+              }
             ]
           }
         }
@@ -126,17 +181,28 @@
           "prompt": "Monte o nome em camelCase para \"pontos de vida\" — coloque as partes na ordem certa:",
           "explanation": "Em camelCase, a primeira palavra fica toda em minúscula e cada palavra seguinte começa com maiúscula: `pontosDeVida`. Sem espaços!",
           "orderSteps": {
-            "items": ["pontos", "De", "Vida"]
+            "items": [
+              "pontos",
+              "De",
+              "Vida"
+            ]
           }
         },
         {
           "type": "interactive-example",
           "code": "let nomeDoJogador: string = \"Rafael\";\nconsole.log(nomeDoJogador);",
-          "highlightLines": [2],
+          "highlightLines": [
+            2
+          ],
           "explanation": "Veja como `nomeDoJogador` é claro — você sabe exatamente o que está guardado ali. Quando você ler o código daqui a um mês, vai agradecer nomes bons!",
           "predict": {
             "question": "O que console.log(nomeDoJogador) vai imprimir?",
-            "choices": ["nomeDoJogador", "\"Rafael\"", "Rafael", "string"],
+            "choices": [
+              "nomeDoJogador",
+              "\"Rafael\"",
+              "Rafael",
+              "string"
+            ],
             "correctIndex": 2
           }
         },
@@ -147,9 +213,18 @@
           "explanation": "Bons nomes descrevem o que a variável guarda. Evite nomes genéricos como `x` e não use MAIÚSCULAS (parece constante). Use sempre camelCase!",
           "matchPairs": {
             "pairs": [
-              { "left": "pontosDeVida", "right": "bom nome" },
-              { "left": "x", "right": "nome ruim" },
-              { "left": "PONTOS", "right": "parece constante" }
+              {
+                "left": "pontosDeVida",
+                "right": "bom nome"
+              },
+              {
+                "left": "x",
+                "right": "nome ruim"
+              },
+              {
+                "left": "PONTOS",
+                "right": "parece constante"
+              }
             ]
           }
         }
@@ -193,7 +268,9 @@
           "message": "Funciona, mas vamos praticar com tipos! Adicione `: number` depois de `idade`."
         }
       ],
-      "inspectVars": ["idade"]
+      "inspectVars": [
+        "idade"
+      ]
     },
     {
       "id": "01-05",
@@ -229,7 +306,11 @@
           "message": "`\"true\"` com aspas é uma string! Booleans são escritos sem aspas: `true` ou `false`."
         }
       ],
-      "inspectVars": ["nomeHeroi", "nivel", "estaVivo"]
+      "inspectVars": [
+        "nomeHeroi",
+        "nivel",
+        "estaVivo"
+      ]
     },
     {
       "id": "01-06",
@@ -265,7 +346,11 @@
           "message": "A ideia é trocar os valores de forma genérica, não atribuir números fixos. Use uma variável temporária!"
         }
       ],
-      "inspectVars": ["a", "b", "temp"]
+      "inspectVars": [
+        "a",
+        "b",
+        "temp"
+      ]
     },
     {
       "id": "01-07",

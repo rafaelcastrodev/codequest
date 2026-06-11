@@ -33,6 +33,8 @@ export interface InteractiveExampleStep {
   highlightSteps?: HighlightStep[];
   inspectVars?: string[];
   anatomy?: AnatomySegment[];
+  autoplay?: boolean;
+  stepDelay?: number;
 }
 
 export type MicroChallengeVariant = 'fill-blank' | 'order-steps' | 'match-pairs';

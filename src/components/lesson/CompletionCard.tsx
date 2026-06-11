@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { icons } from "@/components/ui/Icon";
 import { useProgressStore, getLevelProgress, getLevelTitle } from "@/store/progress.store";
-import type { ModuleMastery } from "@/store/progress.store";
-import { MasteryBadge } from "@/components/ui/MasteryBadge";
 import type { MotivationalPhrases, PerformanceTier, PerformanceTieredPhrases } from "@/content/curriculum.types";
 import { loadMotivationalPhrases } from "@/content/loader";
 
@@ -197,8 +195,6 @@ interface CompletionCardProps {
   mapLabel?: string;
   mapIcon?: ReactNode;
   actionsLayout?: "row" | "row-equal";
-  moduleMastery?: ModuleMastery;
-  moduleTitle?: string;
   children?: ReactNode;
 }
 
@@ -218,8 +214,6 @@ export function CompletionCard({
   mapLabel,
   mapIcon = <icons.map />,
   actionsLayout = "row-equal",
-  moduleMastery,
-  moduleTitle,
   children,
 }: CompletionCardProps) {
   const phrase = useMemo(() => pickPhrase(context, stars), [context, stars]);
@@ -247,20 +241,6 @@ export function CompletionCard({
           <XPRewardBadge xp={xpReward} animated={animatedXP} />
         </div>
         <XPProgressBar xpReward={xpReward} />
-        {moduleMastery && moduleMastery.level > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1 }}
-            className="flex items-center justify-center gap-2"
-          >
-            <span className="text-xs text-text-muted font-body">{moduleTitle}</span>
-            <MasteryBadge mastery={moduleMastery} />
-            <span className="text-[10px] text-text-muted font-body">
-              <icons.star /> {moduleMastery.earnedStars}/{moduleMastery.maxStars}
-            </span>
-          </motion.div>
-        )}
         <CompletionActions
           onNext={onNext}
           onMap={onMap}

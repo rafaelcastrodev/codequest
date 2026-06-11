@@ -10,7 +10,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useExercise } from "@/hooks/useExercise";
 import { useCodeRunner } from "@/hooks/useCodeRunner";
-import { useProgressStore, getModuleMastery } from "@/store/progress.store";
+import { useProgressStore } from "@/store/progress.store";
 import { useSessionStore } from "@/store/session.store";
 import { useSettingsStore } from "@/store/settings.store";
 import { useAchievements } from "@/hooks/useAchievements";
@@ -356,8 +356,6 @@ export function ExercisePage() {
 					stars={successStars}
 					hintsUsed={hintsUsed}
 					xpGained={xpGained}
-					moduleMastery={getModuleMastery(mod?.lessons ?? [], completedExercises)}
-					moduleTitle={mod?.title}
 					onNext={handleNext}
 					onMap={() => navigate("/")}
 				/>
