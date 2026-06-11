@@ -32,7 +32,9 @@ import { HintPanel } from "@/components/exercise/HintPanel";
 import { OutputPanel } from "@/components/exercise/OutputPanel";
 import { SuccessOverlay } from "@/components/exercise/SuccessOverlay";
 import { SymbolToolbar } from "@/components/exercise/SymbolToolbar";
-import { getLastCompileErrors } from "@/engine/typescript-runner";
+import { getLastCompileErrors, runWithInspection } from "@/engine/typescript-runner";
+import type { VarSnapshot } from "@/engine/typescript-runner";
+import { VariableInspector } from "@/components/lesson/VariableInspector";
 import { defineAllThemes } from "@/engine/monaco-theme";
 import type { OnMount } from "@monaco-editor/react";
 import { triggerConfetti } from "@/utils/confetti";
@@ -78,6 +80,7 @@ export function ExercisePage() {
 	const [mobileTab, setMobileTab] = useState<"instructions" | "code">(
 		"instructions",
 	);
+	const [inspectionSnapshots, setInspectionSnapshots] = useState<VarSnapshot[]>([]);
 	const pendingAchievementCheck = useRef<boolean>(false);
 	const autoSaveTimer = useRef<ReturnType<typeof setTimeout>>();
 	const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
@@ -180,6 +183,14 @@ export function ExercisePage() {
 	const handleRun = useCallback(async () => {
 		if (!exercise || runner.status === "running") return;
 		clearEditorMarkers();
+
+		if (exercise.inspectVars && exercise.inspectVars.length > 0) {
+			runWithInspection(code, exercise.inspectVars)
+				.then((result) => {
+					setInspectionSnapshots(result.snapshots);
+				})
+				.catch(() => {});
+		}
 
 		const outcome = await runner.run(
 			code,
@@ -471,13 +482,19 @@ export function ExercisePage() {
 				</Suspense>
 			</motion.div>
 
-			<div className="p-3 bg-bg-primary border-t border-bg-elevated flex-shrink-0">
+			<div className="p-3 bg-bg-primary border-t border-bg-elevated flex-shrink-0 space-y-2">
 				<OutputPanel
 					output={runner.output}
 					errorMessage={runner.errorMessage}
 					mistakeMessage={runner.mistakeMessage}
 					status={runner.status}
 				/>
+				{exercise.inspectVars && inspectionSnapshots.length > 0 && (
+					<VariableInspector
+						snapshots={inspectionSnapshots}
+						varNames={exercise.inspectVars}
+					/>
+				)}
 			</div>
 		</div>
 	);

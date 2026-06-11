@@ -1,9 +1,17 @@
 import SandboxWorker from './worker?worker';
+import { instrumentCode } from './var-inspector';
+import type { VarSnapshot } from './var-inspector';
+
+export type { VarSnapshot };
 
 export interface RunResult {
   success: boolean;
   output: string;
   error?: string;
+}
+
+export interface InspectionResult extends RunResult {
+  snapshots: VarSnapshot[];
 }
 
 export interface CompileError {
@@ -69,7 +77,7 @@ export async function transpileCode(tsCode: string): Promise<string> {
   return result.outputText;
 }
 
-export function runInWorker(jsCode: string): Promise<RunResult> {
+export function runInWorker(jsCode: string, collectSnapshots = false): Promise<RunResult & { snapshots?: VarSnapshot[] }> {
   return new Promise((resolve) => {
     const worker = new SandboxWorker();
     let settled = false;
@@ -86,7 +94,7 @@ export function runInWorker(jsCode: string): Promise<RunResult> {
       }
     }, WORKER_TIMEOUT_MS);
 
-    worker.onmessage = (event: MessageEvent<RunResult>) => {
+    worker.onmessage = (event: MessageEvent<RunResult & { snapshots?: VarSnapshot[] }>) => {
       if (!settled) {
         settled = true;
         clearTimeout(timer);
@@ -104,7 +112,7 @@ export function runInWorker(jsCode: string): Promise<RunResult> {
       }
     };
 
-    worker.postMessage({ code: jsCode });
+    worker.postMessage({ code: jsCode, collectSnapshots });
   });
 }
 
@@ -122,6 +130,38 @@ export async function executeCode(tsCode: string, testCode: string = ''): Promis
 
   const combined = testCode ? `${jsCode}\n${testCode}` : jsCode;
   return runInWorker(combined);
+}
+
+export async function runWithInspection(
+  tsCode: string,
+  varNames: string[],
+): Promise<InspectionResult> {
+  let instrumented: string;
+  try {
+    instrumented = await instrumentCode(tsCode, varNames);
+  } catch {
+    return { success: false, output: '', error: 'Falha ao instrumentar código.', snapshots: [] };
+  }
+
+  let jsCode: string;
+  try {
+    jsCode = await transpileCode(instrumented);
+  } catch (err) {
+    return {
+      success: false,
+      output: '',
+      error: err instanceof Error ? err.message : String(err),
+      snapshots: [],
+    };
+  }
+
+  const result = await runInWorker(jsCode, true);
+  return {
+    success: result.success,
+    output: result.output,
+    error: result.error,
+    snapshots: result.snapshots ?? [],
+  };
 }
 
 export async function analyzeAST(

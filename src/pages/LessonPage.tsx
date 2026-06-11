@@ -16,6 +16,11 @@ import { LessonBreadcrumb } from "@/components/lesson/LessonBreadcrumb";
 import { LessonNavBar } from "@/components/lesson/LessonNavBar";
 import { CompletionCard } from "@/components/lesson/CompletionCard";
 import { AssistantContentToggle } from "@/components/lesson/AssistantContentToggle";
+import { PredictBlock } from "@/components/lesson/PredictBlock";
+import { AnatomyBlock } from "@/components/lesson/AnatomyBlock";
+import { StepThroughBlock } from "@/components/lesson/StepThroughBlock";
+import { MicroChallenge } from "@/components/lesson/MicroChallenge";
+import { LessonNarrativeBanner } from "@/components/lesson/NarrativeIntro";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { RichText } from "@/components/ui/RichText";
 import { lessonPath } from "@/utils/lesson-path";
@@ -68,6 +73,34 @@ function StepView({ step }: StepViewProps) {
 			<RichText
 				content={step.content}
 				className="text-text-main font-body leading-relaxed text-base"
+			/>
+		);
+	}
+
+	if (step.type === "micro-challenge") {
+		return <MicroChallenge step={step} />;
+	}
+
+	if (step.anatomy) {
+		return (
+			<AnatomyBlock
+				segments={step.anatomy}
+				explanation={step.explanation}
+			/>
+		);
+	}
+
+	if (step.predict) {
+		return <PredictBlock step={step} />;
+	}
+
+	if (step.highlightSteps) {
+		return (
+			<StepThroughBlock
+				code={step.code}
+				steps={step.highlightSteps}
+				explanation={step.explanation}
+				varNames={step.inspectVars}
 			/>
 		);
 	}
@@ -225,6 +258,9 @@ export function LessonPage() {
 					</div>
 
 					<div className="bg-bg-surface border border-bg-elevated rounded-2xl p-6 min-h-48 overflow-hidden">
+						{stepIndex === 0 && theoryLesson.narrativeIntro && (
+							<LessonNarrativeBanner text={theoryLesson.narrativeIntro} />
+						)}
 						<AssistantContentToggle
 							showingAssistant={assistant.showingAssistant}
 							activeContent={assistant.activeContent}

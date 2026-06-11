@@ -8,14 +8,63 @@ export interface ExplanationStep {
   illustration?: string;
 }
 
+export interface PredictConfig {
+  question?: string;
+  choices: string[];
+  correctIndex: number;
+}
+
+export interface HighlightStep {
+  lines: number[];
+  note: string;
+}
+
+export interface AnatomySegment {
+  text: string;
+  label: string;
+}
+
 export interface InteractiveExampleStep {
   type: 'interactive-example';
   code: string;
   highlightLines?: number[];
   explanation: string;
+  predict?: PredictConfig;
+  highlightSteps?: HighlightStep[];
+  inspectVars?: string[];
+  anatomy?: AnatomySegment[];
 }
 
-export type LessonStep = ExplanationStep | InteractiveExampleStep;
+export type MicroChallengeVariant = 'fill-blank' | 'order-steps' | 'match-pairs';
+
+export interface FillBlankData {
+  code: string;
+  blanks: Array<{
+    id: string;
+    answer: string;
+    alternatives?: string[];
+  }>;
+}
+
+export interface OrderStepsData {
+  items: string[];
+}
+
+export interface MatchPairsData {
+  pairs: Array<{ left: string; right: string }>;
+}
+
+export interface MicroChallengeStep {
+  type: 'micro-challenge';
+  variant: MicroChallengeVariant;
+  prompt: string;
+  explanation: string;
+  fillBlank?: FillBlankData;
+  orderSteps?: OrderStepsData;
+  matchPairs?: MatchPairsData;
+}
+
+export type LessonStep = ExplanationStep | InteractiveExampleStep | MicroChallengeStep;
 
 export interface TestCase {
   setupCode?: string;
@@ -44,6 +93,7 @@ export interface TheoryLesson {
   type: 'theory';
   xpReward: number;
   steps: LessonStep[];
+  narrativeIntro?: string;
 }
 
 export interface ExerciseLesson {
@@ -58,6 +108,7 @@ export interface ExerciseLesson {
   validation: Validation;
   hints: string[];
   commonMistakes: CommonMistake[];
+  inspectVars?: string[];
 }
 
 export interface QuizQuestion {
@@ -78,11 +129,17 @@ export interface QuizLesson {
 
 export type Lesson = TheoryLesson | ExerciseLesson | QuizLesson;
 
+export interface ModuleNarrative {
+  intro: string;
+  theme?: string;
+}
+
 export interface Module {
   id: string;
   title: string;
   description: string;
   lessons: Lesson[];
+  narrative?: ModuleNarrative;
 }
 
 export interface CurriculumModule {

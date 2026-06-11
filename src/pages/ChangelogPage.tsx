@@ -8,6 +8,19 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.24.0',
+    date: '2026-06-10',
+    changes: [
+      'Lições mais interativas — agora você pode prever o que o código vai fazer antes de ver o resultado',
+      'Anatomia do código: cada parte de uma linha é revelada aos poucos com explicação visual',
+      'Mini-desafios dentro das lições — complete lacunas, ordene passos e conecte pares',
+      'Inspetor de variáveis mostra o valor de cada variável após rodar seu código nos exercícios',
+      'Introdução narrativa no início das lições para contextualizar o que você vai aprender',
+      'Passo a passo guiado: percorra o código linha por linha com destaque e explicação',
+      'Módulo "Variáveis e Constantes" totalmente reformulado com as novas atividades interativas',
+    ],
+  },
+  {
     version: '0.23.0',
     date: '2026-06-10',
     changes: [

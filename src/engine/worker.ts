@@ -4,12 +4,19 @@ export type {};
 
 interface WorkerInput {
   code: string;
+  collectSnapshots?: boolean;
+}
+
+interface SnapshotEntry {
+  line: number;
+  vars: Record<string, unknown>;
 }
 
 interface WorkerOutput {
   success: boolean;
   output: string;
   error?: string;
+  snapshots?: SnapshotEntry[];
 }
 
 const MAX_OUTPUT_LINES = 1000;
@@ -70,8 +77,9 @@ ${userCode}
 }
 
 self.onmessage = (event: MessageEvent<WorkerInput>) => {
-  const { code } = event.data;
+  const { code, collectSnapshots } = event.data;
   const lines: string[] = [];
+  const snapshots: SnapshotEntry[] = [];
 
   const mockConsole = {
     log: (...args: unknown[]) => {
@@ -86,6 +94,16 @@ self.onmessage = (event: MessageEvent<WorkerInput>) => {
     info: (...args: unknown[]) => {
       if (lines.length < MAX_OUTPUT_LINES) lines.push(args.map(stringifyArg).join(' '));
     },
+  };
+
+  const snapshotFn = (line: number, vars: Record<string, unknown>) => {
+    if (snapshots.length < 200) {
+      const serialized: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(vars)) {
+        serialized[k] = v;
+      }
+      snapshots.push({ line, vars: serialized });
+    }
   };
 
   try {
@@ -103,13 +121,22 @@ self.onmessage = (event: MessageEvent<WorkerInput>) => {
       } catch { /* may fail if already frozen */ }
     }
 
-    const fn = SafeFunction('console', sandboxed);
-    fn(mockConsole);
+    if (collectSnapshots) {
+      const fn = SafeFunction('console', '__snapshot__', sandboxed);
+      fn(mockConsole, snapshotFn);
+    } else {
+      const fn = SafeFunction('console', sandboxed);
+      fn(mockConsole);
+    }
 
     if (lines.length >= MAX_OUTPUT_LINES) {
       lines.push('[... output truncado — limite de 1000 linhas atingido]');
     }
-    const result: WorkerOutput = { success: true, output: lines.join('\n') };
+    const result: WorkerOutput = {
+      success: true,
+      output: lines.join('\n'),
+      ...(collectSnapshots ? { snapshots } : {}),
+    };
     self.postMessage(result);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -117,6 +144,7 @@ self.onmessage = (event: MessageEvent<WorkerInput>) => {
       success: false,
       output: lines.join('\n'),
       error: message,
+      ...(collectSnapshots ? { snapshots } : {}),
     };
     self.postMessage(result);
   }

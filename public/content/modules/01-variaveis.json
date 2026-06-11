@@ -2,12 +2,17 @@
   "id": "01-variaveis",
   "title": "Variáveis e Constantes",
   "description": "Aprenda a guardar informações na memória do computador",
+  "narrative": {
+    "intro": "Antes de criar qualquer jogo, app ou site, todo programador precisa aprender uma coisa: como guardar informações. Neste módulo, você vai descobrir como o computador lembra das coisas — e como você pode controlar isso.",
+    "theme": "fundamentos"
+  },
   "lessons": [
     {
       "id": "01-01",
       "title": "O que é uma variável?",
       "type": "theory",
       "xpReward": 5,
+      "narrativeIntro": "Tudo começa com uma pergunta: como o computador lembra das coisas?",
       "steps": [
         {
           "type": "explanation",
@@ -15,23 +20,42 @@
         },
         {
           "type": "interactive-example",
-          "code": "let pontos: number = 100;\nconsole.log(pontos);",
-          "highlightLines": [
-            1
-          ],
-          "explanation": "Aqui criamos uma gaveta chamada `pontos`, que guarda o número `100`. A palavra `let` diz ao computador: **crie uma nova gaveta**."
+          "code": "let pontos: number = 100;",
+          "highlightLines": [1],
+          "explanation": "Aqui criamos uma gaveta chamada `pontos`, que guarda o número `100`. Vamos ver cada parte dessa linha:",
+          "anatomy": [
+            { "text": "let ", "label": "cria a variável" },
+            { "text": "pontos", "label": "nome da gaveta" },
+            { "text": ": number", "label": "tipo de dado" },
+            { "text": " = ", "label": "atribui valor" },
+            { "text": "100", "label": "valor guardado" },
+            { "text": ";", "label": "fim da instrução" }
+          ]
         },
         {
-          "type": "explanation",
-          "content": "Vamos destrinchar cada parte:\n\n- `let` → cria a variável\n- `pontos` → o nome que escolhemos\n- `: number` → o tipo de dado (neste caso, um número)\n- `= 100` → o valor inicial\n\nDepois do `:` sempre vem o **tipo**. Em TypeScript, isso ajuda o computador a saber o que pode ir dentro da gaveta."
+          "type": "micro-challenge",
+          "variant": "fill-blank",
+          "prompt": "Complete o código para criar uma variável chamada vida que guarda o número 50:",
+          "explanation": "A estrutura é sempre: `let nome: tipo = valor;`. O tipo `number` indica que a gaveta guarda um número.",
+          "fillBlank": {
+            "code": "___BLANK_0___ vida: ___BLANK_1___ = 50;",
+            "blanks": [
+              { "id": "keyword", "answer": "let", "alternatives": ["const"] },
+              { "id": "type", "answer": "number" }
+            ]
+          }
         },
         {
           "type": "interactive-example",
           "code": "let nome: string = \"CodeQuest\";\nconsole.log(nome);\n\nnome = \"MegaQuest\";\nconsole.log(nome);",
-          "highlightLines": [
-            4
-          ],
-          "explanation": "Variáveis criadas com `let` podem **mudar de valor**! Na linha 4, trocamos o conteúdo da gaveta `nome` de `\"CodeQuest\"` para `\"MegaQuest\"`."
+          "highlightLines": [4],
+          "explanation": "Variáveis criadas com `let` podem **mudar de valor**! Na linha 4, trocamos o conteúdo da gaveta `nome` de `\"CodeQuest\"` para `\"MegaQuest\"`.",
+          "predict": {
+            "question": "Depois de trocar o valor, o que o segundo console.log vai imprimir?",
+            "choices": ["CodeQuest", "MegaQuest", "nome", "Erro"],
+            "correctIndex": 1
+          },
+          "inspectVars": ["nome"]
         }
       ]
     },
@@ -46,16 +70,43 @@
           "content": "Existem duas formas de criar variáveis:\n\n- **`let`** → o valor **pode mudar** depois\n- **`const`** → o valor **nunca muda** (é constante)\n\nPense assim: `let` é um quadro branco (você apaga e reescreve), `const` é uma placa de metal gravada (fixo para sempre)."
         },
         {
+          "type": "micro-challenge",
+          "variant": "match-pairs",
+          "prompt": "Conecte cada palavra-chave com seu significado:",
+          "explanation": "Use `let` quando o valor precisa mudar depois, e `const` quando o valor é fixo. Na dúvida, comece com `const` — é mais seguro!",
+          "matchPairs": {
+            "pairs": [
+              { "left": "let", "right": "pode mudar depois" },
+              { "left": "const", "right": "nunca muda" }
+            ]
+          }
+        },
+        {
           "type": "interactive-example",
           "code": "const PI: number = 3.14159;\nconsole.log(PI);\n\n// Se tentarmos mudar:\n// PI = 3.0; ← ERRO! \n// Não pode mudar um const",
-          "highlightLines": [
-            1
-          ],
-          "explanation": "O valor de PI nunca muda na matemática, então faz sentido usar `const`. Se você tentasse `PI = 3.0`, o TypeScript daria um erro."
+          "highlightLines": [1],
+          "explanation": "O valor de PI nunca muda na matemática, então faz sentido usar `const`. Se você tentasse `PI = 3.0`, o TypeScript daria um erro.",
+          "predict": {
+            "question": "O que console.log(PI) vai imprimir?",
+            "choices": ["PI", "3.14159", "number", "Erro"],
+            "correctIndex": 1
+          }
         },
         {
           "type": "explanation",
           "content": "**Dica de ouro:** Use `const` sempre que puder. Só use `let` quando você realmente precisa mudar o valor depois. Isso torna o código mais seguro e fácil de entender."
+        },
+        {
+          "type": "micro-challenge",
+          "variant": "fill-blank",
+          "prompt": "O valor de PI nunca muda. Complete a declaração correta:",
+          "explanation": "Sempre que um valor não vai mudar, use `const`. É uma boa prática que torna o código mais previsível.",
+          "fillBlank": {
+            "code": "___BLANK_0___ PI: number = 3.14159;",
+            "blanks": [
+              { "id": "keyword", "answer": "const" }
+            ]
+          }
         }
       ]
     },
@@ -70,14 +121,37 @@
           "content": "Escolher bons nomes é uma das habilidades mais importantes de um programador! Regras:\n\n- Comece com **letra** (ou `_`)\n- Use **camelCase**: primeira palavra minúscula, demais começam com maiúscula\n- Sem espaços, sem acentos, sem caracteres especiais\n- O nome deve descrever o que a variável guarda"
         },
         {
+          "type": "micro-challenge",
+          "variant": "order-steps",
+          "prompt": "Monte o nome em camelCase para \"pontos de vida\" — coloque as partes na ordem certa:",
+          "explanation": "Em camelCase, a primeira palavra fica toda em minúscula e cada palavra seguinte começa com maiúscula: `pontosDeVida`. Sem espaços!",
+          "orderSteps": {
+            "items": ["pontos", "De", "Vida"]
+          }
+        },
+        {
           "type": "interactive-example",
-          "code": "// ✅ Bons nomes:\nlet nomeDoJogador: string = \"Rafael\";\nlet pontosDeVida: number = 100;\nlet estaVivo: boolean = true;\n\n// ❌ Nomes ruins:\n// let x: number = 100;       ← não diz nada\n// let ndj: string = \"Rafa\";  ← abreviação confusa\n// let PONTOS: number = 50;   ← parece uma constante",
-          "highlightLines": [
-            2,
-            3,
-            4
-          ],
-          "explanation": "Veja como `nomeDoJogador` é muito mais claro que `x` ou `ndj`. Quando você ler o código daqui a um mês, vai agradecer nomes bons!"
+          "code": "let nomeDoJogador: string = \"Rafael\";\nconsole.log(nomeDoJogador);",
+          "highlightLines": [2],
+          "explanation": "Veja como `nomeDoJogador` é claro — você sabe exatamente o que está guardado ali. Quando você ler o código daqui a um mês, vai agradecer nomes bons!",
+          "predict": {
+            "question": "O que console.log(nomeDoJogador) vai imprimir?",
+            "choices": ["nomeDoJogador", "\"Rafael\"", "Rafael", "string"],
+            "correctIndex": 2
+          }
+        },
+        {
+          "type": "micro-challenge",
+          "variant": "match-pairs",
+          "prompt": "Classifique cada nome de variável:",
+          "explanation": "Bons nomes descrevem o que a variável guarda. Evite nomes genéricos como `x` e não use MAIÚSCULAS (parece constante). Use sempre camelCase!",
+          "matchPairs": {
+            "pairs": [
+              { "left": "pontosDeVida", "right": "bom nome" },
+              { "left": "x", "right": "nome ruim" },
+              { "left": "PONTOS", "right": "parece constante" }
+            ]
+          }
         }
       ]
     },
@@ -118,7 +192,8 @@
           "pattern": "let idade = 12",
           "message": "Funciona, mas vamos praticar com tipos! Adicione `: number` depois de `idade`."
         }
-      ]
+      ],
+      "inspectVars": ["idade"]
     },
     {
       "id": "01-05",
@@ -153,7 +228,8 @@
           "pattern": "\"true\"",
           "message": "`\"true\"` com aspas é uma string! Booleans são escritos sem aspas: `true` ou `false`."
         }
-      ]
+      ],
+      "inspectVars": ["nomeHeroi", "nivel", "estaVivo"]
     },
     {
       "id": "01-06",
@@ -188,7 +264,8 @@
           "pattern": "a = 20",
           "message": "A ideia é trocar os valores de forma genérica, não atribuir números fixos. Use uma variável temporária!"
         }
-      ]
+      ],
+      "inspectVars": ["a", "b", "temp"]
     },
     {
       "id": "01-07",
