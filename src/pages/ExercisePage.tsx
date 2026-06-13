@@ -28,6 +28,8 @@ import { Badge } from "@/components/ui/Badge";
 import { RichText } from "@/components/ui/RichText";
 import { icons } from "@/components/ui/Icon";
 import { useClipboard } from "@/hooks/useClipboard";
+import { useNavigationGuard } from "@/hooks/useNavigationGuard";
+import { NavigationGuardModal } from "@/components/ui/NavigationGuardModal";
 import { HintPanel } from "@/components/exercise/HintPanel";
 import { OutputPanel } from "@/components/exercise/OutputPanel";
 import { SuccessOverlay } from "@/components/exercise/SuccessOverlay";
@@ -144,6 +146,12 @@ export function ExercisePage() {
 		},
 		[],
 	);
+
+	const currentStarterCode = exercise
+		? buildStarterCode(exercise.starterCode, exercise.instructions)
+		: "";
+	const isDirty = successStars === null && code !== currentStarterCode && code.trim() !== "";
+	const navigationGuard = useNavigationGuard(isDirty);
 
 	useEffect(() => {
 		if (exercise) {
@@ -515,6 +523,12 @@ export function ExercisePage() {
 				open={assistant.modalOpen}
 				onClose={assistant.closeModal}
 				onRequest={assistant.request}
+			/>
+
+			<NavigationGuardModal
+				blocked={navigationGuard.blocked}
+				onConfirm={navigationGuard.confirm}
+				onCancel={navigationGuard.cancel}
 			/>
 		</>
 	);

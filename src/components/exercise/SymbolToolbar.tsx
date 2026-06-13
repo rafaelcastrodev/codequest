@@ -3,8 +3,8 @@ export interface SymbolToolbarProps {
 }
 
 const SYMBOLS = [
-  '{', '}', '(', ')', '[', ']', ';', '=', '"', "'",
-  '>', '<', '/', '.', ':', '+', '-', '!', '|', '&',
+  '{', '}', '(', ')', '[', ']', ';', ':', '=', '+', '-', '"', "'",
+  '>', '<', '/', '!', '|', '&', '—',
 ];
 
 export function SymbolToolbar({ onInsert }: SymbolToolbarProps) {

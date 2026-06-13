@@ -8,6 +8,15 @@ interface ChangelogEntry {
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.25.0',
+    date: '2026-06-13',
+    changes: [
+      'Alerta ao sair do editor com código não salvo — no exercício e no Playground',
+      'Barra de símbolos reorganizada com os caracteres mais usados primeiro',
+      'Novo símbolo "—" (travessão) disponível na barra de símbolos',
+    ],
+  },
+  {
     version: '0.24.0',
     date: '2026-06-10',
     changes: [

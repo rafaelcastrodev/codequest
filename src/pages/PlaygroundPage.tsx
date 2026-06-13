@@ -22,6 +22,8 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { SymbolToolbar } from "@/components/exercise/SymbolToolbar";
 import { defineAllThemes } from "@/engine/monaco-theme";
 import { useSettingsStore } from "@/store/settings.store";
+import { useNavigationGuard } from "@/hooks/useNavigationGuard";
+import { NavigationGuardModal } from "@/components/ui/NavigationGuardModal";
 import type { OnMount } from "@monaco-editor/react";
 import type { ReactNode } from "react";
 
@@ -329,6 +331,10 @@ export function PlaygroundPage() {
 	const currentSnippet = currentSnippetId
 		? snippets.find((s) => s.id === currentSnippetId)
 		: null;
+
+	const baselineCode = currentSnippet ? currentSnippet.code : DEFAULT_CODE;
+	const isDirty = code !== baselineCode && code.trim() !== "";
+	const navigationGuard = useNavigationGuard(isDirty);
 
 	const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
 	const handleRunRef = useRef<() => void>(() => {});
@@ -680,6 +686,12 @@ export function PlaygroundPage() {
 				onClose={() => setShowTemplates(false)}
 				templates={PLAYGROUND_TEMPLATES}
 				onSelect={handleTemplateSelect}
+			/>
+
+			<NavigationGuardModal
+				blocked={navigationGuard.blocked}
+				onConfirm={navigationGuard.confirm}
+				onCancel={navigationGuard.cancel}
 			/>
 		</div>
 	);

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { Shell } from '@/components/layout/Shell';
 import { HomePage } from '@/pages/HomePage';
 import { LessonPage } from '@/pages/LessonPage';
@@ -10,23 +10,25 @@ import { AboutPage } from '@/pages/AboutPage';
 import { PlaygroundPage } from '@/pages/PlaygroundPage';
 import { ChangelogPage } from '@/pages/ChangelogPage';
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Shell />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'lesson/:moduleId/:lessonId', element: <LessonPage /> },
+      { path: 'exercise/:moduleId/:lessonId', element: <ExercisePage /> },
+      { path: 'quiz/:moduleId/:lessonId', element: <QuizPage /> },
+      { path: 'playground', element: <PlaygroundPage /> },
+      { path: 'profile', element: <ProfilePage /> },
+      { path: 'settings', element: <SettingsPage /> },
+      { path: 'about', element: <AboutPage /> },
+      { path: 'changelog', element: <ChangelogPage /> },
+      { path: '*', element: <Navigate to="/" replace /> },
+    ],
+  },
+]);
+
 export function AppRouter() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Shell />}>
-          <Route index element={<HomePage />} />
-          <Route path="lesson/:moduleId/:lessonId" element={<LessonPage />} />
-          <Route path="exercise/:moduleId/:lessonId" element={<ExercisePage />} />
-          <Route path="quiz/:moduleId/:lessonId" element={<QuizPage />} />
-          <Route path="playground" element={<PlaygroundPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="changelog" element={<ChangelogPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
